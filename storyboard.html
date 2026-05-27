@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>VoyageVista — Storyboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Special+Elite&display=swap');
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: #e8e0d0;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(180,160,120,0.15) 28px),
+      repeating-linear-gradient(90deg, transparent, transparent 27px, rgba(180,160,120,0.08) 28px);
+    font-family: 'Caveat', cursive;
+    padding: 0;
+    min-height: 100vh;
+    color: #1a1208;
+  }
+
+  /* ── Cover page ── */
+  .cover {
+    background: #f5edd8;
+    border-bottom: 3px solid #2a1a08;
+    padding: 32px 60px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 10px,
+      rgba(201,168,76,0.04) 10px,
+      rgba(201,168,76,0.04) 20px
+    );
+  }
+  .cover-left { position: relative; z-index:1; }
+  .cover-stamp {
+    display: inline-block;
+    border: 3px solid #8b3a0f;
+    color: #8b3a0f;
+    font-family: 'Special Elite', serif;
+    font-size: 11px;
+    padding: 3px 10px;
+    letter-spacing: 0.12em;
+    transform: rotate(-2deg);
+    margin-bottom: 12px;
+  }
+  .cover h1 {
+    font-family: 'Special Elite', serif;
+    font-size: 38px;
+    line-height: 1;
+    color: #1a1208;
+  }
+  .cover h1 span { color: #c9a84c; }
+  .cover-sub {
+    font-size: 18px;
+    color: #5a4a2a;
+    margin-top: 6px;
+    font-style: italic;
+  }
+  .cover-meta {
+    font-size: 13px;
+    color: #7a6a4a;
+    margin-top: 16px;
+    line-height: 1.8;
+  }
+  .cover-right {
+    position: relative; z-index:1;
+    text-align: right;
+    font-size: 12px;
+    color: #7a6a4a;
+    line-height: 2;
+  }
+  .cover-plane {
+    font-size: 60px;
+    opacity: 0.12;
+    position: absolute;
+    right: 60px;
+    bottom: -10px;
+    transform: rotate(-20deg);
+  }
+
+  /* ── Scene separator ── */
+  .scene-header {
+    background: #2a1a08;
+    color: #f5edd8;
+    padding: 10px 60px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .scene-num {
+    font-family: 'Special Elite', serif;
+    font-size: 22px;
+    color: #c9a84c;
+    min-width: 28px;
+  }
+  .scene-title {
+    font-family: 'Special Elite', serif;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+  }
+  .scene-persona {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #c9a84c;
+  }
+  .persona-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #c9a84c;
+  }
+
+  /* ── Strip (row of panels) ── */
+  .strip {
+    padding: 28px 60px 16px;
+    display: flex;
+    gap: 0;
+    align-items: flex-start;
+    position: relative;
+  }
+
+  /* ── Panel ── */
+  .panel-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    flex: 1;
+  }
+
+  .panel {
+    background: #fff;
+    border: 2.5px solid #1a1208;
+    width: 100%;
+    aspect-ratio: 4/3;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: box-shadow 0.15s;
+    flex-shrink: 0;
+  }
+  .panel:hover {
+    box-shadow: 4px 4px 0 #2a1a08;
+    transform: translate(-2px, -2px);
+  }
+
+  /* Panel number badge */
+  .panel-num {
+    position: absolute;
+    top: 5px; left: 5px;
+    width: 20px; height: 20px;
+    background: #1a1208;
+    color: #f5edd8;
+    border-radius: 50%;
+    font-size: 10px;
+    font-family: 'Special Elite', serif;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 10;
+    font-weight: 700;
+  }
+
+  /* Arrow between panels */
+  .arrow {
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+    padding-bottom: 48px;
+    color: #2a1a08;
+    font-size: 22px;
+    flex-shrink: 0;
+    font-weight: 700;
+  }
+  .arrow.branch {
+    color: #c9a84c;
+  }
+
+  /* Caption below panel */
+  .caption {
+    width: 100%;
+    padding: 6px 4px 2px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .caption-action {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1a1208;
+    line-height: 1.2;
+  }
+  .caption-note {
+    font-size: 11px;
+    color: #7a6a4a;
+    font-style: italic;
+    line-height: 1.3;
+  }
+  .caption-interaction {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 10px;
+    background: #f0e8d0;
+    border: 1px solid #c9a84c;
+    border-radius: 3px;
+    padding: 1px 5px;
+    color: #7a4a00;
+    margin-top: 2px;
+    align-self: flex-start;
+  }
+
+  /* ══ DRAWING ELEMENTS ══════════════════════════════════════════ */
+
+  /* Sky / Background layers */
+  .sky { position:absolute; inset:0; background: linear-gradient(180deg, #c5dff0 0%, #e8f4f8 60%, #d4c4a0 60%, #c4b490 100%); }
+  .sky-dark { position:absolute; inset:0; background: linear-gradient(180deg, #2a2a3a 0%, #1a1a28 50%, #2a2010 50%, #1a1408 100%); }
+  .sky-gold { position:absolute; inset:0; background: linear-gradient(180deg, #f5edd8 0%, #f5edd8 100%); }
+
+  /* Simple character */
+  .char {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .char-head {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: #f5c89a;
+    border: 2px solid #1a1208;
+    position: relative;
+  }
+  .char-head::after {
+    content: '';
+    position: absolute;
+    top: -5px; left: 2px;
+    width: 14px; height: 8px;
+    background: #5a3a1a;
+    border-radius: 50% 50% 0 0;
+  }
+  .char-body {
+    width: 14px; height: 20px;
+    border-radius: 3px;
+    background: #3a6abf;
+    border: 2px solid #1a1208;
+    margin-top: 1px;
+  }
+  .char-legs {
+    display: flex; gap: 3px;
+  }
+  .char-leg {
+    width: 5px; height: 12px;
+    background: #2a3a5a;
+    border: 1.5px solid #1a1208;
+    border-radius: 0 0 2px 2px;
+  }
+
+  /* Screen / device */
+  .device {
+    position: absolute;
+    background: #fff;
+    border: 2.5px solid #1a1208;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .device-bar {
+    height: 6px;
+    background: #2a1a08;
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+    gap: 2px;
+  }
+  .device-bar-dot { width:3px; height:3px; border-radius:50%; background:#f5edd8; }
+  .device-screen {
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  /* UI elements inside device */
+  .sk { background: #d8d0c0; border-radius: 1px; }
+  .sk-gold { background: #c9a84c; border-radius: 1px; opacity:0.7; }
+  .sk-dark { background: #3a3028; border-radius: 1px; }
+
+  /* Cursor / click indicator */
+  .click {
+    position: absolute;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: rgba(201,168,76,0.3);
+    border: 2px solid #c9a84c;
+    animation: pulse 1.5s infinite;
+    z-index: 20;
+  }
+  .click::after {
+    content: '👆';
+    position: absolute;
+    top: -4px; left: 10px;
+    font-size: 14px;
+  }
+  @keyframes pulse {
+    0%,100% { transform: scale(1); opacity:1; }
+    50% { transform: scale(1.3); opacity:0.6; }
+  }
+
+  /* Toast / notification bubble */
+  .toast {
+    position: absolute;
+    background: #fff;
+    border: 2px solid #1a1208;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 9px;
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    white-space: nowrap;
+    box-shadow: 2px 2px 0 #1a1208;
+    z-index: 20;
+  }
+  .toast.success { border-color: #4ade80; color: #166534; }
+  .toast.error { border-color: #f87171; color: #991b1b; }
+  .toast.info { border-color: #60a5fa; color: #1e40af; }
+
+  /* Speech bubble */
+  .bubble {
+    position: absolute;
+    background: #fff;
+    border: 2px solid #1a1208;
+    border-radius: 8px;
+    padding: 5px 8px;
+    font-size: 9px;
+    font-family: 'Caveat', cursive;
+    font-weight: 600;
+    max-width: 80px;
+    text-align: center;
+    z-index: 20;
+    line-height: 1.3;
+  }
+  .bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 12px;
+    border: 4px solid transparent;
+    border-top-color: #1a1208;
+  }
+  .bubble::before {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 13px;
+    border: 3px solid transparent;
+    border-top-color: #fff;
+    z-index: 1;
+  }
+
+  /* Arrow annotation */
+  .anotation {
+    position: absolute;
+    font-size: 9px;
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    color: #8b3a0f;
+    background: rgba(245,237,216,0.9);
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid #c9a84c;
+    z-index: 20;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  /* Lock icon */
+  .lock {
+    position: absolute;
+    font-size: 28px;
+    z-index: 5;
+  }
+
+  /* Checkmark */
+  .checkmark {
+    position: absolute;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: #4ade80;
+    border: 3px solid #1a1208;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    z-index: 20;
+    box-shadow: 3px 3px 0 #1a1208;
+  }
+
+  /* Divider line in strip */
+  .strip-divider {
+    border: none;
+    border-top: 2px dashed #c9a84c;
+    margin: 4px 60px 0;
+    opacity: 0.5;
+  }
+
+  /* Scene note */
+  .scene-note {
+    padding: 6px 60px 20px;
+    font-size: 12px;
+    color: #7a6a4a;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .scene-note::before {
+    content: '✎';
+    font-style: normal;
+    font-size: 14px;
+    color: #c9a84c;
+  }
+
+  /* Page break */
+  .page-break {
+    height: 24px;
+    background: repeating-linear-gradient(90deg, #2a1a08 0, #2a1a08 6px, transparent 6px, transparent 12px);
+    margin: 0;
+    opacity: 0.2;
+  }
+
+  /* Footer */
+  .doc-footer {
+    background: #2a1a08;
+    color: #c9a84c;
+    padding: 12px 60px;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Special Elite', serif;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: #d4c4a0; }
+  ::-webkit-scrollbar-thumb { background: #8b7a5a; border-radius: 4px; }
+
+  /* Stars in panel */
+  .star-row { display:flex; gap:1px; }
+  .star { width:7px; height:7px; background:#f59e0b; clip-path:polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+
+  /* Progress bar */
+  .progress { height:4px; background:#e0d8c8; border-radius:2px; overflow:hidden; }
+  .progress-fill { height:100%; background:#c9a84c; border-radius:2px; }
+
+  /* Plane flying */
+  .plane-fly {
+    position: absolute;
+    font-size: 24px;
+    animation: fly 3s linear infinite;
+    z-index: 5;
+  }
+  @keyframes fly {
+    0% { left: -30px; }
+    100% { left: 110%; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ COVER ════════════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-left">
+    <div class="cover-stamp">STORYBOARD OFFICIEL</div>
+    <h1>Voyage<span>Vista</span></h1>
+    <div class="cover-sub">Storyboard des parcours utilisateurs</div>
+    <div class="cover-meta">
+      Projet 6 — Application de voyages premium<br>
+      3 scénarios · 21 panneaux · 4 rôles utilisateurs
+    </div>
+  </div>
+  <div class="cover-right">
+    <strong>Parcours couverts</strong><br>
+    I — Visiteur non connecté<br>
+    II — Voyageur (inscription → réservation)<br>
+    III — Administrateur<br>
+    <br>
+    Version 1.0 — Mai 2026
+  </div>
+  <div class="cover-plane">✈</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!--  SCÈNE I — VISITEUR NON CONNECTÉ                              -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+
+<div class="scene-header">
+  <div class="scene-num">I</div>
+  <div class="scene-title">DÉCOUVERTE — Visiteur non connecté</div>
+  <div class="scene-persona"><div class="persona-dot"></div> Persona : Sophie, 28 ans, curieuse, non inscrite</div>
+</div>
+
+<!-- Strip 1/3 -->
+<div class="strip">
+
+  <!-- Panel 1 — Arrivée sur l'accueil -->
+  <div class="panel-wrap">
+    <div class="panel">
+      <div class="panel-num">1</div>
+      <div class="sky"></div>
+      <!-- Character at computer -->
+      <div class="char" style="bottom:10px; left:12px;">
+        <div class="char-head"></div>
+        <div class="char-body"></div>
+        <div class="char-legs"><div class="char-leg"></div><div class="char-leg"></div></div>
+      </div>
+      <!-- Screen showing homepage hero -->
+      <div class="device" style="right:8px; top:10px; width:68%; height:80%;">
+        <div class="device-bar"><div class="device-bar-dot"></div><div class="device-bar-dot"></div><div class="device-bar-dot"></div></div>
+        <div style="background:#2a2a3a; height:50%; padding:6px; display:flex; flex-direction:column; justify-content:flex-end; gap:3px;">
+          <div class="sk" style="width:70%; height:7px; background:rgba(255,255,255,0.7);"></div>
+          <div class="sk-gold" style="width:50%; height:5px;"></div>
+          <!-- Search box -->
+          <div style="background:rgba(255,255,255,0.15); border:1px solid rgba(201,168,76,0.4); border-radius:4px; padding:3px 5px; display:flex; gap:3px; align-items:center; margin-top:3px;">
+            <div class="sk" style="width:8px; height:8px; border-radius:50%; background:#aaa;"></div>
+            <div class="sk" style="flex:1; height:5px; background:#aaa;"></div>
+            <div class="sk-gold" style="width:18px; height:10px; border-radius:2px;"></div>
+          </div>
+        </div>
+        <div style="background:#f8f8f0; height:50%; padding:4px; display:flex; gap:3px;">
+          <div style="flex:1; background:#e8e0d0; border-radius:3px;"></div>
+          <div style="flex:1; background:#e8e0d0; border-radius:3px;"></div>
+          <div style="flex:1; background:#e8e0d0; border-radius:3px;"></div>
+        </div>
+      </div>
+      <!-- Bubble -->
+      <div class="bubble" style="bottom:48px; left:28px;">"Je veux partir en voyage..."</div>
+    </div>
+    <div class="caption">
+      <div class="caption-action">Arrivée sur l'accueil</div>
+      <div class="caption-note">Sophie découvre VoyageVista pour la première fois via une recherche Google</div>
+      <div class="caption-interaction">👁 Lecture du hero</div>
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <!-- Panel 2 — Recherche -->
+  <div class="panel-wrap">
+    <div class="panel">
+      <div class="panel-num">2</div>
+      <div class="sky"></div>
+      <div class="device" style="left:50%; transform:translateX(-50%); top:8px; width:80%; height:82%;">
+        <div class="device-bar"><div class="device-bar-dot"></div><div class="device-bar-dot"></div><div class="device-bar-dot"></div></div>
+        <div style="background:#2a2a3a; padding:6px; height:100%; display:flex; flex-direction:column; gap:4px;">
+          <!-- Search widget focus -->
+          <div style="background:rgba(255,255,255,0.1); border:1.5px solid #c9a84c; border-radius:4px; padding:4px 6px; display:flex; align-items:center; gap:3px;">
+            <div style="width:7px; height:7px; border-radius:50%; border:1.5px solid #aaa;"></div>
+            <div style="flex:1; height:6px; background:rgba(255,255,255,0.8); border-radius:1px;"></div>
+          </div>
+          <!-- Tags populaires -->
+          <div style="display:flex; gap:3px; flex-wrap:wrap;">
+            <div style="padding:1px 5px; border-radius:100px; background:rgba(201,168,76,0.2); border:1px solid rgba(201,168,76,0.4); font-size:7px; color:#c9a84c; font-family:Caveat;">Maldives</div>
+            <div style="padding:1px 5px; border-radius:100px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); font-size:7px; color:#aaa; font-family:Caveat;">Bali</div>
+            <div style="padding:1px 5px; border-radius:100px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); font-size:7px; color:#aaa; font-family:Caveat;">Santorini</div>
+          </div>
+        </div>
+      </div>
+      <!-- Click indicator on search -->
+      <div class="click" style="top:32%; left:44%;"></div>
+      <div class="anotation" style="bottom:8px; right:4px;">tape "Maldives"</div>
+    </div>
+    <div class="caption">
+      <div class="caption-action">Recherche d'une destination</div>
+      <div class="caption-note">Elle tape "Maldives" dans la barre de recherche du hero</div>
+      <div class="caption-interaction">⌨ Saisie dans le champ</div>
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <!-- Panel 3 — Liste résultats -->
+  <div class="panel-wrap">
+    <div class="panel">
+      <div class="panel-num">3</div>
+      <div class="sky-gold"></div>
+      <div class="device" style="left:50%; transform:translateX(-50%); top:6px; width:88%; height:90%;">
+        <div class="device-bar"><div class="device-bar-dot"></div><div class="device-bar-dot"></div><div class="device-bar-dot"></div></div>
+        <div style="background:#f8f8f0; padding:5px; height:100%;">
+          <!-- Filter chips -->
+          <div style="display:flex; gap:2px; margin-bottom:4px; flex-wrap:wrap;">
+            <div style="padding:1px 6px; border-radius:100px; background:#2a1a08; font-size:7px; color:#f5edd8; font-family:Caveat;">Toutes</div>
+            <div style="padding:1px 6px; border-radius:100px; background:#f0e8d0; border:1px solid #c9a84c; font-size:7px; font-family:Caveat;">🏖️</div>
+            <div style="padding:1px 6px; border-radius:100px; background:#f0e8d0; border:1px solid #e0d8c8; font-size:7px; font-family:Caveat;">⛰️</div>
+            <div style="padding:1px 6px; border-radius:100px; background:#f0e8d0; border:1px solid #e0d8c8; font-size:7px; font-family:Caveat;">🌴</div>
+          </div>
+          <!-- Grid 2x2 -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:3px; height:calc(100% - 26px);">
+            <div style="background:#e8e0d0; border-radius:3px; border:1px solid #d0c8b8; position:relative;">
+              <div style="height:55%; background:#c9a84c; opacity:0.4; border-radius:2px 2px 0 0;"></div>
+              <div style="padding:3px; display:flex; flex-direction:column; gap:1.5px;">
+                <div class="sk" style="width:70%; height:5px;"></div>
+                <div class="star-row"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
+              </div>
+              <div style="position:absolute; top:3px; right:3px; font-size:8px;">♥</div>
+            </div>
+            <div style="background:#e8e0d0; border-radius:3px; border:1px solid #d0c8b8; position:relative;">
+              <div style="height:55%; background:#8ab4d0; opacity:0.5; border-radius:2px 2px 0 0;"></div>
+              <div style="padding:3px;"><div class="sk" style="width:60%; height:5px;"></div></div>
+              <div style="position:absolute; top:3px; right:3px; font-size:8px;">♥</div>
+            </div>
+            <div style="background:#e8e0d0; border-radius:3px; border:1px solid #d0c8b8; position:relative;">
+              <div style="height:55%; background:#b0c8a0; opacity:0.5; border-radius:2px 2px 0 0;"></div>
+              <div style="padding:3px;"><div class="sk" style="width:75%; height:5px;"></div></div>
+              <div style="position:absolute; top:3px; right:3px; font-size:8px;">♥</div>
+            </div>
+            <div style="background:#e8e0d0; border-radius:3px; border:1px solid #d0c8b8; position:relative;">
+              <div style="height:55%; background:#c8a080; opacity:0.5; border-radius:2px 2px 0 0;"></div>
+              <div style="padding:3px;"><div class="sk" style="width:65%; height:5px;"></div></div>
+              <div style="position:absolute; top:3px; right:3px; font-size:8px;">♥</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="caption-action">Résultats affichés</div>
+      <div class="caption-note">La grille de destinations filtrées apparaît avec les cartes et les ♥ favoris</div>
+      <div class="caption-interaction">👁 Scroll de la grille</div>
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <!-- Panel 4 — Détail destination -->
+  <div class="panel-wrap">
+    <div class="panel">
+      <div class="panel-num">4</div>
+      <div class="sky-gold"></div>
+      <div class="device" style="left:50%; transform:translateX(-50%); top:6px; width:88%; height:90%;">
+        <div class="device-bar"><div class="device-bar-dot"></div><div class="device-bar-dot"></div><div class="device-bar-dot"></div></div>
+        <div style="height:100%;">
+          <!-- Hero image destination -->
+          <div style="height:35%; background:linear-gradient(180deg, #8ab4d0 0%, #a0c8e0 60%, #c9a84c 60%, #b09060 100%); position:relative;">
+            <div style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(to top, rgba(0,0,0,0.6), transparent); padding:4px 6px;">
+              <div class="sk" style="width:50%; height:7px; background:rgba(255,255,255,0.8);"></div>
+              <div class="star-row" style="margin-top:2px;"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div>
+            </div>
+            <div style="position:absolute; top:4px; right:4px; font-size:10px; color:white;">♥</div>
+          </div>
+          <!-- Content -->
+          <div style="background:#f8f8f0; padding:5px; display:flex; flex-direction:column; gap:3px;">
+            <div class="sk" style="width:100%; height:4px;"></div>
+            <div class="sk" style="width:90%; height:4px;"></div>
+            <!-- Tabs -->
+            <div style="display:flex; gap:2px; margin:3px 0; background:#e8e0d0; border-radius:4px; padding:2px;">
+              <div style="flex:1; background:#fff; border-radius:3px; height:14px; display:flex; align-items:center; justify-content:center;"><div class="sk-gold" style="width:20px; height:5px;"></div></div>
+              <div style="flex:1; height:14px; display:flex; align-items:center; justify-content:center;"><div class="sk" style="width:22px; height:5px;"></div></div>
+              <div style="flex:1; height:14px; display:flex; align-items:center; justify-content:center;"><div class="sk" style="width:20px; height:5px;"></div></div>
+            </div>
+            <!-- Service cards -->
+            <div style="display:flex; gap:3px;">
+              <div style="flex:1; background:#fff; border:1px solid #e0d8c8; border-radius:3px; padding:4px;">
+                <div style="font-size:9px;">✈</div>
+                <div class="sk" style="width:80%; height:4px; margin-top:2px;"></div>
+                <div class="sk-gold" style="width:50%; height:6px; margin-top:3px; border-radius:2px;"></div>
+              </div>
+              <div style="flex:1; background:#fff; border:1px solid #e0d8c8; border-radius:3px; padding:4px;">
+                <div style="font-size:9px;">🏨</div>
+                <div class="sk" style="width:75%; height:4px; margin-top:2px;"></div>
+                <div class="sk-gold" style="width:50%; height:6px; margin-top:3px; border-radius:2px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Click on card -->
+      <div class="click" style="top:18%; left:22%; width:16px; height:16px; border-width:1.5px;"></div>
+    </div>
+    <div class="caption">
+      <div class="caption-action">Page détail destination</div>
+      <div class="caption-note">Elle clique sur une carte → page détail avec onglets Vols / Hébergements / Activités</div>
+      <div class="caption-interaction">🖱 Clic sur carte destination</div>
+    </div>
+  </div>
+
+  <div class="arrow branch">→</div>
+
+  <!-- Panel 5 — Tentative ajout sans être connectée -->
+  <div class="panel-wrap">
+    <div class="panel">
+      <div class="panel-num">5</div>
+      <div class="sky-gold"></div>
+      <div class="device" style="left:50%; transform:translateX(-50%); top:6px; width:88%; height:78%;">
+        <div class="device-bar"><div class="device-bar-dot"></div><div class="device-bar-dot"></div><div class="device-bar-dot"></div></div>
+        <div style="background:#f8f8f0; padding:5px; height:100%; display:flex; flex-direction:column; gap:3px;">
+          <div class="sk" style="width:80%; height:6px;"></div>
+          <div class="sk-gold" style="width:100%; height:14px; border-radius:3px; opacity:0.8;"></div>
+        </div>
+      </div>
+      <!-- Lock + toast -->
+      <div class="lock" style="bottom:26px; left:50%; transform:translateX(-50%);">🔒</div>
+      <div class="toast info" style="top:12px; right:4px;">Connectez-vous pour<br>ajouter un favori !</div>
+      <!-- Click indicator -->
+      <div class="click" style="bottom:28px; left:22%; width:14px; height:14px; border-width:1.5px;"></div>
+    </div>
+    <div class="caption">
+      <div class="caption-action">Accès refusé → toast info</div>
+      <div class="caption-note">Elle clique "Ajouter à l'itinéraire" → message : connexion requise</div>
+      <div class="caption-interaction">⚠ Toast info bleu</div>
+    </div>
+  </div>
+
+</div>
+<div class="scene-note">↑ Sophie est intéressée mais doit créer un compte pour continuer. La suite se déroule dans le scénario II.</div>
+<hr class="strip-divider">
+
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!--  SCÈNE II — VOYAGEUR : INSCRIPTION → RÉSERVATION              -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+
+<div class="scene-header">
+  <div class="scene-num">II</div>
+  <div class="scene-title">PARCOURS COMPLET — Inscription, planification et réservation</div>
+  <div class="scene-persona"><div class="persona-dot"></div> Persona : Sophie (suite) — nouveau compte "voyageur"</div>
+</div>
+
+<!-- Strip 2A -->
+<div class="strip">
+
+  <!-- Panel 6 — Inscription -->
+  <div class="panel-wrap">
+    <div class="panel">
+      <div class="panel-num">6</div>
+      <div class="sky-gold"></div>
+      <div class="device" style="left:50%; transform:translateX(-50%); top:6px; width:80%; height:90%;">
+        <div class="device-bar"><div class="device-bar-dot"></div><div class="device-bar-dot"></div><div class="device-bar-dot"></div></div>
+        <div style="background:#12121a; padding:6px; height:100%; display:flex; flex-direction:column; align-items:center; gap:3px;">
+          <!-- Logo -->
+          <div style="display:flex; align-items:center; gap:4px; margin-bottom:2px;">
+            <div style="width:14px; height:14px; background:#c9a84c; border-radius:3px; display:flex; align-items:center; justify-content:center; font-size:8px;">✈</div>
+            <div style="font-size:9px; color:#fff; font-family:Caveat; font-weight:700;">Voyage<span style="color:#c9a84c;">Vista</span></div>
+          </div>
+          <!-- Form card -->
+          <div style="background:rgba(26,26,40,0.95); border:1px solid rgba(201,168,76,0.2); border-radius:6px; padding:5px; width:100%; display:flex; flex-direction:column; gap:3px;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:3px;">
+              <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:3px; height:14px;"></div>
+              <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:3px; height:14px;"></div>
+            </div>
+            <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(201,168,76,0.4); border-radius:3px; height:14px; box-shadow: 0 0 0 1px rgba(201,168,76,0.2);"></div>
+            <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:3px; height:14px;"></div>
+            <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:3px; height:14px;"></div>
+            <div style="background:#c9a84c; border-radius:3px; height:16px; opacity:0.8; display:flex; align-items:center; justify-content:center;">
+              <div style="font-size:7px; color:#fff; font-family:Caveat;">Créer mon compte</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="anotation" style="bottom:6px; left:4px;">Formulaire<br>inscription</div>
+    </div>
+    <div class="caption">
+      <div class="caption-action">Page inscription /register</div>
+      <div class="caption-note">Sophie remplit : prénom, nom, email, mot de passe, téléphone</div>
+      <div class="caption-interaction">⌨ Remplissage formulaire</div>
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <!-- Panel 7 — Connexion réussie -->
+  <div class="panel-wrap">
+    <div class="panel">
+      <div class="panel-num">7</div>
+      <div class="sky-gold"></div>
+      <div class="device" style="left:50%; transform:translateX(-50%); top:6px; width:88%; height:75%;">
+        <div class="device-bar"><div class="device-bar-dot"></div><div class="device-bar-dot"></div><div class="device-bar-dot"></div></div>
+        <div style="background:#12121a; padding:5px;">
+          <!-- Navbar with user avatar -->
+          <div style="display:flex; align-items:center; justify-content:space-between; padding:4px 6px; background:rgba(26,26,40,0.95); border-radius:4px; margin-bottom:5px;">
+            <div style="font-size:8px; color:#c9a84c; font-family:Caveat; font-weight:700;">VoyageVista</div>
+            <div style="display:flex; align-items:center; gap:3px;">
+              <div style="width:16px; height:16px; border-radius:50%; background:linear-gradient(135deg, #c9a84c, #9a7a2e); display:flex; align-items:center; justify-content:center; font-size:7px; color:#000; font-weight:700;">S</div>
+              <div style="font-size:7px; color:#e8e8f0; font-family:Caveat;">Sophie</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="checkmark" style="bottom:22px; left:50%; transform:translateX(-50%);">✓</div>
+      <div class="toast success" style="top:10px; right:4px;">Bienvenue Sophie ! 🎉</div>
+    </div>
+    <div class="caption">
+      <div class="caption-action">Compte créé → Bienvenue !</div>
+      <div class="caption-note">Toast vert "Bienvenue !", redirection vers l'accueil. Avatar "S" dans la navbar</div>
+      <div class="caption-interaction">✅ Toast succès</div>
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <!-- Panel 8 — Retour destination + ajout itinéraire -->
+  <div class="panel-wrap">
+    <div class="panel">
+      <div class="panel-num">8</div>
+      <div class="sky-gold"></div>
+      <div class="device" style="left:50%; transform:translateX(-50%); top:6px; width:88%; height:90%;">
+        <div class="device-bar"><div class="device-bar-dot"></div><div class="device-bar-dot"></div><div class="device-bar-dot"></div></div>
+        <div style="background:#f8f8f0; height:100%; padding:4px; display:flex; flex-direction:column; gap:3px;">
+          <!-- Hero small -->
+          <div style="height:32%; background:linear-gradient(180deg, #8ab4d0, #c9a84c 90%); border-radius:3px; position:relative;">
+            <div style="position:absolute; bottom:3px; left:4px;"><div class="sk" style="width:40px; height:6px; background:rgba(255,255,255,0.8);"></div></div>
+          </div>
+          <!-- Service cards -->
+          <div style="flex:1; display:flex; gap:3px;">
+            <div style="flex:1; background:#fff; border:1px solid #e0; border-radius:3px; padding:4px; display:flex; flex-direction:column; gap:2px;">
+              <div style="font-size:9px;">✈</div>
+              <div class="sk" style="width:80%; height:4px;"></div>
+              <div class="sk" style="width:60%; height:4px;"></div>
+              <!-- ADD BUTTON highlighted -->
+              <div style="background:#c9a84c; border-radius:2px; height:12px; margin-top:auto; display:flex; align-items:center; justify-content:center; opacity:0.85;">
+                <div style="font-size:6px; color:#fff; font-family:Caveat;">+ Ajouter</div>
+              </div>
+            </div>
+            <div style="flex:1; background:#fff; border:1px solid #e0; border-radius:3px; padding:4px; display:flex; flex-direction:column; gap:2px;">
+              <div style="font-size:9px;">🏨</div>
+              <div class="sk" style="width:75%; height:4px;"></div>
+              <div class="sk" style="width:55%; height:4px;"></div>
+              <div style="background:#c9a84c; border-radius:2px; height:12px; margin-top:auto; display:flex; align-items:center; justify-content:center; opacity:0.85;">
+                <div style="font-size:6px; color:#fff; font-family:Caveat;">+ Ajouter</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="click" style="bottom:18px; left:24%; width:14px; height:14px; border-width:1.5px;"></div>
+      <div class="toast success" style="top:10px; right:4px;">Ajouté à<br>l'itinéraire !</div>
+    </div>
+    <div class="caption">
+      <div class="caption-action">Ajout services à l'itinéraire</div>
+      <div class="caption-note">Maintenant connectée, elle peut ajouter vol + hébergement depuis la page détail</div>
+      <div class="caption-interaction">🖱 Clic "Ajouter à l'itinéraire"</div>
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <!-- Panel 9 — Constructeur itinéraire -->
+  <div class="panel-wrap">
+    <div class="panel">
+      <div class="panel-num">9</div>
+      <div class="sky-gold"></div>
+      <div class="device" style="left:50%; transform:translateX(-50%); top:6px; width:90%; height:90%;">
+        <div class="device-bar"><div class="device-bar-dot"></div><div class="device-bar-dot"></div><div class="device-bar-dot"></div></div>
+        <div style="display:flex; height:calc(100% - 6px);">
+          <!-- Sidebar -->
+          <div style="width:35%; background:#fff; border-right:1px solid #e8e0d0; padding:4px; display:flex; flex-direction:column; gap:3px;">
+            <div class="sk-gold" style="width:100%; height:14px; border-radius:3px;"></div>
+            <div style="background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.3); border-radius:3px; padding:3px;">
+              <div class="sk-gold" style="width:70%; height:5px;"></div>
+            </div>
+            <div style="background:#f8f8f0; border:1px solid #e0d8c8; border-radius:3px; padding:3px;"><div class="sk" style="width:80%; height:5px;"></div></div>
+          </div>
+          <!-- Main panel -->
+          <div style="flex:1; background:#f8f8f0; padding:4px; display:flex; flex-direction:column; gap:3px;">
+            <div class="sk" style="width:80%; height:6px;"></div>
+            <!-- Items -->
+            <div style="background:#fff; border:1px solid #e0d8c8; border-radius:3px; padding:4px; display:flex; gap:3px; align-items:center;">
+              <div style="width:18px; height:18px; background:rgba(96,165,250,0.2); border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:9px; flex-shrink:0;">✈</div>
+              <div style="flex:1;"><div class="sk" style="width:70%; height:5px;"></div><div class="sk" style="width:50%; height:4px; margin-top:2px;"></div></div>
+              <div class="sk-gold" style="width:28px; height:6px;"></div>
+            </div>
+            <div style="background:#fff; border:1px solid #e0d8c8; border-radius:3px; padding:4px; display:flex; gap:3px; align-items:center;">
+              <div style="width:18px; height:18px; background:rgba(201,168,76,0.2); border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:9px; flex-shrink:0;">🏨</div>
+              <div style="flex:1;"><div class="sk" style="width:80%; height:5px;"></div><div class="sk" style="width:55%; height:4px; margin-top:2px;"></div></div>
+              <div class="sk-gold" style="width:30px; height:6px;"></div>
+            </div>
+            <!-- Total + CTA -->
+            <div style="margin-top:auto; background:#fff; border:1.5px solid rgba(201,168,76,0.4); border-radius:4px; padding:5px;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                <div class="sk" style="width:35px; height:5px;"></div>
+                <div style="font-size:9px; font-weight:700; color:#c9a84c; font-family:Caveat;">4 050 €</div>
+              </div>
+              <div class="sk-gold" style="width:100%; height:14px; border-radius:3px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="caption-action">Constructeur d'itinéraire</div>
+      <div class="caption-note">Sophie visualise son itinéraire : vol + hôtel. Total estimé affiché en bas</div>
+      <div class="caption-interaction">👁 Révision des éléments</div>
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <!-- Panel 10 — Modale paiement -->
+  <div class="panel-wrap">
+    <div class="panel">
+      <div class="panel-num">10</div>
+      <div class="sky-gold"></div>
+      <div class="device" style="left:50%; transform:translateX(-50%); top:6px; width:88%; height:90%;">
+        <div class="device-bar"><div class="device-bar-dot"></div><div class="device-bar-dot"></div><div class="device-bar-dot"></div></div>
+        <div style="background:#f8f8f0; height:100%; position:relative;">
+          <!-- Flou background -->
+          <div style="height:100%; opacity:0.3; padding:5px; display:flex; flex-direction:column; gap:3px;">
+            <div class="sk" style="width:100%; height:8px;"></div>
+            <div class="sk" style="width:80%; height:5px;"></div>
+          </div>
+          <!-- Modal -->
+          <div style="position:absolute; inset:5px; background:rgba(0,0,0,0.4); border-radius:4px; display:flex; align-items:center; justify-content:center;">
+            <div style="background:#fff; border-radius:6px; padding:8px; width:90%; box-shadow:0 4px 12px rgba(0,0,0,0.3);">
+              <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                <div class="sk" style="width:55%; height:7px;"></div>
+                <div style="font-size:10px; color:#aaa;">✕</div>
+              </div>
+              <div style="border-top:1px solid #e8; padding-top:4px; margin-bottom:4px; display:flex; flex-direction:column; gap:2px;">
+                <div style="display:flex; justify-content:space-between;"><div class="sk" style="width:55%; height:5px;"></div><div class="sk-gold" style="width:25%; height:5px;"></div></div>
+                <div style="display:flex; justify-content:space-between;"><div class="sk" style="width:60%; height:5px;"></div><div class="sk-gold" style="width:28%; height:5px;"></div></div>
+              </div>
+              <div style="border-top:1px solid #e8; padding-top:4px; margin-bottom:5px; display:flex; justify-content:space-between; align-items:center;">
+                <div class="sk" style="width:30%; height:6px;"></div>
+                <div style="font-size:10px; font-weight:700; color:#c9a84c; font-family:Caveat;">4 900 €</div>
+              </div>
+              <!-- Radio buttons -->
+              <div style="display:flex; flex-direction:column; gap:2px; margin-bottom:5px;">
+                <div style="display:flex; align-items:center; gap:4px; padding:3px 5px; border:1px solid rgba(201,168,76,0.5); border-radius:3px; background:rgba(201,168,76,0.05);">
+                  <div style="width:7px; height:7px; border-radius:50%; background:#c9a84c;"></div>
+                  <div class="sk" style="width:50%; height:4px;"></div>
+                </div>
+                <div style="display:flex; align-items:center; gap:4px; padding:3px 5px; border:1px solid #e0; border-radius:3px;">
+                  <div style="width:7px; height:7px; border-radius:50%; border:1.5px solid #ccc;"></div>
+                  <div class="sk" style="width:40%; height:4px;"></div>
+                </div>
+              </div>
+              <div class="sk-gold" style="width:100%; height:14px; border-radius:3px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="click" style="top:8px; right:8px; width:14px; height:14px; border-width:1.5px;"></div>
+      <div class="anotation" style="bottom:6px; left:4px;">Choix<br>paiement</div>
+    </div>
+    <div class="caption">
+      <div class="caption-action">Modale de paiement</div>
+      <div class="caption-note">Récapitulatif des items + total TTC. Sélection du mode de paiement (carte, virement…)</div>
+      <div class="caption-interaction">🖱 Clic "Réserver maintenant"</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Strip 2B -->
+<div class="strip" style="padding-top:8px;">
+
+  <!-- Panel 11 — Confirmation -->
+  <div class="panel-wrap">
+    <div class="panel">
+      <div class="panel-num">11</div>
+      <div style="position:absolute; inset:0; background:linear-gradient(135deg, #f0fdf4, #dcfce7); z-index:0;"></div>
+      <div style="position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:6px;">
+        <div class="checkmark" style="position:static; transform:none; width:50px; height:50px; font-size:24px;">✓</div>
+        <div style="font-size:13px; font-weight:700; font-family:Caveat; text-align:center; color:#166534;">Réservation<br>confirmée !</div>
+        <div style="font-size:9px; color:#4ade80; font-family:Caveat; text-align:center;">Ref. #VV-20261205</div>
+        <div style="display:flex; flex-direction:column; gap:2px; margin-top:4px; padding:6px; background:rgba(255,255,255,0.6); border-radius:5px; border:1px solid rgba(74,222,128,0.3);">
+          <div class="sk" style="width:90px; height:5px;"></div>
+          <div class="sk" style="width:75px; height:5px;"></div>
+        </div>
+      </div>
+      <div class="toast success" style="top:8px; right:4px;">Email de<br>confirmation envoyé</div>
+    </div>
+    <div class="caption">
+      <div class="caption-action">Réservation confirmée ✓</div>
+      <div class="caption-note">Écran de succès avec numéro de référence. Un email est envoyé automatiquement</div>
+      <div class="caption-interaction">📧 Email de confirmation</div>
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <!-- Panel 12 — Mes réservations -->
+  <div class="panel-wrap">
+    <div class="panel">
+      <div class="panel-num">12</div>
+      <div class="sky-gold"></div>
+      <div class="device" style="left:50%; transform:translateX(-50%); top:6px; width:88%; height:90%;">
+        <div class="device-bar"><div class="device-bar-dot"></div><div class="device-bar-dot"></div><div class="device-bar-dot"></div></div>
+        <div style="background:#f8f8f0; padding:5px; height:100%; display:flex; flex-direction:column; gap:3px;">
+          <div class="sk-dark" style="width:70%; height:8px; background:#3a2a18;"></div>
+          <!-- Booking cards -->
+          <div style="background:#fff; border:1px solid #e0d8c8; border-radius:4px; padding:5px; display:flex; gap:4px; align-items:center;">
+            <div style="width:22px; height:22px; border-radius:5px; background:rgba(74,222,128,0.15); border:1px solid rgba(74,222,128,0.3); display:flex; align-items:center; justify-content:center; font-size:10px; flex-shrink:0;">✈</div>
+            <div style="flex:1; display:flex; flex-direction:column; gap:2px;"><div class="sk" style="width:75%; height:5px;"></div><div class="sk" style="width:50%; height:4px;"></div></div>
+            <div style="background:rgba(74,222,128,0.15); border:1px solid rgba(74,222,128,0.3); border-radius:100px; padding:1px 5px; font-size:6px; font-family:Caveat; font-weight:700; color:#4ade80; white-space:nowrap;">● CONFIRMÉE</div>
+          </div>
+          <div style="background:#fff; border:1px solid #e0d8c8; border-radius:4px; padding:5px; display:flex; gap:4px; align-items:center;">
+            <div style="width:22px; height:22px; border-radius:5px; background:rgba(201,168,76,0.15); border:1px solid rgba(201,168,76,0.3); display:flex; align-items:center; justify-content:center; font-size:10px; flex-shrink:0;">🏨</div>
+            <div style="flex:1; display:flex; flex-direction:column; gap:2px;"><div class="sk" style="width:80%; height:5px;"></div><div class="sk" style="width:55%; height:4px;"></div></div>
+            <div style="background:rgba(201,168,76,0.15); border:1px solid rgba(201,168,76,0.3); border-radius:100px; padding:1px 5px; font-size:6px; font-family:Caveat; font-weight:700; color:#c9a84c; white-space:nowrap;">⏳ ATTENTE</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="caption-action">Suivi — Mes réservations</div>
+      <div class="caption-note">Sophie accède à /bookings pour suivre ses réservations avec les badges de statut</div>
+      <div class="caption-interaction">👁 Lecture des statuts</div>
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <!-- Panel 13 — Profil utilisateur -->
+  <div class="panel-wrap">
+    <div class="panel">
+      <div class="panel-num">13</div>
+      <div class="sky-gold"></div>
+      <div class="device" style="left:50%; transform:translateX(-50%); top:6px; width:88%; height:90%;">
+        <div class="device-bar"><div class="device-bar-dot"></div><div class="device-bar-dot"></div><div class="device-bar-dot"></div></div>
+        <div style="background:#12121a; padding:5px; height:100%; display:flex; flex-direction:column; align-items:center; gap:4px;">
+          <!-- Avatar -->
+          <div style="width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg, #c9a84c, #9a7a2e); display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:700; color:#0a0a0f; border:2px solid rgba(201,168,76,0.4); font-family:Caveat;">S</div>
+          <div class="sk" style="width:60px; height:7px; background:rgba(255,255,255,0.7);"></div>
+          <div style="background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.3); border-radius:100px; padding:1px 8px; font-size:7px; color:#c9a84c; font-family:Caveat;">voyageur</div>
+          <!-- Stats -->
+          <div style="display:flex; gap:8px; margin:4px 0;">
+            <div style="text-align:center;"><div style="font-size:12px; font-weight:700; color:#c9a84c; font-family:Caveat;">3</div><div class="sk" style="width:30px; height:4px; background:#555;"></div></div>
+            <div style="text-align:center;"><div style="font-size:12px; font-weight:700; color:#c9a84c; font-family:Caveat;">7</div><div class="sk" style="width:28px; height:4px; background:#555;"></div></div>
+            <div style="text-align:center;"><div style="font-size:12px; font-weight:700; color:#c9a84c; font-family:Caveat;">12</div><div class="sk" style="width:28px; height:4px; background:#555;"></div></div>
+          </div>
+          <!-- Form fields -->
+          <div style="width:100%; display:flex; flex-direction:column; gap:2px;">
+            <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:3px; height:12px;"></div>
+            <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:3px; height:12px;"></div>
+            <div style="background:#c9a84c; border-radius:3px; height:12px; opacity:0.7; margin-top:2px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="caption-action">Mon profil /profile</div>
+      <div class="caption-note">Sophie consulte et modifie ses informations personnelles et voit ses statistiques</div>
+      <div class="caption-interaction">✏ Modification des infos</div>
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <!-- Panel 14 — Favoris -->
+  <div class="panel-wrap">
+    <div class="panel">
+      <div class="panel-num">14</div>
+      <div class="sky-gold"></div>
+      <div class="device" style="left:50%; transform:translateX(-50%); top:6px; width:88%; height:90%;">
+        <div class="device-bar"><div class="device-bar-dot"></div><div class="device-bar-dot"></div><div class="device-bar-dot"></div></div>
+        <div style="background:#f8f8f0; padding:5px; height:100%; display:flex; flex-direction:column; gap:3px;">
+          <div class="sk-dark" style="width:55%; height:8px; background:#3a2a18;"></div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:3px;">
+            <div style="background:#fff; border-radius:4px; border:1px solid #e0d8c8; overflow:hidden;">
+              <div style="height:40px; background:#c9a84c; opacity:0.4; position:relative;"><div style="position:absolute; top:3px; right:3px; font-size:8px; color:#e44;">♥</div></div>
+              <div style="padding:3px;"><div class="sk" style="width:70%; height:5px;"></div></div>
+            </div>
+            <div style="background:#fff; border-radius:4px; border:1px solid #e0d8c8; overflow:hidden;">
+              <div style="height:40px; background:#8ab4d0; opacity:0.5; position:relative;"><div style="position:absolute; top:3px; right:3px; font-size:8px; color:#e44;">♥</div></div>
+              <div style="padding:3px;"><div class="sk" style="width:60%; height:5px;"></div></div>
+            </div>
+            <div style="background:#fff; border-radius:4px; border:1px solid #e0d8c8; overflow:hidden;">
+              <div style="height:40px; background:#b0c8a0; opacity:0.5; position:relative;"><div style="position:absolute; top:3px; right:3px; font-size:8px; color:#e44;">♥</div></div>
+              <div style="padding:3px;"><div class="sk" style="width:65%; height:5px;"></div></div>
+            </div>
+            <div style="background:#fff; border-radius:4px; border:2px dashed #d0c8b8; display:flex; align-items:center; justify-content:center; height:70px;">
+              <div style="font-size:18px; opacity:0.3;">+</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="caption-action">Mes favoris /favorites</div>
+      <div class="caption-note">Sophie retrouve ses destinations sauvegardées avec le ♥ pour en ajouter d'autres</div>
+      <div class="caption-interaction">❤ Gestion des favoris</div>
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <!-- Panel 15 — Notifications -->
+  <div class="panel-wrap">
+    <div class="panel">
+      <div class="panel-num">15</div>
+      <div class="sky-gold"></div>
+      <div class="device" style="left:50%; transform:translateX(-50%); top:6px; width:88%; height:90%;">
+        <div class="device-bar"><div class="device-bar-dot"></div><div class="device-bar-dot"></div><div class="device-bar-dot"></div></div>
+        <div style="background:#12121a; padding:5px; height:100%; display:flex; flex-direction:column; gap:3px;">
+          <div class="sk" style="width:70%; height:7px; background:rgba(255,255,255,0.7);"></div>
+          <!-- Notifs list -->
+          <div style="background:rgba(201,168,76,0.08); border:1px solid rgba(201,168,76,0.2); border-radius:4px; padding:5px; display:flex; gap:4px; align-items:flex-start;">
+            <div style="width:14px; height:14px; border-radius:50%; background:#c9a84c; opacity:0.8; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:8px;">📦</div>
+            <div style="flex:1;"><div class="sk" style="width:90%; height:5px; background:#666;"></div><div class="sk" style="width:70%; height:4px; background:#555; margin-top:2px;"></div></div>
+            <div style="width:6px; height:6px; border-radius:50%; background:#c9a84c; flex-shrink:0; margin-top:2px;"></div>
+          </div>
+          <div style="background:rgba(26,26,40,0.5); border:1px solid rgba(255,255,255,0.06); border-radius:4px; padding:5px; display:flex; gap:4px; align-items:flex-start;">
+            <div style="width:14px; height:14px; border-radius:50%; background:#3a3a4a; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:8px;">✅</div>
+            <div style="flex:1;"><div class="sk" style="width:85%; height:5px; background:#555;"></div><div class="sk" style="width:65%; height:4px; background:#444; margin-top:2px;"></div></div>
+          </div>
+          <div style="background:rgba(26,26,40,0.5); border:1px solid rgba(255,255,255,0.06); border-radius:4px; padding:5px; display:flex; gap:4px; align-items:flex-start;">
+            <div style="width:14px; height:14px; border-radius:50%; background:#3a3a4a; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:8px;">🎉</div>
+            <div style="flex:1;"><div class="sk" style="width:90%; height:5px; background:#555;"></div><div class="sk" style="width:60%; height:4px; background:#444; margin-top:2px;"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="caption-action">Notifications /notifications</div>
+      <div class="caption-note">Sophie reçoit des alertes : confirmation de réservation, offres spéciales, rappels</div>
+      <div class="caption-interaction">🔔 Badge sur l'icône cloche</div>
+    </div>
+  </div>
+
+</div>
+<div class="scene-note">↑ Sophie a accompli le parcours complet : découverte → inscription → planification → réservation → suivi.</div>
+<hr class="strip-divider">
+
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!--  SCÈNE III — ADMINISTRATEUR                                    -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+
+<div class="scene-header">
+  <div class="scene-num">III</div>
+  <div class="scene-title">ADMINISTRATION — Gestion de la plateforme</div>
+  <div class="scene-persona"><div class="persona-dot" style="background:#a78bfa;"></div> Persona : Marc, administrateur VoyageVista</div>
+</div>
+
+<div class="strip">
+
+  <!-- Panel 16 — Connexion admin -->
+  <div class="panel-wrap">
+    <div class="panel">
+      <div class="panel-num">16</div>
+      <div class="sky-dark"></div>
+      <div class="device" style="left:50%; transform:translateX(-50%); top:10px; width:75%; height:78%;">
+        <div class="device-bar"><div class="device-bar-dot"></div><div class="device-bar-dot"></div><div class="device-bar-dot"></div></div>
+        <div style="background:#12121a; padding:6px; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;">
+          <div style="font-size:9px; color:#a78bfa; font-family:Caveat; font-weight:700; letter-spacing:0.06em;">ADMIN@VOYAGEVISTA.COM</div>
+          <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:3px; height:16px; width:100%;"></div>
+          <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:3px; height:16px; width:100%;"></div>
+          <div style="background:#a78bfa; border-radius:3px; height:16px; width:100%; opacity:0.8; display:flex; align-items:center; justify-content:center;">
+            <div style="font-size:7px; color:#fff; font-family:Caveat;">Connexion Admin</div>
+          </div>
+        </div>
+      </div>
+      <div class="anotation" style="bottom:6px; left:4px;">Accès<br>restreint</div>
+    </div>
+    <div class="caption">
+      <div class="caption-action">Connexion compte admin</div>
+      <div class="caption-note">Marc se connecte avec son compte admin@voyagevista.com depuis la page /login</div>
+      <div class="caption-interaction">🔑 Authentification</div>
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <!-- Panel 17 — Dashboard stats -->
+  <div class="panel-wrap">
+    <div class="panel">
+      <div class="panel-num">17</div>
+      <div class="sky-gold"></div>
+      <div class="device" style="left:50%; transform:translateX(-50%); top:6px; width:90%; height:90%;">
+        <div class="device-bar"><div class="device-bar-dot"></div><div class="device-bar-dot"></div><div class="device-bar-dot"></div></div>
+        <div style="background:#f8f8f0; padding:5px; height:100%; display:flex; flex-direction:column; gap:3px;">
+          <!-- Header admin -->
+          <div style="display:flex; align-items:center; gap:4px;">
+            <div style="width:8px; height:8px; border-radius:50%; background:#a78bfa;"></div>
+            <div class="sk-dark" style="width:90px; height:7px; background:#3a2a18;"></div>
+          </div>
+          <!-- Stat cards row -->
+          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:3px;">
+            <div style="background:#fff; border:1px solid #e0d8c8; border-radius:3px; padding:4px; text-align:center;">
+              <div style="font-size:8px;">🌍</div>
+              <div style="font-size:11px; font-weight:700; color:#c9a84c; font-family:Caveat;">150</div>
+              <div class="sk" style="width:85%; height:3px; margin:0 auto;"></div>
+            </div>
+            <div style="background:#fff; border:1px solid #e0d8c8; border-radius:3px; padding:4px; text-align:center;">
+              <div style="font-size:8px;">🛍</div>
+              <div style="font-size:11px; font-weight:700; color:#4ade80; font-family:Caveat;">48</div>
+              <div class="sk" style="width:85%; height:3px; margin:0 auto;"></div>
+            </div>
+            <div style="background:#fff; border:1px solid #e0d8c8; border-radius:3px; padding:4px; text-align:center;">
+              <div style="font-size:8px;">📈</div>
+              <div style="font-size:8px; font-weight:700; color:#60a5fa; font-family:Caveat;">98k€</div>
+              <div class="sk" style="width:85%; height:3px; margin:0 auto;"></div>
+            </div>
+            <div style="background:#fff; border:1px solid #e0d8c8; border-radius:3px; padding:4px; text-align:center;">
+              <div style="font-size:8px;">👥</div>
+              <div style="font-size:11px; font-weight:700; color:#f472b6; font-family:Caveat;">32</div>
+              <div class="sk" style="width:85%; height:3px; margin:0 auto;"></div>
+            </div>
+          </div>
+          <!-- Tabs -->
+          <div style="display:flex; gap:0; border-bottom:1.5px solid #e0d8c8;">
+            <div style="padding:4px 8px; border-bottom:2px solid #c9a84c; font-size:7px; font-family:Caveat; color:#c9a84c;">Vue d'ens.</div>
+            <div style="padding:4px 8px; font-size:7px; font-family:Caveat; color:#888;">Destinations</div>
+            <div style="padding:4px 8px; font-size:7px; font-family:Caveat; color:#888;">Réservations</div>
+          </div>
+          <!-- Mini table -->
+          <div style="flex:1; overflow:hidden;">
+            <div style="background:#f0e8d8; padding:2px 4px; display:grid; grid-template-columns:1fr 1.5fr 1fr 0.8fr; gap:2px; margin-bottom:1px;">
+              <div class="sk" style="width:80%; height:4px;"></div><div class="sk" style="width:70%; height:4px;"></div><div class="sk" style="width:80%; height:4px;"></div><div class="sk" style="width:90%; height:4px;"></div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:1px;">
+              <div style="padding:2px 4px; display:grid; grid-template-columns:1fr 1.5fr 1fr 0.8fr; gap:2px; background:#fff; border-bottom:1px solid #f0e8d0;">
+                <div style="display:flex; align-items:center; gap:2px;"><div style="width:10px; height:10px; background:#d0c8b0; border-radius:2px; flex-shrink:0;"></div><div class="sk" style="width:80%; height:4px;"></div></div>
+                <div class="sk" style="width:60%; height:4px;"></div>
+                <div style="display:flex; gap:2px;"><div style="width:14px; height:12px; background:#e0f0ff; border-radius:2px;"></div><div style="width:14px; height:12px; background:#fee2e2; border-radius:2px;"></div></div>
+                <div class="sk-gold" style="width:80%; height:4px;"></div>
+              </div>
+              <div style="padding:2px 4px; display:grid; grid-template-columns:1fr 1.5fr 1fr 0.8fr; gap:2px; background:#fff; border-bottom:1px solid #f0e8d0;">
+                <div style="display:flex; align-items:center; gap:2px;"><div style="width:10px; height:10px; background:#d0c8b0; border-radius:2px; flex-shrink:0;"></div><div class="sk" style="width:70%; height:4px;"></div></div>
+                <div class="sk" style="width:65%; height:4px;"></div>
+                <div style="display:flex; gap:2px;"><div style="width:14px; height:12px; background:#e0f0ff; border-radius:2px;"></div><div style="width:14px; height:12px; background:#fee2e2; border-radius:2px;"></div></div>
+                <div class="sk-gold" style="width:80%; height:4px;"></div>
+              </div>
+              <div style="padding:2px 4px; display:grid; grid-template-columns:1fr 1.5fr 1fr 0.8fr; gap:2px; background:#fff;">
+                <div style="display:flex; align-items:center; gap:2px;"><div style="width:10px; height:10px; background:#d0c8b0; border-radius:2px; flex-shrink:0;"></div><div class="sk" style="width:75%; height:4px;"></div></div>
+                <div class="sk" style="width:55%; height:4px;"></div>
+                <div style="display:flex; gap:2px;"><div style="width:14px; height:12px; background:#e0f0ff; border-radius:2px;"></div><div style="width:14px; height:12px; background:#fee2e2; border-radius:2px;"></div></div>
+                <div class="sk-gold" style="width:80%; height:4px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="caption-action">Dashboard /admin — Vue stats</div>
+      <div class="caption-note">Marc voit les KPIs : destinations, réservations, revenus, voyageurs actifs</div>
+      <div class="caption-interaction">📊 Lecture des indicateurs</div>
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <!-- Panel 18 — Ajouter destination -->
+  <div class="panel-wrap">
+    <div class="panel">
+      <div class="panel-num">18</div>
+      <div class="sky-gold"></div>
+      <div class="device" style="left:50%; transform:translateX(-50%); top:6px; width:88%; height:90%;">
+        <div class="device-bar"><div class="device-bar-dot"></div><div class="device-bar-dot"></div><div class="device-bar-dot"></div></div>
+        <div style="background:#f8f8f0; padding:5px; height:100%; display:flex; flex-direction:column; gap:3px;">
+          <!-- Tabs actif sur Destinations -->
+          <div style="display:flex; gap:0; border-bottom:1.5px solid #e0d8c8;">
+            <div style="padding:4px 8px; font-size:7px; font-family:Caveat; color:#888;">Vue d'ens.</div>
+            <div style="padding:4px 8px; border-bottom:2px solid #c9a84c; font-size:7px; font-family:Caveat; color:#c9a84c;">Destinations</div>
+            <div style="padding:4px 8px; font-size:7px; font-family:Caveat; color:#888;">Réservations</div>
+          </div>
+          <!-- Add button -->
+          <div style="display:flex; justify-content:flex-end;">
+            <div style="background:#c9a84c; border-radius:3px; padding:3px 8px; opacity:0.85; display:flex; align-items:center; gap:3px;">
+              <div style="font-size:9px; color:#fff;">+</div>
+              <div style="font-size:7px; color:#fff; font-family:Caveat;">Ajouter destination</div>
+            </div>
+          </div>
+          <!-- Form appearance -->
+          <div style="background:#fff; border:1px solid #e0d8c8; border-radius:4px; padding:6px; flex:1; display:flex; flex-direction:column; gap:3px;">
+            <div class="sk" style="width:60%; height:6px;"></div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:3px;">
+              <div style="background:#f8f8f0; border:1px solid #e0d8c8; border-radius:3px; height:14px;"></div>
+              <div style="background:#f8f8f0; border:1px solid #e0d8c8; border-radius:3px; height:14px;"></div>
+            </div>
+            <div style="background:#f8f8f0; border:1px solid #e0d8c8; border-radius:3px; height:14px;"></div>
+            <div style="background:#f8f8f0; border:1px solid #e0d8c8; border-radius:3px; height:24px;"></div>
+            <div style="display:flex; gap:3px; margin-top:auto;">
+              <div style="flex:1; background:#f0e8d0; border:1px solid #e0d0a0; border-radius:3px; height:14px;"></div>
+              <div style="flex:1; background:#c9a84c; border-radius:3px; height:14px; opacity:0.8;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="click" style="top:22%; right:12%; width:14px; height:14px; border-width:1.5px;"></div>
+    </div>
+    <div class="caption">
+      <div class="caption-action">Ajout d'une destination</div>
+      <div class="caption-note">Marc ouvre le formulaire d'ajout : nom, catégorie, description, prix, image, pays</div>
+      <div class="caption-interaction">🖱 Clic "+ Ajouter destination"</div>
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <!-- Panel 19 — Gestion réservations -->
+  <div class="panel-wrap">
+    <div class="panel">
+      <div class="panel-num">19</div>
+      <div class="sky-gold"></div>
+      <div class="device" style="left:50%; transform:translateX(-50%); top:6px; width:90%; height:90%;">
+        <div class="device-bar"><div class="device-bar-dot"></div><div class="device-bar-dot"></div><div class="device-bar-dot"></div></div>
+        <div style="background:#f8f8f0; padding:5px; height:100%; display:flex; flex-direction:column; gap:3px;">
+          <div style="display:flex; gap:0; border-bottom:1.5px solid #e0d8c8;">
+            <div style="padding:4px 8px; font-size:7px; font-family:Caveat; color:#888;">Vue d'ens.</div>
+            <div style="padding:4px 8px; font-size:7px; font-family:Caveat; color:#888;">Destinations</div>
+            <div style="padding:4px 8px; border-bottom:2px solid #c9a84c; font-size:7px; font-family:Caveat; color:#c9a84c;">Réservations</div>
+          </div>
+          <!-- Reservations table -->
+          <div style="background:#f0e8d8; padding:2px 4px; display:grid; grid-template-columns:0.5fr 1.2fr 1.2fr 0.8fr 1fr; gap:2px; margin-bottom:1px;">
+            <div class="sk" style="height:4px;"></div><div class="sk" style="height:4px;"></div><div class="sk" style="height:4px;"></div><div class="sk" style="height:4px;"></div><div class="sk" style="height:4px;"></div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:1.5px;">
+            <div style="padding:3px 4px; display:grid; grid-template-columns:0.5fr 1.2fr 1.2fr 0.8fr 1fr; gap:2px; background:#fff; border-bottom:1px solid #f0e8d0; align-items:center;">
+              <div class="sk" style="width:90%; height:4px;"></div>
+              <div class="sk" style="height:4px;"></div>
+              <div class="sk" style="height:4px;"></div>
+              <div class="sk-gold" style="height:5px;"></div>
+              <div style="background:rgba(74,222,128,0.15); border:1px solid rgba(74,222,128,0.3); border-radius:100px; height:10px; display:flex; align-items:center; justify-content:center;"><div style="font-size:5px; color:#4ade80; font-family:Caveat; font-weight:700;">● Confirmée</div></div>
+            </div>
+            <div style="padding:3px 4px; display:grid; grid-template-columns:0.5fr 1.2fr 1.2fr 0.8fr 1fr; gap:2px; background:#fff; border-bottom:1px solid #f0e8d0; align-items:center;">
+              <div class="sk" style="width:90%; height:4px;"></div>
+              <div class="sk" style="height:4px;"></div>
+              <div class="sk" style="height:4px;"></div>
+              <div class="sk-gold" style="height:5px;"></div>
+              <div style="background:rgba(201,168,76,0.15); border:1px solid rgba(201,168,76,0.3); border-radius:100px; height:10px; display:flex; align-items:center; justify-content:center;"><div style="font-size:5px; color:#c9a84c; font-family:Caveat; font-weight:700;">⏳ Attente</div></div>
+            </div>
+            <div style="padding:3px 4px; display:grid; grid-template-columns:0.5fr 1.2fr 1.2fr 0.8fr 1fr; gap:2px; background:#fff; align-items:center;">
+              <div class="sk" style="width:90%; height:4px;"></div>
+              <div class="sk" style="height:4px;"></div>
+              <div class="sk" style="height:4px;"></div>
+              <div class="sk-gold" style="height:5px;"></div>
+              <div style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); border-radius:100px; height:10px; display:flex; align-items:center; justify-content:center;"><div style="font-size:5px; color:#f87171; font-family:Caveat; font-weight:700;">✗ Annulée</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="caption">
+      <div class="caption-action">Onglet Réservations</div>
+      <div class="caption-note">Marc consulte toutes les réservations avec leurs statuts : confirmée, attente, annulée</div>
+      <div class="caption-interaction">👁 Supervision des réservations</div>
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <!-- Panel 20 — Suppression destination -->
+  <div class="panel-wrap">
+    <div class="panel">
+      <div class="panel-num">20</div>
+      <div class="sky-gold"></div>
+      <div class="device" style="left:50%; transform:translateX(-50%); top:6px; width:88%; height:78%;">
+        <div class="device-bar"><div class="device-bar-dot"></div><div class="device-bar-dot"></div><div class="device-bar-dot"></div></div>
+        <div style="background:#f8f8f0; padding:5px; height:100%; position:relative;">
+          <!-- Blurred table -->
+          <div style="opacity:0.3; display:flex; flex-direction:column; gap:3px;">
+            <div class="sk" style="width:100%; height:6px;"></div>
+            <div class="sk" style="width:80%; height:5px;"></div>
+          </div>
+          <!-- Confirm dialog -->
+          <div style="position:absolute; inset:5px; background:rgba(0,0,0,0.35); border-radius:4px; display:flex; align-items:center; justify-content:center;">
+            <div style="background:#fff; border-radius:6px; padding:10px; width:85%; border:2px solid #f87171; box-shadow:0 4px 12px rgba(0,0,0,0.3);">
+              <div style="font-size:16px; text-align:center; margin-bottom:5px;">⚠️</div>
+              <div style="font-size:9px; font-weight:700; font-family:Caveat; text-align:center; margin-bottom:3px;">Supprimer la destination ?</div>
+              <div style="font-size:7px; font-family:Caveat; color:#888; text-align:center; margin-bottom:8px;">Cette action est irréversible.</div>
+              <div style="display:flex; gap:5px;">
+                <div style="flex:1; background:#f0e8e8; border:1px solid #fca5a5; border-radius:3px; height:16px; display:flex; align-items:center; justify-content:center;"><div style="font-size:7px; font-family:Caveat; color:#ef4444;">Supprimer</div></div>
+                <div style="flex:1; background:#f0f0f0; border:1px solid #d0d0d0; border-radius:3px; height:16px; display:flex; align-items:center; justify-content:center;"><div style="font-size:7px; font-family:Caveat; color:#666;">Annuler</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="anotation" style="bottom:6px; left:4px;">Confirmation<br>requise</div>
+    </div>
+    <div class="caption">
+      <div class="caption-action">Confirmation suppression</div>
+      <div class="caption-note">Boîte de dialogue de confirmation avant toute suppression pour éviter les erreurs</div>
+      <div class="caption-interaction">⚠ Dialog confirm()</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Panel 21 — Résumé flux -->
+<div class="strip" style="padding-top:8px; padding-bottom:0;">
+  <div class="panel-wrap" style="flex:none; width:100%;">
+    <div class="panel" style="width:100%; aspect-ratio:auto; height:100px; display:flex; align-items:center; justify-content:center; background:#2a1a08; border:none; flex-direction:column; gap:6px;">
+      <div class="panel-num" style="position:static; background:#c9a84c; color:#000;">21</div>
+      <div style="font-family:'Special Elite',serif; font-size:13px; color:#f5edd8; letter-spacing:0.06em;">RÉSUMÉ DES FLUX DE NAVIGATION</div>
+      <div style="display:flex; gap:24px; align-items:center; flex-wrap:wrap; justify-content:center;">
+        <div style="display:flex; align-items:center; gap:6px; font-family:Caveat; font-size:11px; color:#c9a84c;">
+          <div style="width:6px;height:6px;border-radius:50%;background:#c9a84c;"></div>
+          Visiteur → Découverte → Inscription
+        </div>
+        <div style="color:#5a4a2a;">·</div>
+        <div style="display:flex; align-items:center; gap:6px; font-family:Caveat; font-size:11px; color:#4ade80;">
+          <div style="width:6px;height:6px;border-radius:50%;background:#4ade80;"></div>
+          Voyageur → Planification → Réservation
+        </div>
+        <div style="color:#5a4a2a;">·</div>
+        <div style="display:flex; align-items:center; gap:6px; font-family:Caveat; font-size:11px; color:#a78bfa;">
+          <div style="width:6px;height:6px;border-radius:50%;background:#a78bfa;"></div>
+          Admin → Gestion destinations & réservations
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ══ FOOTER ══════════════════════════════════════════════════════ -->
+<div class="doc-footer">
+  <span>VOYAGEVISTA — STORYBOARD v1.0</span>
+  <span>3 SCÈNES · 21 PANNEAUX · © 2026</span>
+  <span>PROJET 6 — APPLICATION DE VOYAGES PREMIUM</span>
+</div>
+
+</body>
+</html>
