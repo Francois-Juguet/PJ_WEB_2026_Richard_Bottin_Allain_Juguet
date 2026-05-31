@@ -1,0 +1,1616 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VoyageVista — Spécifications Fonctionnelles</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap');
+
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #e8c97a;
+      --gold-pale: #fdf6e3;
+      --dark: #1a1a2e;
+      --dark2: #16213e;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --bg: #f8fafc;
+      --blue: #1d4ed8;
+      --blue-light: #dbeafe;
+      --green: #15803d;
+      --green-light: #dcfce7;
+      --amber: #b45309;
+      --amber-light: #fef3c7;
+      --red: #dc2626;
+      --red-light: #fee2e2;
+      --purple: #7c3aed;
+      --purple-light: #ede9fe;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f0f2f5;
+      color: var(--text);
+      line-height: 1.6;
+      print-color-adjust: exact;
+    }
+
+    /* ── PAGE WRAPPER ── */
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: #fff;
+      box-shadow: 0 0 60px rgba(0,0,0,.12);
+    }
+
+    /* ── COVER ── */
+    .cover {
+      background: linear-gradient(135deg, var(--dark) 0%, var(--dark2) 60%, #0f3460 100%);
+      color: #fff;
+      padding: 80px 72px 64px;
+      position: relative;
+      overflow: hidden;
+    }
+    .cover::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 600px 400px at 80% 50%, rgba(201,168,76,.18) 0%, transparent 70%),
+        radial-gradient(ellipse 300px 300px at 10% 90%, rgba(201,168,76,.10) 0%, transparent 60%);
+    }
+    .cover-content { position: relative; z-index: 1; }
+    .cover-tag {
+      display: inline-block;
+      background: rgba(201,168,76,.2);
+      border: 1px solid rgba(201,168,76,.5);
+      color: var(--gold-light);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 28px;
+    }
+    .cover h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 52px;
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+    .cover h1 span { color: var(--gold); }
+    .cover-subtitle {
+      font-size: 18px;
+      color: rgba(255,255,255,.65);
+      font-weight: 300;
+      margin-bottom: 48px;
+      letter-spacing: .3px;
+    }
+    .cover-meta {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+    .meta-item label {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.4);
+      margin-bottom: 4px;
+    }
+    .meta-item span {
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(255,255,255,.9);
+    }
+    .cover-line {
+      width: 60px;
+      height: 3px;
+      background: var(--gold);
+      margin: 24px 0;
+      border-radius: 2px;
+    }
+
+    /* ── TOC ── */
+    .toc {
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 40px 72px;
+    }
+    .toc h2 {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+    .toc-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px 32px;
+    }
+    .toc-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13.5px;
+      color: var(--text-muted);
+      padding: 6px 0;
+      border-bottom: 1px dashed var(--border);
+    }
+    .toc-num {
+      width: 22px;
+      height: 22px;
+      background: var(--gold);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* ── SECTIONS ── */
+    .content { padding: 0 72px 80px; }
+
+    .section {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 2px solid var(--border);
+    }
+    .section:first-child { border-top: none; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .section-num {
+      width: 36px;
+      height: 36px;
+      background: var(--gold);
+      color: #fff;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .section h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--dark);
+    }
+    .section h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--dark);
+      margin: 28px 0 12px;
+      padding-left: 12px;
+      border-left: 3px solid var(--gold);
+    }
+    .section p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.75;
+      margin-bottom: 14px;
+    }
+
+    /* ── ROLE CARDS ── */
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin: 20px 0;
+    }
+    .role-card {
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .role-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+    }
+    .role-card.traveler::before { background: var(--blue); }
+    .role-card.provider::before { background: var(--green); }
+    .role-card.admin::before   { background: var(--red); }
+
+    .role-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .role-card.traveler .role-badge { background: var(--blue-light); color: var(--blue); }
+    .role-card.provider .role-badge { background: var(--green-light); color: var(--green); }
+    .role-card.admin   .role-badge  { background: var(--red-light); color: var(--red); }
+
+    .role-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+    .role-card .role-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.6; }
+    .role-card ul { list-style: none; padding: 0; }
+    .role-card ul li {
+      font-size: 13px;
+      color: var(--text);
+      padding: 4px 0;
+      padding-left: 16px;
+      position: relative;
+    }
+    .role-card ul li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    /* ── FEATURE MATRIX ── */
+    .feature-group {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 16px 0;
+    }
+    .feature-group-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      background: var(--dark);
+      color: #fff;
+    }
+    .feature-group-header .icon {
+      width: 28px;
+      height: 28px;
+      background: rgba(201,168,76,.25);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+    }
+    .feature-group-header h4 { font-size: 13px; font-weight: 600; letter-spacing: .3px; }
+    .feature-table { width: 100%; border-collapse: collapse; }
+    .feature-table th {
+      background: rgba(0,0,0,.04);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      padding: 10px 18px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .feature-table td {
+      padding: 10px 18px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .feature-table tr:last-child td { border-bottom: none; }
+    .feature-table tr:nth-child(even) td { background: rgba(0,0,0,.018); }
+    .feat-name { font-weight: 500; color: var(--dark); }
+    .feat-desc { color: var(--text-muted); font-size: 12.5px; }
+
+    .dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .dot.yes { background: var(--green-light); color: var(--green); }
+    .dot.no  { background: #f1f5f9; color: #94a3b8; }
+    .dot.partial { background: var(--amber-light); color: var(--amber); }
+
+    .role-dots { display: flex; gap: 6px; align-items: center; }
+    .role-label { font-size: 11px; color: var(--text-muted); }
+
+    /* ── TECH STACK ── */
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin: 16px 0;
+    }
+    .tech-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .tech-card-header {
+      padding: 12px 18px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tech-card-header.frontend { background: #dbeafe; color: #1d4ed8; }
+    .tech-card-header.backend  { background: #dcfce7; color: #15803d; }
+    .tech-card-header.database { background: #fef3c7; color: #b45309; }
+    .tech-card-header.tools    { background: #ede9fe; color: #7c3aed; }
+    .tech-list { padding: 4px 0; }
+    .tech-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+    .tech-item:last-child { border-bottom: none; }
+    .tech-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--dark);
+      min-width: 150px;
+    }
+    .tech-name small {
+      display: block;
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--gold);
+    }
+    .tech-role {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    /* ── CONSTRAINTS ── */
+    .constraint-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 12px 0;
+    }
+    .constraint-item {
+      display: flex;
+      gap: 14px;
+      padding: 14px 18px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .constraint-item.security { border-left: 4px solid var(--red); background: #fff9f9; }
+    .constraint-item.perf     { border-left: 4px solid var(--blue); background: #f8fbff; }
+    .constraint-item.compat   { border-left: 4px solid var(--green); background: #f7fdf9; }
+    .constraint-item.data     { border-left: 4px solid var(--amber); background: #fffdf5; }
+    .constraint-item.env      { border-left: 4px solid var(--purple); background: #fdfbff; }
+
+    .constraint-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .constraint-body h4 { font-size: 13.5px; font-weight: 700; margin-bottom: 4px; }
+    .constraint-body p  { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+    /* ── WORK DISTRIBUTION ── */
+    .team-intro {
+      background: var(--gold-pale);
+      border: 1px solid rgba(201,168,76,.3);
+      border-radius: 10px;
+      padding: 18px 22px;
+      font-size: 13.5px;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+
+    .member-card {
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .member-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 24px;
+      background: var(--dark);
+      color: #fff;
+    }
+    .member-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--dark);
+      flex-shrink: 0;
+    }
+    .member-info h3 { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+    .member-info p  { font-size: 12px; color: rgba(255,255,255,.55); }
+    .member-tasks {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0;
+    }
+    .task-block {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+    }
+    .task-block:nth-child(even) { border-right: none; }
+    .task-block:last-child,
+    .task-block:nth-last-child(2):nth-child(odd) { border-bottom: none; }
+    .task-block h5 {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .task-block ul { list-style: none; padding: 0; }
+    .task-block ul li {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      padding: 3px 0 3px 14px;
+      position: relative;
+    }
+    .task-block ul li::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: var(--gold);
+      font-weight: 900;
+    }
+
+    /* Sprint table */
+    .sprint-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 13px;
+    }
+    .sprint-table th {
+      background: var(--dark);
+      color: #fff;
+      padding: 10px 16px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .sprint-table td {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .sprint-table tr:nth-child(even) td { background: var(--bg); }
+    .sprint-badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .sprint-badge.s1 { background: var(--blue-light); color: var(--blue); }
+    .sprint-badge.s2 { background: var(--green-light); color: var(--green); }
+    .sprint-badge.s3 { background: var(--amber-light); color: var(--amber); }
+    .sprint-badge.s4 { background: var(--purple-light); color: var(--purple); }
+
+    /* ── USER STORIES ── */
+    .us-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin: 14px 0;
+    }
+    .us-table th {
+      background: var(--bg);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      padding: 10px 14px;
+      border-bottom: 2px solid var(--border);
+      text-align: left;
+    }
+    .us-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .us-table tr:last-child td { border-bottom: none; }
+    .us-id {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .prio {
+      display: inline-block;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .prio.high   { background: var(--red); }
+    .prio.medium { background: var(--amber); }
+    .prio.low    { background: var(--green); }
+    .prio-label { display: flex; align-items: center; gap: 6px; }
+
+    /* ── FOOTER ── */
+    .footer {
+      background: var(--dark);
+      color: rgba(255,255,255,.4);
+      text-align: center;
+      padding: 24px;
+      font-size: 12px;
+    }
+    .footer strong { color: var(--gold); }
+
+    /* Inline highlight */
+    code {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 12px;
+      font-family: monospace;
+      color: var(--blue);
+    }
+
+    .callout {
+      display: flex;
+      gap: 12px;
+      padding: 14px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.65;
+      margin: 14px 0;
+    }
+    .callout.info  { background: var(--blue-light); color: #1e3a5f; border-left: 4px solid var(--blue); }
+    .callout.warn  { background: var(--amber-light); color: #78350f; border-left: 4px solid var(--amber); }
+    .callout.tip   { background: var(--green-light); color: #14532d; border-left: 4px solid var(--green); }
+    .callout-icon  { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+    @media print {
+      body { background: #fff; }
+      .page { box-shadow: none; max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ══════════════ COVER ══════════════ -->
+  <div class="cover">
+    <div class="cover-content">
+      <div class="cover-tag">Document de spécifications fonctionnelles</div>
+      <h1>Voyage<span>Vista</span></h1>
+      <p class="cover-subtitle">Application web de voyage premium — Planification d'itinéraires sur mesure</p>
+      <div class="cover-line"></div>
+      <div class="cover-meta">
+        <div class="meta-item">
+          <label>Version</label>
+          <span>1.0.0</span>
+        </div>
+        <div class="meta-item">
+          <label>Date</label>
+          <span>Mai 2026</span>
+        </div>
+        <div class="meta-item">
+          <label>Statut</label>
+          <span>En développement</span>
+        </div>
+        <div class="meta-item">
+          <label>Type de projet</label>
+          <span>Projet scolaire — Groupe</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ TABLE DES MATIÈRES ══════════════ -->
+  <div class="toc">
+    <h2>Sommaire</h2>
+    <div class="toc-grid">
+      <div class="toc-item"><span class="toc-num">1</span> Présentation du projet</div>
+      <div class="toc-item"><span class="toc-num">2</span> Rôles utilisateurs</div>
+      <div class="toc-item"><span class="toc-num">3</span> User stories</div>
+      <div class="toc-item"><span class="toc-num">4</span> Fonctionnalités principales</div>
+      <div class="toc-item"><span class="toc-num">5</span> Technologies envisagées</div>
+      <div class="toc-item"><span class="toc-num">6</span> Contraintes techniques</div>
+      <div class="toc-item"><span class="toc-num">7</span> Répartition du travail</div>
+      <div class="toc-item"><span class="toc-num">8</span> Planning prévisionnel</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ══════════════ 1. PRÉSENTATION ══════════════ -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <h2>Présentation du projet</h2>
+      </div>
+
+      <p>
+        <strong>VoyageVista</strong> est une application web de voyage haut de gamme permettant aux utilisateurs
+        de découvrir des destinations, de composer des itinéraires personnalisés (transports, hébergements,
+        activités) et de finaliser leurs réservations en ligne. La plateforme adopte un positionnement
+        <em>premium</em> avec une charte graphique dorée sur fond sombre et des animations soignées.
+      </p>
+      <p>
+        L'application repose sur une architecture <strong>3 tiers</strong> stricte : un front-end SPA React 19
+        communiquant exclusivement via REST avec un back-end PHP 8 sans framework, lui-même relié à une base
+        de données MySQL. L'authentification est gérée par des tokens JWT signés en HMAC-SHA256.
+      </p>
+
+      <h3>Périmètre fonctionnel</h3>
+      <p>L'application couvre les grands domaines suivants :</p>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0;">
+        <div style="background:var(--blue-light);border-radius:8px;padding:14px 16px;">
+          <div style="font-size:20px;margin-bottom:6px;">✈️</div>
+          <div style="font-size:13px;font-weight:700;color:var(--blue);">Catalogue de voyage</div>
+          <div style="font-size:12px;color:#1e3a5f;margin-top:4px;">Destinations, transports, hébergements, activités</div>
+        </div>
+        <div style="background:var(--green-light);border-radius:8px;padding:14px 16px;">
+          <div style="font-size:20px;margin-bottom:6px;">🗺️</div>
+          <div style="font-size:13px;font-weight:700;color:var(--green);">Construction d'itinéraire</div>
+          <div style="font-size:12px;color:#14532d;margin-top:4px;">Composition pas-à-pas, panier, paiement simulé</div>
+        </div>
+        <div style="background:var(--amber-light);border-radius:8px;padding:14px 16px;">
+          <div style="font-size:20px;margin-bottom:6px;">👤</div>
+          <div style="font-size:13px;font-weight:700;color:var(--amber);">Gestion des utilisateurs</div>
+          <div style="font-size:12px;color:#78350f;margin-top:4px;">Comptes, rôles, favoris, notifications, historique</div>
+        </div>
+        <div style="background:var(--purple-light);border-radius:8px;padding:14px 16px;">
+          <div style="font-size:20px;margin-bottom:6px;">📦</div>
+          <div style="font-size:13px;font-weight:700;color:var(--purple);">Gestion prestataire</div>
+          <div style="font-size:12px;color:#3b0764;margin-top:4px;">Publication d'offres, disponibilités, suivi réservations</div>
+        </div>
+        <div style="background:var(--red-light);border-radius:8px;padding:14px 16px;">
+          <div style="font-size:20px;margin-bottom:6px;">⚙️</div>
+          <div style="font-size:13px;font-weight:700;color:var(--red);">Administration</div>
+          <div style="font-size:12px;color:#7f1d1d;margin-top:4px;">Tableau de bord, gestion utilisateurs & contenu</div>
+        </div>
+        <div style="background:#f0fdf4;border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+          <div style="font-size:20px;margin-bottom:6px;">⭐</div>
+          <div style="font-size:13px;font-weight:700;color:var(--text);">Avis & favoris</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Notation des destinations, listes de favoris</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ 2. RÔLES ══════════════ -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <h2>Rôles utilisateurs</h2>
+      </div>
+
+      <p>
+        L'application distingue trois profils d'utilisateurs authentifiés, auxquels s'ajoute le visiteur anonyme.
+        Chaque rôle est stocké dans la colonne <code>role</code> de la table <code>users</code> et vérifié
+        côté serveur via la fonction <code>requireRole()</code> du middleware JWT.
+      </p>
+
+      <div class="role-grid">
+
+        <div class="role-card traveler">
+          <span class="role-badge">🧳 Voyageur</span>
+          <h4>Traveler</h4>
+          <p class="role-desc">
+            Utilisateur final qui cherche à planifier et réserver des voyages.
+            Rôle attribué par défaut à l'inscription.
+          </p>
+          <ul>
+            <li>Parcourir le catalogue de destinations</li>
+            <li>Créer et modifier des itinéraires</li>
+            <li>Réserver et payer en ligne</li>
+            <li>Consulter l'historique de réservations</li>
+            <li>Gérer ses favoris</li>
+            <li>Déposer des avis sur les destinations</li>
+            <li>Recevoir des notifications</li>
+          </ul>
+        </div>
+
+        <div class="role-card provider">
+          <span class="role-badge">🏨 Prestataire</span>
+          <h4>Provider</h4>
+          <p class="role-desc">
+            Fournisseur de services (hôtels, transporteurs, agences d'activités).
+            Compte créé manuellement ou validé par un administrateur.
+          </p>
+          <ul>
+            <li>Publier des offres (hébergements, transports, activités)</li>
+            <li>Gérer les disponibilités et les prix</li>
+            <li>Consulter les réservations liées à ses offres</li>
+            <li>Confirmer ou annuler des réservations</li>
+            <li>Accéder à un tableau de bord prestataire</li>
+          </ul>
+        </div>
+
+        <div class="role-card admin">
+          <span class="role-badge">🛡️ Administrateur</span>
+          <h4>Admin</h4>
+          <p class="role-desc">
+            Super-utilisateur avec accès complet à toutes les données.
+            Rôle attribué manuellement en base de données.
+          </p>
+          <ul>
+            <li>Accès au tableau de bord global</li>
+            <li>Gérer tous les utilisateurs (rôles, suppression)</li>
+            <li>Créer, modifier, supprimer des destinations</li>
+            <li>Modérer les avis et le contenu</li>
+            <li>Consulter l'ensemble des réservations</li>
+            <li>Envoyer des notifications ciblées</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="callout info">
+        <span class="callout-icon">ℹ️</span>
+        <div>
+          <strong>Visiteur anonyme :</strong> accès en lecture seule au catalogue de destinations.
+          Toute action (itinéraire, réservation, avis, favoris) déclenche une redirection vers la page de connexion.
+          La section « Créer un compte gratuit » de la page d'accueil est masquée lorsqu'un utilisateur est déjà connecté.
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ 3. USER STORIES ══════════════ -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">3</div>
+        <h2>User stories</h2>
+      </div>
+
+      <p>Sélection des principales user stories classées par priorité (<span class="prio-label"><span class="prio high"></span> Haute</span> / <span class="prio-label"><span class="prio medium"></span> Moyenne</span> / <span class="prio-label"><span class="prio low"></span> Basse</span>).</p>
+
+      <table class="us-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>En tant que…</th>
+            <th>Je veux…</th>
+            <th>Afin de…</th>
+            <th>Priorité</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="us-id">US-01</td>
+            <td>Visiteur</td>
+            <td>Parcourir les destinations sans me connecter</td>
+            <td>Découvrir l'offre avant de m'inscrire</td>
+            <td><span class="prio-label"><span class="prio high"></span> Haute</span></td>
+          </tr>
+          <tr>
+            <td class="us-id">US-02</td>
+            <td>Visiteur</td>
+            <td>Créer un compte avec email/mot de passe</td>
+            <td>Accéder aux fonctionnalités réservées</td>
+            <td><span class="prio-label"><span class="prio high"></span> Haute</span></td>
+          </tr>
+          <tr>
+            <td class="us-id">US-03</td>
+            <td>Voyageur</td>
+            <td>Rechercher des destinations par continent ou mot-clé</td>
+            <td>Trouver rapidement un voyage adapté</td>
+            <td><span class="prio-label"><span class="prio high"></span> Haute</span></td>
+          </tr>
+          <tr>
+            <td class="us-id">US-04</td>
+            <td>Voyageur</td>
+            <td>Ajouter un transport, un hébergement et des activités à un itinéraire</td>
+            <td>Composer un voyage complet en un seul parcours</td>
+            <td><span class="prio-label"><span class="prio high"></span> Haute</span></td>
+          </tr>
+          <tr>
+            <td class="us-id">US-05</td>
+            <td>Voyageur</td>
+            <td>Payer mon itinéraire via un formulaire sécurisé</td>
+            <td>Finaliser ma réservation en ligne</td>
+            <td><span class="prio-label"><span class="prio high"></span> Haute</span></td>
+          </tr>
+          <tr>
+            <td class="us-id">US-06</td>
+            <td>Voyageur</td>
+            <td>Consulter mes réservations passées et à venir</td>
+            <td>Suivre mon historique de voyages</td>
+            <td><span class="prio-label"><span class="prio high"></span> Haute</span></td>
+          </tr>
+          <tr>
+            <td class="us-id">US-07</td>
+            <td>Voyageur</td>
+            <td>Ajouter une destination à mes favoris</td>
+            <td>Retrouver facilement mes destinations préférées</td>
+            <td><span class="prio-label"><span class="prio medium"></span> Moyenne</span></td>
+          </tr>
+          <tr>
+            <td class="us-id">US-08</td>
+            <td>Voyageur</td>
+            <td>Recevoir une notification lors d'un changement de statut</td>
+            <td>Être informé sans avoir à consulter l'application</td>
+            <td><span class="prio-label"><span class="prio medium"></span> Moyenne</span></td>
+          </tr>
+          <tr>
+            <td class="us-id">US-09</td>
+            <td>Voyageur</td>
+            <td>Déposer un avis sur une destination</td>
+            <td>Partager mon expérience avec la communauté</td>
+            <td><span class="prio-label"><span class="prio low"></span> Basse</span></td>
+          </tr>
+          <tr>
+            <td class="us-id">US-10</td>
+            <td>Prestataire</td>
+            <td>Publier un hébergement avec photos, prix et disponibilités</td>
+            <td>Référencer mon offre sur la plateforme</td>
+            <td><span class="prio-label"><span class="prio high"></span> Haute</span></td>
+          </tr>
+          <tr>
+            <td class="us-id">US-11</td>
+            <td>Prestataire</td>
+            <td>Voir les réservations liées à mes offres</td>
+            <td>Gérer mon planning et anticiper les arrivées</td>
+            <td><span class="prio-label"><span class="prio medium"></span> Moyenne</span></td>
+          </tr>
+          <tr>
+            <td class="us-id">US-12</td>
+            <td>Administrateur</td>
+            <td>Ajouter ou supprimer des destinations depuis le back-office</td>
+            <td>Maintenir le catalogue à jour</td>
+            <td><span class="prio-label"><span class="prio high"></span> Haute</span></td>
+          </tr>
+          <tr>
+            <td class="us-id">US-13</td>
+            <td>Administrateur</td>
+            <td>Visualiser les KPIs (utilisateurs, réservations, revenus)</td>
+            <td>Piloter l'activité de la plateforme</td>
+            <td><span class="prio-label"><span class="prio medium"></span> Moyenne</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ══════════════ 4. FONCTIONNALITÉS ══════════════ -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">4</div>
+        <h2>Fonctionnalités principales</h2>
+      </div>
+
+      <p>
+        Le tableau ci-dessous décrit chaque fonctionnalité et indique quel(s) rôle(s) peuvent y accéder.
+        <span style="font-size:12px;color:var(--text-muted);">
+          (<span class="dot yes">✓</span> accès complet &nbsp;
+           <span class="dot partial">~</span> accès partiel &nbsp;
+           <span class="dot no">✗</span> accès refusé)
+        </span>
+      </p>
+
+      <!-- Auth -->
+      <div class="feature-group">
+        <div class="feature-group-header">
+          <div class="icon">🔐</div>
+          <h4>Authentification &amp; Compte</h4>
+        </div>
+        <table class="feature-table">
+          <thead>
+            <tr>
+              <th style="width:25%">Fonctionnalité</th>
+              <th>Description</th>
+              <th style="width:130px">Voyageur</th>
+              <th style="width:130px">Prestataire</th>
+              <th style="width:110px">Admin</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="feat-name">Inscription</td>
+              <td class="feat-desc">Création de compte avec email, mot de passe (hashé bcrypt) et rôle par défaut <code>traveler</code></td>
+              <td><span class="dot yes">✓</span></td>
+              <td><span class="dot yes">✓</span></td>
+              <td><span class="dot no">✗</span></td>
+            </tr>
+            <tr>
+              <td class="feat-name">Connexion / Déconnexion</td>
+              <td class="feat-desc">Authentification via JWT (HMAC-SHA256). Token stocké dans <code>localStorage</code>. Expiration configurable.</td>
+              <td><span class="dot yes">✓</span></td>
+              <td><span class="dot yes">✓</span></td>
+              <td><span class="dot yes">✓</span></td>
+            </tr>
+            <tr>
+              <td class="feat-name">Profil utilisateur</td>
+              <td class="feat-desc">Consultation et modification des informations personnelles (nom, email, avatar)</td>
+              <td><span class="dot yes">✓</span></td>
+              <td><span class="dot yes">✓</span></td>
+              <td><span class="dot yes">✓</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Catalogue -->
+      <div class="feature-group">
+        <div class="feature-group-header">
+          <div class="icon">🌍</div>
+          <h4>Catalogue de voyages</h4>
+        </div>
+        <table class="feature-table">
+          <thead>
+            <tr>
+              <th style="width:25%">Fonctionnalité</th>
+              <th>Description</th>
+              <th style="width:130px">Voyageur</th>
+              <th style="width:130px">Prestataire</th>
+              <th style="width:110px">Admin</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="feat-name">Liste des destinations</td>
+              <td class="feat-desc">Affichage paginé avec filtre par continent, fourchette de prix et mot-clé. Accessible aux visiteurs.</td>
+              <td><span class="dot yes">✓</span></td>
+              <td><span class="dot yes">✓</span></td>
+              <td><span class="dot yes">✓</span></td>
+            </tr>
+            <tr>
+              <td class="feat-name">Détail destination</td>
+              <td class="feat-desc">Page complète avec galerie, description, avis, transports/hébergements/activités disponibles</td>
+              <td><span class="dot yes">✓</span></td>
+              <td><span class="dot yes">✓</span></td>
+              <td><span class="dot yes">✓</span></td>
+            </tr>
+            <tr>
+              <td class="feat-name">Transports</td>
+              <td class="feat-desc">Catalogue des options de transport (vol, train, bus) avec horaires et tarifs</td>
+              <td><span class="dot yes">✓</span></td>
+              <td><span class="dot partial">~</span></td>
+              <td><span class="dot yes">✓</span></td>
+            </tr>
+            <tr>
+              <td class="feat-name">Hébergements</td>
+              <td class="feat-desc">Liste des hébergements avec disponibilités en temps réel (<code>accommodation_availability</code>)</td>
+              <td><span class="dot yes">✓</span></td>
+              <td><span class="dot partial">~</span></td>
+              <td><span class="dot yes">✓</span></td>
+            </tr>
+            <tr>
+              <td class="feat-name">Activités</td>
+              <td class="feat-desc">Activités proposées sur chaque destination (excursions, visites guidées, loisirs)</td>
+              <td><span class="dot yes">✓</span></td>
+              <td><span class="dot partial">~</span></td>
+              <td><span class="dot yes">✓</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Itinéraire -->
+      <div class="feature-group">
+        <div class="feature-group-header">
+          <div class="icon">🗺️</div>
+          <h4>Itinéraires &amp; Réservations</h4>
+        </div>
+        <table class="feature-table">
+          <thead>
+            <tr>
+              <th style="width:25%">Fonctionnalité</th>
+              <th>Description</th>
+              <th style="width:130px">Voyageur</th>
+              <th style="width:130px">Prestataire</th>
+              <th style="width:110px">Admin</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="feat-name">Création d'itinéraire</td>
+              <td class="feat-desc">Composition d'un voyage : sélection transport + hébergement + activités. Stocké dans <code>itineraries</code> et tables de liaison.</td>
+              <td><span class="dot yes">✓</span></td>
+              <td><span class="dot no">✗</span></td>
+              <td><span class="dot no">✗</span></td>
+            </tr>
+            <tr>
+              <td class="feat-name">Panier / récapitulatif</td>
+              <td class="feat-desc">Affichage du détail des éléments sélectionnés avec calcul du prix total avant confirmation</td>
+              <td><span class="dot yes">✓</span></td>
+              <td><span class="dot no">✗</span></td>
+              <td><span class="dot no">✗</span></td>
+            </tr>
+            <tr>
+              <td class="feat-name">Paiement simulé</td>
+              <td class="feat-desc">Modal de paiement avec saisie de coordonnées bancaires. Création d'une entrée dans <code>bookings</code>.</td>
+              <td><span class="dot yes">✓</span></td>
+              <td><span class="dot no">✗</span></td>
+              <td><span class="dot no">✗</span></td>
+            </tr>
+            <tr>
+              <td class="feat-name">Historique de réservations</td>
+              <td class="feat-desc">Liste des réservations avec statut (pending, confirmed, cancelled), filtres et pagination</td>
+              <td><span class="dot yes">✓</span></td>
+              <td><span class="dot partial">~</span></td>
+              <td><span class="dot yes">✓</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Social -->
+      <div class="feature-group">
+        <div class="feature-group-header">
+          <div class="icon">⭐</div>
+          <h4>Social &amp; Engagement</h4>
+        </div>
+        <table class="feature-table">
+          <thead>
+            <tr>
+              <th style="width:25%">Fonctionnalité</th>
+              <th>Description</th>
+              <th style="width:130px">Voyageur</th>
+              <th style="width:130px">Prestataire</th>
+              <th style="width:110px">Admin</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="feat-name">Favoris</td>
+              <td class="feat-desc">Ajout/suppression d'une destination dans sa liste de favoris (<code>favorites</code>)</td>
+              <td><span class="dot yes">✓</span></td>
+              <td><span class="dot no">✗</span></td>
+              <td><span class="dot no">✗</span></td>
+            </tr>
+            <tr>
+              <td class="feat-name">Avis &amp; notes</td>
+              <td class="feat-desc">Dépôt d'une note (1–5 étoiles) et commentaire textuel sur une destination visitée</td>
+              <td><span class="dot yes">✓</span></td>
+              <td><span class="dot no">✗</span></td>
+              <td><span class="dot partial">~</span></td>
+            </tr>
+            <tr>
+              <td class="feat-name">Notifications</td>
+              <td class="feat-desc">Système de notifications in-app (changement de statut, alertes admin). Table <code>notifications</code>.</td>
+              <td><span class="dot yes">✓</span></td>
+              <td><span class="dot yes">✓</span></td>
+              <td><span class="dot yes">✓</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Admin -->
+      <div class="feature-group">
+        <div class="feature-group-header">
+          <div class="icon">⚙️</div>
+          <h4>Administration &amp; Back-office</h4>
+        </div>
+        <table class="feature-table">
+          <thead>
+            <tr>
+              <th style="width:25%">Fonctionnalité</th>
+              <th>Description</th>
+              <th style="width:130px">Voyageur</th>
+              <th style="width:130px">Prestataire</th>
+              <th style="width:110px">Admin</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="feat-name">Tableau de bord admin</td>
+              <td class="feat-desc">KPIs : nombre d'utilisateurs, réservations actives, chiffre d'affaires total, destinations populaires</td>
+              <td><span class="dot no">✗</span></td>
+              <td><span class="dot no">✗</span></td>
+              <td><span class="dot yes">✓</span></td>
+            </tr>
+            <tr>
+              <td class="feat-name">Gestion des destinations</td>
+              <td class="feat-desc">CRUD complet sur les destinations (création, modification, suppression, activation/désactivation)</td>
+              <td><span class="dot no">✗</span></td>
+              <td><span class="dot no">✗</span></td>
+              <td><span class="dot yes">✓</span></td>
+            </tr>
+            <tr>
+              <td class="feat-name">Gestion des utilisateurs</td>
+              <td class="feat-desc">Liste des comptes, modification du rôle, suspension ou suppression d'un compte</td>
+              <td><span class="dot no">✗</span></td>
+              <td><span class="dot no">✗</span></td>
+              <td><span class="dot yes">✓</span></td>
+            </tr>
+            <tr>
+              <td class="feat-name">Tableau de bord prestataire</td>
+              <td class="feat-desc">Statistiques de réservations, gestion des offres publiées, calendrier de disponibilités</td>
+              <td><span class="dot no">✗</span></td>
+              <td><span class="dot yes">✓</span></td>
+              <td><span class="dot no">✗</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══════════════ 5. TECHNOLOGIES ══════════════ -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">5</div>
+        <h2>Technologies envisagées</h2>
+      </div>
+
+      <div class="tech-grid">
+
+        <div class="tech-card">
+          <div class="tech-card-header frontend">🖥️ &nbsp; Frontend</div>
+          <div class="tech-list">
+            <div class="tech-item">
+              <div class="tech-name">React 19<small>^19.2.6</small></div>
+              <div class="tech-role">Bibliothèque UI — composants fonctionnels, hooks, Context API pour les états globaux (auth, panier, toast)</div>
+            </div>
+            <div class="tech-item">
+              <div class="tech-name">Vite 8<small>^8.0.12</small></div>
+              <div class="tech-role">Build tool et serveur de développement avec HMR. Bundling via Rolldown pour la production.</div>
+            </div>
+            <div class="tech-item">
+              <div class="tech-name">React Router v7<small>^7.15.1</small></div>
+              <div class="tech-role">Routage côté client avec <code>HashRouter</code>. Routes protégées via <code>PrivateRoute</code>.</div>
+            </div>
+            <div class="tech-item">
+              <div class="tech-name">Axios<small>^1.16.1</small></div>
+              <div class="tech-role">Client HTTP. Intercepteurs pour injecter le token JWT dans chaque requête (<code>Authorization: Bearer</code>).</div>
+            </div>
+            <div class="tech-item">
+              <div class="tech-name">Framer Motion<small>^12.40.0</small></div>
+              <div class="tech-role">Animations fluides (entrées de page, transitions, modals). Positionnement premium.</div>
+            </div>
+            <div class="tech-item">
+              <div class="tech-name">Lucide React<small>^1.16.0</small></div>
+              <div class="tech-role">Bibliothèque d'icônes SVG cohérentes. Remplace les polices d'icônes.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tech-card">
+          <div class="tech-card-header backend">⚙️ &nbsp; Backend</div>
+          <div class="tech-list">
+            <div class="tech-item">
+              <div class="tech-name">PHP 8<small>Sans framework</small></div>
+              <div class="tech-role">API REST organisée par ressource (<code>/api/auth</code>, <code>/api/destinations</code>…). Routage par URL réelle.</div>
+            </div>
+            <div class="tech-item">
+              <div class="tech-name">JWT maison<small>HMAC-SHA256</small></div>
+              <div class="tech-role">Implémentation custom de génération/vérification de tokens. Fonctions <code>requireAuth()</code> et <code>requireRole()</code>.</div>
+            </div>
+            <div class="tech-item">
+              <div class="tech-name">PDO<small>PHP Data Objects</small></div>
+              <div class="tech-role">Accès MySQL via requêtes préparées — protection native contre les injections SQL.</div>
+            </div>
+            <div class="tech-item">
+              <div class="tech-name">CORS Middleware<small>PHP headers</small></div>
+              <div class="tech-role">En-têtes CORS configurés pour autoriser les requêtes du SPA React depuis un domaine différent.</div>
+            </div>
+            <div class="tech-item">
+              <div class="tech-name">bcrypt<small>password_hash()</small></div>
+              <div class="tech-role">Hachage des mots de passe. Vérification via <code>password_verify()</code> sans manipulation du hash.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tech-card">
+          <div class="tech-card-header database">🗄️ &nbsp; Base de données</div>
+          <div class="tech-list">
+            <div class="tech-item">
+              <div class="tech-name">MySQL 8<small>Relationnel</small></div>
+              <div class="tech-role">14 tables avec clés primaires auto-incrémentées, clés étrangères et contraintes d'intégrité référentielle.</div>
+            </div>
+            <div class="tech-item">
+              <div class="tech-name">Fichier .env.local<small>Config sécurisée</small></div>
+              <div class="tech-role">Variables de connexion (<code>DB_HOST</code>, <code>DB_NAME</code>, <code>DB_USER</code>, <code>DB_PASS</code>) isolées du code source.</div>
+            </div>
+            <div class="tech-item">
+              <div class="tech-name">Schéma SQL<small>voyagevista.sql</small></div>
+              <div class="tech-role">Script de création complet versionné dans <code>database/</code>. Données de test incluses.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tech-card">
+          <div class="tech-card-header tools">🛠️ &nbsp; Outils &amp; Environnement</div>
+          <div class="tech-list">
+            <div class="tech-item">
+              <div class="tech-name">Git &amp; GitHub<small>Versionnement</small></div>
+              <div class="tech-role">Gestion de version, branches de fonctionnalités, pull requests et revue de code.</div>
+            </div>
+            <div class="tech-item">
+              <div class="tech-name">VS Code<small>IDE</small></div>
+              <div class="tech-role">Éditeur principal avec extensions ESLint, Prettier, PHP Intelephense.</div>
+            </div>
+            <div class="tech-item">
+              <div class="tech-name">XAMPP / WAMP<small>Serveur local</small></div>
+              <div class="tech-role">Apache + PHP + MySQL pour l'exécution locale du back-end. <code>localhost/voyagevista</code>.</div>
+            </div>
+            <div class="tech-item">
+              <div class="tech-name">Postman<small>Tests API</small></div>
+              <div class="tech-role">Collection de requêtes pour tester chaque endpoint REST indépendamment du frontend.</div>
+            </div>
+            <div class="tech-item">
+              <div class="tech-name">TypeScript 6<small>~6.0.2 (typage)</small></div>
+              <div class="tech-role">Utilisé uniquement pour la vérification de types dans le projet Vite. Les fichiers sources restent en <code>.jsx</code>.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════════════ 6. CONTRAINTES ══════════════ -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">6</div>
+        <h2>Contraintes techniques</h2>
+      </div>
+
+      <h3>Sécurité</h3>
+      <div class="constraint-list">
+        <div class="constraint-item security">
+          <span class="constraint-icon">🔑</span>
+          <div class="constraint-body">
+            <h4>Authentification JWT obligatoire sur toutes les routes protégées</h4>
+            <p>Chaque appel API sensible vérifie la présence et la validité du token JWT via <code>requireAuth()</code>. Un token expiré ou altéré retourne immédiatement un <code>401 Unauthorized</code>. Le secret de signature ne doit jamais être exposé côté client.</p>
+          </div>
+        </div>
+        <div class="constraint-item security">
+          <span class="constraint-icon">💉</span>
+          <div class="constraint-body">
+            <h4>Protection contre les injections SQL</h4>
+            <p>Toutes les interactions avec la base de données passent par des requêtes PDO préparées avec paramètres liés. Aucune concaténation directe de données utilisateur dans les requêtes SQL n'est tolérée.</p>
+          </div>
+        </div>
+        <div class="constraint-item security">
+          <span class="constraint-icon">🛡️</span>
+          <div class="constraint-body">
+            <h4>Contrôle d'accès par rôle (RBAC)</h4>
+            <p>Les routes d'administration et de prestataire utilisent <code>requireRole(['admin'])</code> ou <code>requireRole(['provider','admin'])</code>. La vérification se fait côté serveur — la restriction front-end n'est qu'un complément visuel.</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>Performance</h3>
+      <div class="constraint-list">
+        <div class="constraint-item perf">
+          <span class="constraint-icon">⚡</span>
+          <div class="constraint-body">
+            <h4>Optimisation du bundle frontend</h4>
+            <p>Vite 8 / Rolldown produit un bundle optimisé avec tree-shaking. Framer Motion et Lucide React sont importés sélectivement (import nommé) pour éviter le chargement de l'intégralité de la bibliothèque.</p>
+          </div>
+        </div>
+        <div class="constraint-item perf">
+          <span class="constraint-icon">📦</span>
+          <div class="constraint-body">
+            <h4>Pagination des listes</h4>
+            <p>Les endpoints <code>GET /api/destinations</code>, <code>GET /api/bookings</code> et <code>GET /api/notifications</code> supportent les paramètres <code>page</code> et <code>limit</code> pour éviter le chargement de milliers d'enregistrements en une seule requête.</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>Compatibilité</h3>
+      <div class="constraint-list">
+        <div class="constraint-item compat">
+          <span class="constraint-icon">🌐</span>
+          <div class="constraint-body">
+            <h4>Navigateurs modernes ciblés</h4>
+            <p>L'application cible les navigateurs récents (Chrome 120+, Firefox 121+, Edge 120+, Safari 17+). Aucun polyfill IE11 n'est prévu. Le <code>HashRouter</code> de React Router garantit la compatibilité avec les serveurs sans configuration de réécriture d'URL.</p>
+          </div>
+        </div>
+        <div class="constraint-item compat">
+          <span class="constraint-icon">📱</span>
+          <div class="constraint-body">
+            <h4>Design responsive</h4>
+            <p>L'interface est conçue en mobile-first avec des breakpoints CSS à 768 px et 1024 px. La navigation mobile utilise un menu hamburger. Les grilles de cartes passent de 3 colonnes (desktop) à 1 colonne (mobile).</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>Données &amp; Intégrité</h3>
+      <div class="constraint-list">
+        <div class="constraint-item data">
+          <span class="constraint-icon">🔗</span>
+          <div class="constraint-body">
+            <h4>Intégrité référentielle MySQL</h4>
+            <p>Les clés étrangères sont déclarées avec <code>ON DELETE CASCADE</code> ou <code>ON DELETE SET NULL</code> selon le cas. La suppression d'un utilisateur entraîne la cascade sur ses itinéraires, réservations, favoris et notifications.</p>
+          </div>
+        </div>
+        <div class="constraint-item data">
+          <span class="constraint-icon">📋</span>
+          <div class="constraint-body">
+            <h4>Validation des données</h4>
+            <p>Validation côté client (formulaires React) et côté serveur (PHP) pour tous les champs critiques : email format, mot de passe longueur minimale 8 caractères, dates cohérentes (départ &lt; retour), prix positifs.</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>Environnement de développement</h3>
+      <div class="constraint-list">
+        <div class="constraint-item env">
+          <span class="constraint-icon">🔧</span>
+          <div class="constraint-body">
+            <h4>Configuration isolée du code source</h4>
+            <p>Toutes les variables sensibles (secrets JWT, identifiants base de données, URLs d'API) sont stockées dans des fichiers <code>.env.local</code> non versionnés. Le dépôt Git contient un fichier <code>.env.example</code> comme référence.</p>
+          </div>
+        </div>
+        <div class="constraint-item env">
+          <span class="constraint-icon">🚫</span>
+          <div class="constraint-body">
+            <h4>Paiement simulé — pas de passerelle réelle</h4>
+            <p>La fonctionnalité de paiement est simulée à des fins pédagogiques. Aucun SDK bancaire réel (Stripe, PayPal) n'est intégré. Le formulaire collecte des données fictives et crée uniquement une entrée en base avec le statut <code>confirmed</code>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ 7. RÉPARTITION DU TRAVAIL ══════════════ -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">7</div>
+        <h2>Répartition prévisionnelle du travail</h2>
+      </div>
+
+      <div class="team-intro">
+        La répartition ci-dessous est <strong>prévisionnelle</strong>. Elle sera ajustée en fonction de l'avancement
+        réel du projet. Chaque membre est responsable de la qualité et des tests de ses propres modules.
+        Les revues de code croisées sont encouragées avant toute fusion sur la branche principale.
+      </div>
+
+      <!-- Membre 1 -->
+      <div class="member-card">
+        <div class="member-header">
+          <div class="member-avatar">M1</div>
+          <div class="member-info">
+            <h3>Membre 1 — Lead Frontend &amp; UX</h3>
+            <p>Responsable de l'interface utilisateur principale et de l'expérience voyageur</p>
+          </div>
+        </div>
+        <div class="member-tasks">
+          <div class="task-block">
+            <h5>Pages publiques</h5>
+            <ul>
+              <li>Page d'accueil (Hero, CTA, fonctionnalités)</li>
+              <li>Page Destinations (grille, filtres, recherche)</li>
+              <li>Page Détail destination (galerie, description)</li>
+              <li>Affichage des avis et notes</li>
+            </ul>
+          </div>
+          <div class="task-block">
+            <h5>Itinéraire &amp; Panier</h5>
+            <ul>
+              <li>ItineraryBuilder — sélection transports</li>
+              <li>ItineraryBuilder — sélection hébergements</li>
+              <li>ItineraryBuilder — sélection activités</li>
+              <li>Modal paiement et confirmation</li>
+            </ul>
+          </div>
+          <div class="task-block">
+            <h5>Components UI</h5>
+            <ul>
+              <li>Navbar responsive + menu mobile</li>
+              <li>Composants de carte (DestinationCard, etc.)</li>
+              <li>Animations Framer Motion</li>
+              <li>Système Toast / notifications visuelles</li>
+            </ul>
+          </div>
+          <div class="task-block">
+            <h5>Contextes React</h5>
+            <ul>
+              <li>CartContext (panier d'itinéraire)</li>
+              <li>ToastContext (messages système)</li>
+              <li>Intégration Axios — intercepteurs</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Membre 2 -->
+      <div class="member-card">
+        <div class="member-header">
+          <div class="member-avatar">M2</div>
+          <div class="member-info">
+            <h3>Membre 2 — Backend &amp; API REST</h3>
+            <p>Responsable de la logique serveur, de l'authentification et des endpoints API</p>
+          </div>
+        </div>
+        <div class="member-tasks">
+          <div class="task-block">
+            <h5>Authentification</h5>
+            <ul>
+              <li>Middleware JWT (génération, vérification)</li>
+              <li>Endpoint POST /api/auth/register</li>
+              <li>Endpoint POST /api/auth/login</li>
+              <li>Middleware requireAuth / requireRole</li>
+            </ul>
+          </div>
+          <div class="task-block">
+            <h5>Endpoints catalogue</h5>
+            <ul>
+              <li>GET /api/destinations (liste + filtres)</li>
+              <li>GET /api/destinations/{id} (détail)</li>
+              <li>GET /api/transports</li>
+              <li>GET /api/accommodations + disponibilités</li>
+              <li>GET /api/activities</li>
+            </ul>
+          </div>
+          <div class="task-block">
+            <h5>Endpoints utilisateur</h5>
+            <ul>
+              <li>GET/PUT /api/users/profile</li>
+              <li>GET/POST/DELETE /api/users/favorites</li>
+              <li>GET/PUT /api/notifications</li>
+              <li>POST /api/reviews</li>
+            </ul>
+          </div>
+          <div class="task-block">
+            <h5>Endpoints itinéraires &amp; réservations</h5>
+            <ul>
+              <li>POST /api/itineraries (création)</li>
+              <li>GET /api/itineraries/{id}</li>
+              <li>POST /api/bookings (confirmation paiement)</li>
+              <li>GET /api/bookings (historique)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Membre 3 -->
+      <div class="member-card">
+        <div class="member-header">
+          <div class="member-avatar">M3</div>
+          <div class="member-info">
+            <h3>Membre 3 — Base de données &amp; Admin</h3>
+            <p>Responsable du schéma BDD, des données de test et du back-office administrateur</p>
+          </div>
+        </div>
+        <div class="member-tasks">
+          <div class="task-block">
+            <h5>Base de données</h5>
+            <ul>
+              <li>Conception du schéma (MCD / MLD)</li>
+              <li>Script SQL voyagevista.sql</li>
+              <li>Données de test (jeu de fixtures)</li>
+              <li>Optimisation des index et des clés</li>
+            </ul>
+          </div>
+          <div class="task-block">
+            <h5>Back-office Admin</h5>
+            <ul>
+              <li>Page AdminDashboard (KPIs)</li>
+              <li>CRUD destinations côté admin</li>
+              <li>Gestion des utilisateurs (rôles, suppression)</li>
+              <li>API admin (POST/PUT/DELETE destinations)</li>
+            </ul>
+          </div>
+          <div class="task-block">
+            <h5>Tableau de bord prestataire</h5>
+            <ul>
+              <li>Page ProviderDashboard</li>
+              <li>Gestion des offres prestataire</li>
+              <li>Gestion des disponibilités hébergements</li>
+              <li>Suivi des réservations liées aux offres</li>
+            </ul>
+          </div>
+          <div class="task-block">
+            <h5>Authentification frontend</h5>
+            <ul>
+              <li>Page Login et formulaire</li>
+              <li>Page Register et validation</li>
+              <li>AuthContext (user, login, logout, register)</li>
+              <li>PrivateRoute et redirection par rôle</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout warn">
+        <span class="callout-icon">⚠️</span>
+        <div>
+          <strong>Tâches transverses partagées :</strong> rédaction des spécifications et de la documentation
+          (présent document), tests d'intégration API, revues de code croisées, déploiement local et
+          démonstration finale — à répartir équitablement entre les membres.
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ 8. PLANNING ══════════════ -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">8</div>
+        <h2>Planning prévisionnel</h2>
+      </div>
+
+      <p>Découpage en 4 sprints de 1 à 2 semaines selon la durée du projet.</p>
+
+      <table class="sprint-table">
+        <thead>
+          <tr>
+            <th style="width:110px">Sprint</th>
+            <th style="width:130px">Période</th>
+            <th>Objectifs</th>
+            <th style="width:160px">Livrable</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="sprint-badge s1">Sprint 1</span></td>
+            <td>Semaine 1</td>
+            <td>
+              Mise en place de l'environnement, conception du schéma BDD, création du script SQL,
+              structure du projet React + PHP, authentification (inscription / connexion / JWT)
+            </td>
+            <td>BDD opérationnelle, login/register fonctionnel</td>
+          </tr>
+          <tr>
+            <td><span class="sprint-badge s2">Sprint 2</span></td>
+            <td>Semaines 2–3</td>
+            <td>
+              Catalogue de voyages (destinations, transports, hébergements, activités),
+              pages publiques, recherche et filtres, page détail destination
+            </td>
+            <td>Catalogue navigable, API GET opérationnelle</td>
+          </tr>
+          <tr>
+            <td><span class="sprint-badge s3">Sprint 3</span></td>
+            <td>Semaines 3–4</td>
+            <td>
+              Construction d'itinéraire, panier, paiement simulé, historique de réservations,
+              favoris, notifications, avis utilisateurs
+            </td>
+            <td>Parcours voyageur complet de bout en bout</td>
+          </tr>
+          <tr>
+            <td><span class="sprint-badge s4">Sprint 4</span></td>
+            <td>Semaine 4–5</td>
+            <td>
+              Tableau de bord admin, back-office prestataire, finitions UI (animations, responsive),
+              tests, correction de bugs, préparation de la démonstration
+            </td>
+            <td>Application complète prête pour la soutenance</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout tip">
+        <span class="callout-icon">✅</span>
+        <div>
+          <strong>Méthode de travail recommandée :</strong> une branche Git par fonctionnalité (<code>feature/nom-feature</code>),
+          pull request avec relecture croisée avant merge sur <code>main</code>.
+          Tests Postman pour chaque endpoint avant intégration frontend.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+
+  <div class="footer">
+    Document généré pour le projet scolaire &nbsp;|&nbsp; <strong>VoyageVista</strong> &nbsp;|&nbsp; Mai 2026
+  </div>
+
+</div><!-- /page -->
+</body>
+</html>

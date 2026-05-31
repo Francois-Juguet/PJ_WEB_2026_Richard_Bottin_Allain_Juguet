@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>VoyageVista — Architecture</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  :root {
+    --front  : #1d4ed8;
+    --front-l: #dbeafe;
+    --front-b: #93c5fd;
+    --back   : #15803d;
+    --back-l : #dcfce7;
+    --back-b : #86efac;
+    --db     : #b45309;
+    --db-l   : #fef3c7;
+    --db-b   : #fcd34d;
+    --arrow  : #6b7280;
+    --border : #e5e7eb;
+    --text   : #111827;
+    --muted  : #6b7280;
+    --bg     : #f9fafb;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 40px;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  .doc-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .doc-header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .doc-header p {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .badge-row {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  .badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .badge-blue  { background:#dbeafe; color:#1d4ed8; }
+  .badge-green { background:#dcfce7; color:#15803d; }
+  .badge-amber { background:#fef3c7; color:#b45309; }
+  .badge-gray  { background:#f3f4f6; color:#374151; }
+
+  /* ── Main layout ── */
+  .arch {
+    display: grid;
+    grid-template-columns: 1fr 60px 1fr 60px 1fr;
+    gap: 0;
+    align-items: start;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* ── Layer zone ── */
+  .layer {
+    border-radius: 16px;
+    padding: 20px;
+    position: relative;
+  }
+  .layer-frontend { background: #eff6ff; border: 2px solid var(--front-b); }
+  .layer-backend  { background: #f0fdf4; border: 2px solid var(--back-b);  }
+  .layer-db       { background: #fffbeb; border: 2px solid var(--db-b);    }
+
+  .layer-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1.5px solid;
+  }
+  .layer-frontend .layer-title { border-color: var(--front-b); }
+  .layer-backend  .layer-title { border-color: var(--back-b);  }
+  .layer-db       .layer-title { border-color: var(--db-b);    }
+
+  .layer-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .layer-frontend .layer-icon { background: var(--front); }
+  .layer-backend  .layer-icon { background: var(--back);  }
+  .layer-db       .layer-icon { background: var(--db);    }
+
+  .layer-name {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .layer-frontend .layer-name { color: var(--front); }
+  .layer-backend  .layer-name { color: var(--back);  }
+  .layer-db       .layer-name { color: var(--db);    }
+
+  .layer-sub {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+
+  /* ── Block inside layer ── */
+  .block {
+    background: #fff;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    border: 1.5px solid var(--border);
+    position: relative;
+  }
+  .block:last-child { margin-bottom: 0; }
+
+  .block-title {
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 7px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .block-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-blue  { background: var(--front); }
+  .dot-green { background: var(--back);  }
+  .dot-amber { background: var(--db);    }
+  .dot-gray  { background: #9ca3af;      }
+
+  .item-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .item {
+    font-size: 10.5px;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 0;
+  }
+  .item-icon { font-size: 10px; width: 14px; text-align:center; flex-shrink:0; }
+  .item-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    color: #4b5563;
+    background: #f3f4f6;
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  .item-method {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  .m-get    { background:#dbeafe; color:#1d4ed8; }
+  .m-post   { background:#dcfce7; color:#15803d; }
+  .m-put    { background:#fef3c7; color:#b45309; }
+  .m-delete { background:#fee2e2; color:#b91c1c; }
+
+  /* ── Arrow column ── */
+  .arrow-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 60px;
+    gap: 6px;
+  }
+
+  .arrow-line {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .arr-label {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+    text-align: center;
+    background: #fff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+
+  /* SVG arrows */
+  .arrow-svg { overflow: visible; }
+
+  /* ── Token box ── */
+  .token-box {
+    background: #1e1b4b;
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin-bottom: 10px;
+    border: 1.5px solid #4338ca;
+  }
+  .token-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: #a5b4fc;
+    margin-bottom: 5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .token-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5px;
+    color: #c7d2fe;
+    word-break: break-all;
+    line-height: 1.5;
+  }
+  .token-part { color: #fbbf24; }
+
+  /* ── DB table ── */
+  .db-table {
+    background: #fff;
+    border-radius: 8px;
+    border: 1.5px solid var(--db-b);
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .db-table:last-child { margin-bottom: 0; }
+  .db-table-head {
+    background: var(--db-l);
+    padding: 4px 10px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--db);
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .db-table-rows {
+    padding: 4px 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+  }
+  .db-col {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5px;
+    color: #6b7280;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  .db-col.pk { background: #fef3c7; border-color: var(--db-b); color: var(--db); font-weight: 700; }
+  .db-col.fk { background: #eff6ff; border-color: #93c5fd; color: #1d4ed8; }
+
+  /* ── Flow legend ── */
+  .legend {
+    max-width: 1100px;
+    margin: 32px auto 0;
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+  }
+  .legend-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .legend-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: #374151;
+  }
+  .legend-arrow {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .leg-line {
+    width: 28px; height: 2px;
+    border-radius: 1px;
+  }
+  .leg-line.req   { background: var(--front); }
+  .leg-line.res   { background: var(--back); border-top: 2px dashed var(--back); background: none; }
+  .leg-line.query { background: var(--db); }
+  .leg-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    border: 2px solid;
+  }
+
+  /* ── Flow number ── */
+  .flow-num {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: #111827;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* ── Flow steps ── */
+  .flow-steps {
+    max-width: 1100px;
+    margin: 16px auto 0;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+  }
+  .flow-step {
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .flow-step-head {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .flow-step-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .flow-step-desc {
+    font-size: 9.5px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  /* ── Section title ── */
+  .section-title {
+    max-width: 1100px;
+    margin: 28px auto 10px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Header ─────────────────────────────────────────────── -->
+<div class="doc-header">
+  <h1>VoyageVista — Schéma d'Architecture</h1>
+  <p>Organisation générale · Interactions Frontend / Backend / Base de données</p>
+  <div class="badge-row">
+    <span class="badge badge-blue">React 19</span>
+    <span class="badge badge-blue">Vite 8</span>
+    <span class="badge badge-blue">Axios</span>
+    <span class="badge badge-blue">React Router v7</span>
+    <span class="badge badge-green">PHP 8</span>
+    <span class="badge badge-green">REST API</span>
+    <span class="badge badge-green">JWT</span>
+    <span class="badge badge-green">PDO</span>
+    <span class="badge badge-amber">MySQL</span>
+    <span class="badge badge-gray">Architecture 3-tiers</span>
+  </div>
+</div>
+
+<!-- ── Titre section ── -->
+<div class="section-title">Couches applicatives</div>
+
+<!-- ── Schéma principal ───────────────────────────────────── -->
+<div class="arch">
+
+  <!-- ══ COUCHE 1 : FRONTEND ══════════════════════════════════ -->
+  <div class="layer layer-frontend">
+    <div class="layer-title">
+      <div class="layer-icon">🖥</div>
+      <div>
+        <div class="layer-name">Frontend</div>
+        <div class="layer-sub">Navigateur web — SPA React</div>
+      </div>
+    </div>
+
+    <!-- Routing -->
+    <div class="block">
+      <div class="block-title">
+        <div class="block-dot dot-blue"></div>
+        Routage — React Router v7
+      </div>
+      <div class="item-list">
+        <div class="item"><span class="item-icon">🔓</span><span class="item-code">/</span> Accueil</div>
+        <div class="item"><span class="item-icon">🔓</span><span class="item-code">/destinations</span> Liste</div>
+        <div class="item"><span class="item-icon">🔓</span><span class="item-code">/destinations/:id</span> Détail</div>
+        <div class="item"><span class="item-icon">🔒</span><span class="item-code">/itinerary</span> Constructeur</div>
+        <div class="item"><span class="item-icon">🔒</span><span class="item-code">/bookings</span> Réservations</div>
+        <div class="item"><span class="item-icon">🔒</span><span class="item-code">/profile</span> Profil</div>
+        <div class="item"><span class="item-icon">🔒</span><span class="item-code">/admin</span> Administration</div>
+      </div>
+    </div>
+
+    <!-- State global -->
+    <div class="block">
+      <div class="block-title">
+        <div class="block-dot dot-blue"></div>
+        State global — Context API
+      </div>
+      <div class="item-list">
+        <div class="item"><span class="item-icon">👤</span>AuthContext — user, token, role</div>
+        <div class="item"><span class="item-icon">🛒</span>CartContext — itinéraire en cours</div>
+        <div class="item"><span class="item-icon">🔔</span>ToastContext — notifications UI</div>
+      </div>
+    </div>
+
+    <!-- Couche API -->
+    <div class="block">
+      <div class="block-title">
+        <div class="block-dot dot-blue"></div>
+        Client HTTP — Axios
+      </div>
+      <div class="item-list">
+        <div class="item"><span class="item-icon">📤</span>Requêtes JSON vers <span class="item-code">/api/…</span></div>
+        <div class="item"><span class="item-icon">🔑</span>Header : <span class="item-code">Authorization: Bearer &lt;JWT&gt;</span></div>
+        <div class="item"><span class="item-icon">💾</span>Token stocké dans <span class="item-code">localStorage</span></div>
+      </div>
+    </div>
+
+    <!-- Token JWT -->
+    <div class="token-box">
+      <div class="token-title">JWT stocké côté client</div>
+      <div class="token-value">
+        <span class="token-part">eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9</span>.<span style="color:#6ee7b7;">eyJpZCI6MSwiZW1haWwiOiIuLi4iLCJyb2xlIjoidHJhdmVsZXIiLCJleHAiOjE3MzAwMDAwMDB9</span>.<span style="color:#f9a8d4;">SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c</span>
+      </div>
+    </div>
+
+    <!-- UI Components -->
+    <div class="block">
+      <div class="block-title">
+        <div class="block-dot dot-gray"></div>
+        Composants UI
+      </div>
+      <div class="item-list">
+        <div class="item"><span class="item-icon">🎨</span>Framer Motion — animations</div>
+        <div class="item"><span class="item-icon">🔷</span>Lucide React — icônes</div>
+        <div class="item"><span class="item-icon">⚡</span>Vite — build &amp; HMR</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ FLÈCHE FRONTEND → BACKEND ════════════════════════════ -->
+  <div class="arrow-col">
+    <div class="arrow-line">
+      <svg class="arrow-svg" width="60" height="120" viewBox="0 0 60 120">
+        <!-- Requête HTTP -->
+        <defs>
+          <marker id="ah1" markerWidth="8" markerHeight="6" refX="6" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#1d4ed8"/>
+          </marker>
+          <marker id="ah2" markerWidth="8" markerHeight="6" refX="2" refY="3" orient="auto">
+            <polygon points="8 0, 0 3, 8 6" fill="#15803d"/>
+          </marker>
+        </defs>
+        <!-- Requête : gauche → droite -->
+        <line x1="4" y1="40" x2="54" y2="40" stroke="#1d4ed8" stroke-width="2" marker-end="url(#ah1)"/>
+        <!-- Réponse : droite → gauche -->
+        <line x1="56" y1="70" x2="6" y2="70" stroke="#15803d" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#ah2)"/>
+      </svg>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:4px;align-items:center;">
+      <span class="arr-label" style="color:#1d4ed8;">➜ Requête HTTP</span>
+      <span class="arr-label" style="color:#15803d; font-size:8px;">← Réponse JSON</span>
+      <span class="arr-label" style="font-size:8px; margin-top:4px;">HTTPS / REST</span>
+    </div>
+  </div>
+
+  <!-- ══ COUCHE 2 : BACKEND PHP ════════════════════════════════ -->
+  <div class="layer layer-backend">
+    <div class="layer-title">
+      <div class="layer-icon">⚙️</div>
+      <div>
+        <div class="layer-name">Backend</div>
+        <div class="layer-sub">Serveur PHP 8 — API REST</div>
+      </div>
+    </div>
+
+    <!-- CORS -->
+    <div class="block">
+      <div class="block-title">
+        <div class="block-dot dot-green"></div>
+        Middleware CORS
+      </div>
+      <div class="item-list">
+        <div class="item"><span class="item-icon">🌐</span>Access-Control-Allow-Origin</div>
+        <div class="item"><span class="item-icon">📋</span>Headers autorisés : Authorization</div>
+        <div class="item"><span class="item-icon">🔄</span>Méthodes : GET POST PUT DELETE</div>
+      </div>
+    </div>
+
+    <!-- Auth Middleware -->
+    <div class="block">
+      <div class="block-title">
+        <div class="block-dot dot-green"></div>
+        Middleware JWT — auth.php
+      </div>
+      <div class="item-list">
+        <div class="item"><span class="item-icon">🔐</span><span class="item-code">verifyToken()</span> HMAC-SHA256</div>
+        <div class="item"><span class="item-icon">✅</span><span class="item-code">requireAuth()</span> vérifie Bearer</div>
+        <div class="item"><span class="item-icon">🛡</span><span class="item-code">requireRole()</span> admin / provider</div>
+        <div class="item"><span class="item-icon">⏱</span>Vérification expiration <span class="item-code">exp</span></div>
+      </div>
+    </div>
+
+    <!-- Routes API -->
+    <div class="block">
+      <div class="block-title">
+        <div class="block-dot dot-green"></div>
+        Routes API — /api/…
+      </div>
+      <div class="item-list">
+        <div class="item">
+          <span class="item-method m-post">POST</span>
+          <span class="item-code">/auth/login</span>
+          <span class="item-code">/auth/register</span>
+        </div>
+        <div class="item">
+          <span class="item-method m-get">GET</span>
+          <span class="item-code">/destinations</span>
+          <span class="item-code">/destinations/:id</span>
+        </div>
+        <div class="item">
+          <span class="item-method m-get">GET</span>
+          <span class="item-code">/transports</span>
+          <span class="item-code">/accommodations</span>
+        </div>
+        <div class="item">
+          <span class="item-method m-get">GET</span>
+          <span class="item-code">/activities</span>
+          <span class="item-code">/notifications</span>
+        </div>
+        <div class="item">
+          <span class="item-method m-get">GET</span>
+          <span class="item-method m-post">POST</span>
+          <span class="item-method m-delete">DEL</span>
+          <span class="item-code">/itineraries</span>
+        </div>
+        <div class="item">
+          <span class="item-method m-get">GET</span>
+          <span class="item-method m-post">POST</span>
+          <span class="item-code">/bookings</span>
+        </div>
+        <div class="item">
+          <span class="item-method m-get">GET</span>
+          <span class="item-method m-put">PUT</span>
+          <span class="item-code">/users/profile</span>
+        </div>
+        <div class="item">
+          <span class="item-method m-post">POST</span>
+          <span class="item-method m-delete">DEL</span>
+          <span class="item-code">/users/favorites</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PDO -->
+    <div class="block">
+      <div class="block-title">
+        <div class="block-dot dot-gray"></div>
+        Accès données — PDO
+      </div>
+      <div class="item-list">
+        <div class="item"><span class="item-icon">🔌</span>Database.php — connexion PDO</div>
+        <div class="item"><span class="item-icon">📝</span>Requêtes préparées <span class="item-code">prepare()</span></div>
+        <div class="item"><span class="item-icon">🌍</span>Charset UTF-8mb4</div>
+        <div class="item"><span class="item-icon">🔒</span>Config via <span class="item-code">.env.local</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ FLÈCHE BACKEND → BDD ══════════════════════════════════ -->
+  <div class="arrow-col">
+    <div class="arrow-line">
+      <svg class="arrow-svg" width="60" height="120" viewBox="0 0 60 120">
+        <defs>
+          <marker id="ah3" markerWidth="8" markerHeight="6" refX="6" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#b45309"/>
+          </marker>
+          <marker id="ah4" markerWidth="8" markerHeight="6" refX="2" refY="3" orient="auto">
+            <polygon points="8 0, 0 3, 8 6" fill="#15803d"/>
+          </marker>
+        </defs>
+        <line x1="4" y1="40" x2="54" y2="40" stroke="#b45309" stroke-width="2" marker-end="url(#ah3)"/>
+        <line x1="56" y1="70" x2="6" y2="70" stroke="#15803d" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#ah4)"/>
+      </svg>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:4px;align-items:center;">
+      <span class="arr-label" style="color:#b45309;">➜ Requête SQL</span>
+      <span class="arr-label" style="color:#15803d; font-size:8px;">← Résultat</span>
+      <span class="arr-label" style="font-size:8px; margin-top:4px;">PDO / MySQL</span>
+    </div>
+  </div>
+
+  <!-- ══ COUCHE 3 : BASE DE DONNÉES ═══════════════════════════ -->
+  <div class="layer layer-db">
+    <div class="layer-title">
+      <div class="layer-icon">🗄</div>
+      <div>
+        <div class="layer-name">Base de données</div>
+        <div class="layer-sub">MySQL — voyagevista</div>
+      </div>
+    </div>
+
+    <!-- Tables principales -->
+    <div class="db-table">
+      <div class="db-table-head">👤 utilisateurs</div>
+      <div class="db-table-rows">
+        <span class="db-col pk">id PK</span>
+        <span class="db-col">email</span>
+        <span class="db-col">role</span>
+        <span class="db-col">mot_de_passe</span>
+      </div>
+    </div>
+
+    <div class="db-table">
+      <div class="db-table-head">📍 destinations</div>
+      <div class="db-table-rows">
+        <span class="db-col pk">id PK</span>
+        <span class="db-col">nom</span>
+        <span class="db-col">categorie</span>
+        <span class="db-col fk">id_prestataire FK</span>
+      </div>
+    </div>
+
+    <div class="db-table">
+      <div class="db-table-head">✈ transports &nbsp;·&nbsp; 🏨 hebergements &nbsp;·&nbsp; 🧗 activites</div>
+      <div class="db-table-rows">
+        <span class="db-col pk">id PK</span>
+        <span class="db-col fk">id_destination FK</span>
+        <span class="db-col">prix</span>
+        <span class="db-col">type</span>
+      </div>
+    </div>
+
+    <div class="db-table">
+      <div class="db-table-head">🗺 itineraires</div>
+      <div class="db-table-rows">
+        <span class="db-col pk">id PK</span>
+        <span class="db-col fk">id_utilisateur FK</span>
+        <span class="db-col fk">id_destination FK</span>
+        <span class="db-col">statut</span>
+      </div>
+    </div>
+
+    <div class="db-table">
+      <div class="db-table-head">📎 lignes (EF) — transport · hébergt · activité</div>
+      <div class="db-table-rows">
+        <span class="db-col pk">id PK</span>
+        <span class="db-col fk">id_itineraire FK</span>
+        <span class="db-col fk">id_service FK</span>
+        <span class="db-col">prix</span>
+      </div>
+    </div>
+
+    <div class="db-table">
+      <div class="db-table-head">📦 reservations</div>
+      <div class="db-table-rows">
+        <span class="db-col pk">id PK</span>
+        <span class="db-col fk">id_utilisateur FK</span>
+        <span class="db-col fk">id_itineraire FK</span>
+        <span class="db-col">statut</span>
+        <span class="db-col">statut_paiement</span>
+      </div>
+    </div>
+
+    <div class="db-table">
+      <div class="db-table-head">🔔 notifications &nbsp;·&nbsp; ⭐ avis &nbsp;·&nbsp; ❤ favoris</div>
+      <div class="db-table-rows">
+        <span class="db-col pk">id PK</span>
+        <span class="db-col fk">id_utilisateur FK</span>
+        <span class="db-col">type_entite</span>
+        <span class="db-col">id_entite</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ── Flux de données ────────────────────────────────────── -->
+<div class="section-title">Flux principal — Requête authentifiée</div>
+<div class="flow-steps">
+
+  <div class="flow-step">
+    <div class="flow-step-head">
+      <div class="flow-num">1</div>
+      <div class="flow-step-title">Action utilisateur</div>
+    </div>
+    <div class="flow-step-desc">L'utilisateur clique sur un bouton (ex : "Ajouter à l'itinéraire"). React déclenche un appel Axios.</div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-step-head">
+      <div class="flow-num">2</div>
+      <div class="flow-step-title">Requête HTTP</div>
+    </div>
+    <div class="flow-step-desc">Axios envoie <span style="font-family:monospace;font-size:9px">POST /api/itineraries</span> avec le JWT dans le header <span style="font-family:monospace;font-size:9px">Authorization: Bearer …</span></div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-step-head">
+      <div class="flow-num">3</div>
+      <div class="flow-step-title">Validation JWT</div>
+    </div>
+    <div class="flow-step-desc"><span style="font-family:monospace;font-size:9px">requireAuth()</span> vérifie la signature HMAC-SHA256 et l'expiration. Si invalide → 401.</div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-step-head">
+      <div class="flow-num">4</div>
+      <div class="flow-step-title">Requête SQL</div>
+    </div>
+    <div class="flow-step-desc">Le contrôleur PHP exécute une requête préparée via PDO. MySQL retourne le résultat. PHP formate en JSON.</div>
+  </div>
+
+  <div class="flow-step">
+    <div class="flow-step-head">
+      <div class="flow-num">5</div>
+      <div class="flow-step-title">Mise à jour UI</div>
+    </div>
+    <div class="flow-step-desc">React reçoit la réponse JSON → met à jour le state (Context ou useState) → re-render automatique des composants.</div>
+  </div>
+
+</div>
+
+
+<!-- ── Légende ──────────────────────────────────────────── -->
+<div class="legend">
+  <div class="legend-title">Légende</div>
+  <div class="legend-items">
+    <div class="legend-item">
+      <div style="width:12px;height:12px;border-radius:3px;background:var(--front);flex-shrink:0;"></div>
+      Couche Frontend (React + Vite)
+    </div>
+    <div class="legend-item">
+      <div style="width:12px;height:12px;border-radius:3px;background:var(--back);flex-shrink:0;"></div>
+      Couche Backend (PHP REST API)
+    </div>
+    <div class="legend-item">
+      <div style="width:12px;height:12px;border-radius:3px;background:var(--db);flex-shrink:0;"></div>
+      Couche Données (MySQL + PDO)
+    </div>
+    <div class="legend-item">
+      <span style="font-size:11px;">🔒</span> Route protégée (JWT requis)
+    </div>
+    <div class="legend-item">
+      <span style="font-size:11px;">🔓</span> Route publique
+    </div>
+    <div class="legend-item">
+      <span class="db-col pk" style="font-size:9px;">PK</span> Clé primaire
+    </div>
+    <div class="legend-item">
+      <span class="db-col fk" style="font-size:9px;">FK</span> Clé étrangère
+    </div>
+    <div class="legend-item">
+      <span class="item-method m-get">GET</span>
+      <span class="item-method m-post">POST</span>
+      <span class="item-method m-put">PUT</span>
+      <span class="item-method m-delete">DEL</span>
+      Méthodes HTTP
+    </div>
+    <div class="legend-item">
+      <span style="font-size:9px;font-family:monospace;background:#1e1b4b;color:#a5b4fc;padding:2px 6px;border-radius:3px;">JWT</span>
+      Token JSON Web Token (HS256)
+    </div>
+    <div class="legend-item">
+      <span style="font-size:9px;background:#f3f4f6;border:1px solid #e5e7eb;padding:2px 6px;border-radius:3px;font-family:monospace;">EF</span>
+      Entité faible
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
