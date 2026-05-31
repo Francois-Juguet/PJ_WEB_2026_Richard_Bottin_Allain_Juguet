@@ -1,4 +1,6 @@
 <?php
+// Point d'entrée pour l'authentification des utilisateurs : connexion et génération du token JWT
+
 require_once __DIR__ . '/../../config/cors.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../middleware/auth.php';
@@ -20,11 +22,11 @@ if (!$email || !$password) {
 }
 
 $db   = (new Database())->connect();
-$stmt = $db->prepare('SELECT * FROM users WHERE email = ?');
+$stmt = $db->prepare('SELECT * FROM utilisateurs WHERE email = ?');
 $stmt->execute([$email]);
 $user = $stmt->fetch();
 
-if (!$user || !password_verify($password, $user['password'])) {
+if (!$user || !password_verify($password, $user['mot_de_passe'])) {
     http_response_code(401);
     echo json_encode(['error' => 'Identifiants incorrects']);
     exit();
@@ -37,5 +39,5 @@ $token = generateToken([
     'exp'   => time() + 86400 * 7
 ]);
 
-unset($user['password']);
+unset($user['mot_de_passe']);
 echo json_encode(['token' => $token, 'user' => $user]);

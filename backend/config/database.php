@@ -1,4 +1,6 @@
 <?php
+// Configuration de la connexion à la base de données MySQL via PDO
+
 class Database {
     private $host;
     private $db;

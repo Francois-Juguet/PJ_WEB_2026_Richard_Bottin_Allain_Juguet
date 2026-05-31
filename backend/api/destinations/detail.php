@@ -1,4 +1,6 @@
 <?php
+// Détail d'une destination : hébergements, activités et avis associés, mise à jour et suppression
+
 require_once __DIR__ . '/../../config/cors.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../middleware/auth.php';
@@ -10,47 +12,47 @@ $id     = (int)($_GET['id'] ?? 0);
 if (!$id) { http_response_code(400); echo json_encode(['error' => 'ID requis']); exit(); }
 
 if ($method === 'GET') {
-    $stmt = $db->prepare('SELECT d.*, u.first_name as provider_name FROM destinations d LEFT JOIN users u ON d.provider_id = u.id WHERE d.id = ?');
+    $stmt = $db->prepare('SELECT d.*, u.prenom as prestataire_nom FROM destinations d LEFT JOIN utilisateurs u ON d.prestataire_id = u.id WHERE d.id = ?');
     $stmt->execute([$id]);
     $dest = $stmt->fetch();
     if (!$dest) { http_response_code(404); echo json_encode(['error' => 'Destination non trouvée']); exit(); }
 
     // Hébergements
-    $stmt = $db->prepare('SELECT * FROM accommodations WHERE destination_id = ? ORDER BY rating DESC');
+    $stmt = $db->prepare('SELECT * FROM hebergements WHERE destination_id = ? ORDER BY note DESC');
     $stmt->execute([$id]);
-    $dest['accommodations'] = $stmt->fetchAll();
+    $dest['hebergements'] = $stmt->fetchAll();
 
     // Activités
-    $stmt = $db->prepare('SELECT * FROM activities WHERE destination_id = ? ORDER BY rating DESC');
+    $stmt = $db->prepare('SELECT * FROM activites WHERE destination_id = ? ORDER BY note DESC');
     $stmt->execute([$id]);
-    $dest['activities'] = $stmt->fetchAll();
+    $dest['activites'] = $stmt->fetchAll();
 
     // Avis
-    $stmt = $db->prepare('SELECT r.*, u.first_name, u.last_name FROM reviews r JOIN users u ON r.user_id = u.id WHERE r.entity_type = "destination" AND r.entity_id = ? ORDER BY r.created_at DESC LIMIT 10');
+    $stmt = $db->prepare('SELECT r.*, u.prenom, u.nom FROM avis r JOIN utilisateurs u ON r.utilisateur_id = u.id WHERE r.type_element = "destination" AND r.element_id = ? ORDER BY r.cree_le DESC LIMIT 10');
     $stmt->execute([$id]);
-    $dest['reviews'] = $stmt->fetchAll();
+    $dest['avis'] = $stmt->fetchAll();
 
     echo json_encode($dest);
 
 } elseif ($method === 'PUT') {
-    $user = requireRole(['admin', 'provider']);
+    $user = requireRole(['admin', 'prestataire']);
     $body = json_decode(file_get_contents('php://input'), true);
 
     $stmt = $db->prepare('SELECT * FROM destinations WHERE id = ?');
     $stmt->execute([$id]);
     $dest = $stmt->fetch();
     if (!$dest) { http_response_code(404); echo json_encode(['error' => 'Non trouvée']); exit(); }
-    if ($user['role'] !== 'admin' && $dest['provider_id'] != $user['id']) {
+    if ($user['role'] !== 'admin' && $dest['prestataire_id'] != $user['id']) {
         http_response_code(403); echo json_encode(['error' => 'Accès interdit']); exit();
     }
 
-    $fields  = ['name', 'country', 'region', 'description', 'image', 'category', 'price_from', 'is_featured'];
+    $fields  = ['nom', 'pays', 'region', 'description', 'image', 'categorie', 'prix_depuis', 'est_vedette'];
     $updates = [];
     $params  = [];
     foreach ($fields as $f) {
         if (array_key_exists($f, $body)) {
             $updates[] = "$f = ?";
-            $params[]  = $f === 'is_featured' ? (bool)$body[$f] : $body[$f];
+            $params[]  = $f === 'est_vedette' ? (bool)$body[$f] : $body[$f];
         }
     }
     if ($updates) {

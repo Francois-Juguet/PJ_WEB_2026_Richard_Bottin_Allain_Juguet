@@ -1,4 +1,6 @@
 <?php
+// Configuration des en-têtes CORS pour autoriser les requêtes cross-origin du frontend React
+
 $allowed = [
     'http://localhost:5173',
     'http://localhost',

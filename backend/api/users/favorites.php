@@ -1,4 +1,6 @@
 <?php
+// Gestion des favoris de l'utilisateur : liste par type (destinations, hébergements, activités), ajout et suppression
+
 require_once __DIR__ . '/../../config/cors.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../middleware/auth.php';
@@ -8,70 +10,72 @@ $method = $_SERVER['REQUEST_METHOD'];
 $user   = requireAuth();
 
 if ($method === 'GET') {
-    $results = [];
+    $resultats = [];
 
-    // Destinations
+    // Destinations favorites
     $stmt = $db->prepare('
-        SELECT f.id as fav_id, f.entity_type, f.entity_id, f.created_at,
-               d.name as item_name, d.image, d.country as location,
-               d.price_from as price, d.rating
-        FROM favorites f
-        JOIN destinations d ON f.entity_id = d.id
-        WHERE f.user_id = ? AND f.entity_type = "destination"
-        ORDER BY f.created_at DESC');
+        SELECT f.id as favori_id, f.type_element, f.element_id, f.cree_le,
+               d.nom as nom_element, d.image, d.pays as localisation,
+               d.prix_depuis as prix, d.note
+        FROM favoris f
+        JOIN destinations d ON f.element_id = d.id
+        WHERE f.utilisateur_id = ? AND f.type_element = "destination"
+        ORDER BY f.cree_le DESC');
     $stmt->execute([$user['id']]);
-    $results = array_merge($results, $stmt->fetchAll());
+    $resultats = array_merge($resultats, $stmt->fetchAll());
 
-    // Accommodations
+    // Hébergements favoris
     $stmt = $db->prepare('
-        SELECT f.id as fav_id, f.entity_type, f.entity_id, f.created_at,
-               a.name as item_name, a.image,
-               CONCAT(COALESCE(d.name, ""), IF(d.country IS NOT NULL, CONCAT(", ", d.country), "")) as location,
-               a.price_per_night as price, a.rating
-        FROM favorites f
-        JOIN accommodations a ON f.entity_id = a.id
+        SELECT f.id as favori_id, f.type_element, f.element_id, f.cree_le,
+               a.nom as nom_element, a.image,
+               CONCAT(COALESCE(d.nom, ""), IF(d.pays IS NOT NULL, CONCAT(", ", d.pays), "")) as localisation,
+               a.prix_nuit as prix, a.note
+        FROM favoris f
+        JOIN hebergements a ON f.element_id = a.id
         LEFT JOIN destinations d ON a.destination_id = d.id
-        WHERE f.user_id = ? AND f.entity_type = "accommodation"
-        ORDER BY f.created_at DESC');
+        WHERE f.utilisateur_id = ? AND f.type_element = "hebergement"
+        ORDER BY f.cree_le DESC');
     $stmt->execute([$user['id']]);
-    $results = array_merge($results, $stmt->fetchAll());
+    $resultats = array_merge($resultats, $stmt->fetchAll());
 
-    // Activities
+    // Activités favorites
     $stmt = $db->prepare('
-        SELECT f.id as fav_id, f.entity_type, f.entity_id, f.created_at,
-               act.name as item_name, act.image,
-               COALESCE(d.name, "") as location,
-               act.price, act.rating
-        FROM favorites f
-        JOIN activities act ON f.entity_id = act.id
+        SELECT f.id as favori_id, f.type_element, f.element_id, f.cree_le,
+               act.nom as nom_element, act.image,
+               COALESCE(d.nom, "") as localisation,
+               act.prix, act.note
+        FROM favoris f
+        JOIN activites act ON f.element_id = act.id
         LEFT JOIN destinations d ON act.destination_id = d.id
-        WHERE f.user_id = ? AND f.entity_type = "activity"
-        ORDER BY f.created_at DESC');
+        WHERE f.utilisateur_id = ? AND f.type_element = "activite"
+        ORDER BY f.cree_le DESC');
     $stmt->execute([$user['id']]);
-    $results = array_merge($results, $stmt->fetchAll());
+    $resultats = array_merge($resultats, $stmt->fetchAll());
 
-    usort($results, function($a, $b) {
-        return strtotime($b['created_at']) - strtotime($a['created_at']);
+    usort($resultats, function($a, $b) {
+        return strtotime($b['cree_le']) - strtotime($a['cree_le']);
     });
-    echo json_encode($results);
+    echo json_encode($resultats);
 
 } elseif ($method === 'POST') {
-    $body = json_decode(file_get_contents('php://input'), true);
-    $type = in_array($body['entity_type'] ?? '', ['destination', 'accommodation', 'activity']) ? $body['entity_type'] : null;
-    $eid  = (int)($body['entity_id'] ?? 0);
+    $body       = json_decode(file_get_contents('php://input'), true);
+    $typeElement = in_array($body['type_element'] ?? $body['entity_type'] ?? '', ['destination', 'hebergement', 'activite'])
+        ? ($body['type_element'] ?? $body['entity_type'])
+        : null;
+    $elementId  = (int)($body['element_id'] ?? $body['entity_id'] ?? 0);
 
-    if (!$type || !$eid) { http_response_code(400); echo json_encode(['error' => 'Données invalides']); exit(); }
+    if (!$typeElement || !$elementId) { http_response_code(400); echo json_encode(['error' => 'Données invalides']); exit(); }
 
-    $stmt = $db->prepare('SELECT id FROM favorites WHERE user_id = ? AND entity_type = ? AND entity_id = ?');
-    $stmt->execute([$user['id'], $type, $eid]);
-    $existing = $stmt->fetch();
+    $stmt = $db->prepare('SELECT id FROM favoris WHERE utilisateur_id = ? AND type_element = ? AND element_id = ?');
+    $stmt->execute([$user['id'], $typeElement, $elementId]);
+    $existant = $stmt->fetch();
 
-    if ($existing) {
-        $db->prepare('DELETE FROM favorites WHERE id = ?')->execute([$existing['id']]);
-        echo json_encode(['favorited' => false, 'message' => 'Retiré des favoris']);
+    if ($existant) {
+        $db->prepare('DELETE FROM favoris WHERE id = ?')->execute([$existant['id']]);
+        echo json_encode(['en_favori' => false, 'message' => 'Retiré des favoris']);
     } else {
-        $db->prepare('INSERT INTO favorites (user_id, entity_type, entity_id) VALUES (?, ?, ?)')->execute([$user['id'], $type, $eid]);
-        echo json_encode(['favorited' => true, 'message' => 'Ajouté aux favoris']);
+        $db->prepare('INSERT INTO favoris (utilisateur_id, type_element, element_id) VALUES (?, ?, ?)')->execute([$user['id'], $typeElement, $elementId]);
+        echo json_encode(['en_favori' => true, 'message' => 'Ajouté aux favoris']);
     }
 } else {
     http_response_code(405);

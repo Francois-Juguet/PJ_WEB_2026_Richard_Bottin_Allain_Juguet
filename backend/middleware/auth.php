@@ -1,4 +1,6 @@
 <?php
+// Middleware d'authentification : génération et vérification des tokens JWT, protection des routes
+
 function generateToken($payload) {
     $header  = base64_encode(json_encode(['typ' => 'JWT', 'alg' => 'HS256']));
     $payload = base64_encode(json_encode($payload));
