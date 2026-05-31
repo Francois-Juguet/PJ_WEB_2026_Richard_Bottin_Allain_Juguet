@@ -1,0 +1,15 @@
+# Dépendances
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Environnement (mots de passe, clés API)
+.env.local
+*.env.local
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# Archives
+frontend.zip

@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Architecture — VoyageVista</title>
+  <style>
+    /* ── Variables de couleur ── */
+    :root {
+      --or:        #C9A84C;
+      --or-clair:  #E8C97A;
+      --fond:      #0A0A0F;
+      --fond-2:    #12121A;
+      --fond-3:    #1A1A28;
+      --fond-4:    #252535;
+      --texte:     #E8E8F0;
+      --gris:      #8888A8;
+      --gris-dim:  #5A5A78;
+      --vert:      #4ade80;
+      --bleu:      #60a5fa;
+      --violet:    #a78bfa;
+      --rouge:     #f87171;
+      --orange:    #fb923c;
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--fond);
+      color: var(--texte);
+      line-height: 1.6;
+      padding-bottom: 80px;
+    }
+
+    /* ── En-tête ── */
+    header {
+      background: var(--fond-2);
+      border-bottom: 2px solid var(--or);
+      padding: 32px 0 28px;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    header h1 span { color: var(--or); }
+    header p {
+      color: var(--gris);
+      margin-top: 8px;
+      font-size: 0.95rem;
+    }
+    .badge-header {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 4px 16px;
+      border-radius: 100px;
+      background: rgba(201,168,76,0.12);
+      border: 1px solid rgba(201,168,76,0.35);
+      color: var(--or);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ── Mise en page ── */
+    .page { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+    .section { margin-top: 56px; }
+
+    .titre-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .titre-section .numero {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: var(--or);
+      color: var(--fond);
+      font-weight: 800;
+      font-size: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .titre-section h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+    .titre-section p {
+      font-size: 0.85rem;
+      color: var(--gris);
+      margin-top: 2px;
+    }
+
+    /* ── Carte générique ── */
+    .carte {
+      background: var(--fond-3);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 24px;
+    }
+    .carte-or { border-color: rgba(201,168,76,0.25); }
+
+    /* ── Schéma 3 couches ── */
+    .couches { display: flex; flex-direction: column; gap: 4px; }
+    .couche {
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.2s;
+    }
+    .couche:hover { transform: translateX(4px); border-color: rgba(201,168,76,0.3); }
+    .couche-icone {
+      width: 52px; height: 52px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem;
+      flex-shrink: 0;
+    }
+    .couche-titre  { font-weight: 700; font-size: 1rem; }
+    .couche-sous   { font-size: 0.82rem; color: var(--gris); margin-top: 3px; }
+    .couche-tech   { margin-left: auto; display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+    .tag {
+      padding: 3px 10px; border-radius: 6px;
+      font-size: 0.72rem; font-weight: 600;
+      background: rgba(255,255,255,0.06);
+      color: var(--gris);
+      border: 1px solid rgba(255,255,255,0.09);
+    }
+    .tag-or     { background: rgba(201,168,76,0.12); color: var(--or);    border-color: rgba(201,168,76,0.3); }
+    .tag-bleu   { background: rgba(96,165,250,0.12);  color: var(--bleu);  border-color: rgba(96,165,250,0.3); }
+    .tag-vert   { background: rgba(74,222,128,0.12);  color: var(--vert);  border-color: rgba(74,222,128,0.3); }
+    .tag-violet { background: rgba(167,139,250,0.12); color: var(--violet);border-color: rgba(167,139,250,0.3); }
+
+    .fleche {
+      text-align: center;
+      color: var(--or);
+      font-size: 1.2rem;
+      line-height: 1;
+      padding: 4px 0;
+    }
+    .fleche small { display: block; font-size: 0.7rem; color: var(--gris); margin-top: 2px; }
+
+    /* ── Arborescence fichiers ── */
+    .arbre { font-family: 'Consolas', 'Courier New', monospace; font-size: 0.85rem; line-height: 2; }
+    .arbre .dossier { color: var(--or); font-weight: 700; }
+    .arbre .fichier { color: var(--texte); }
+    .arbre .commentaire { color: var(--gris-dim); font-size: 0.78rem; }
+    .arbre .vert { color: var(--vert); }
+    .arbre .bleu { color: var(--bleu); }
+    .arbre .violet { color: var(--violet); }
+
+    /* ── Grille 2 colonnes ── */
+    .grille-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 700px) { .grille-2 { grid-template-columns: 1fr; } }
+
+    /* ── Étapes numérotées ── */
+    .etapes { display: flex; flex-direction: column; gap: 0; }
+    .etape {
+      display: flex;
+      gap: 16px;
+      position: relative;
+    }
+    .etape:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 17px; top: 40px;
+      width: 2px; height: calc(100% - 8px);
+      background: rgba(201,168,76,0.2);
+    }
+    .etape-numero {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--fond-4);
+      border: 2px solid var(--or);
+      color: var(--or);
+      font-weight: 700; font-size: 0.85rem;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 4px;
+      z-index: 1;
+    }
+    .etape-corps { padding-bottom: 24px; flex: 1; }
+    .etape-titre { font-weight: 600; font-size: 0.95rem; margin-bottom: 3px; }
+    .etape-desc  { font-size: 0.82rem; color: var(--gris); line-height: 1.6; }
+    .etape-code  {
+      display: inline-block; margin-top: 6px;
+      font-family: 'Consolas', monospace; font-size: 0.78rem;
+      background: var(--fond-4); color: var(--or);
+      padding: 3px 10px; border-radius: 6px;
+      border: 1px solid rgba(201,168,76,0.2);
+    }
+
+    /* ── Tableau des rôles ── */
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      background: var(--fond-4);
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--or);
+      border-bottom: 1px solid rgba(201,168,76,0.2);
+    }
+    td {
+      padding: 12px 16px;
+      font-size: 0.875rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+
+    /* ── Pages liste ── */
+    .pages-grille {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 10px;
+    }
+    .page-item {
+      background: var(--fond-4);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .page-item:hover { border-color: rgba(201,168,76,0.3); }
+    .page-url { font-family: monospace; font-size: 0.75rem; color: var(--or); }
+    .page-nom { font-size: 0.82rem; color: var(--gris); margin-top: 2px; }
+
+    /* ── Séparateur ── */
+    .sep { height: 1px; background: rgba(255,255,255,0.05); margin: 48px 0 0; }
+
+    /* ── Schéma d'architecture ── */
+    .schema-wrapper {
+      background: var(--fond-2);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding: 48px 0;
+    }
+    .schema-titre {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .schema-titre h2 { font-size: 1.3rem; font-weight: 800; }
+    .schema-titre p  { color: var(--gris); font-size: 0.85rem; margin-top: 6px; }
+
+    /* Colonnes du schéma */
+    .schema {
+      display: grid;
+      grid-template-columns: 1fr 80px 1fr 80px 1fr;
+      align-items: center;
+      gap: 0;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    @media (max-width: 720px) {
+      .schema {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        max-width: 340px;
+      }
+      .schema-fleche { transform: rotate(90deg); }
+    }
+
+    /* Boîte d'un composant */
+    .schema-boite {
+      border-radius: 14px;
+      border: 2px solid;
+      padding: 24px 20px;
+      text-align: center;
+      position: relative;
+    }
+    .schema-boite .boite-icone {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .schema-boite .boite-titre {
+      font-weight: 800;
+      font-size: 1rem;
+      margin-bottom: 4px;
+    }
+    .schema-boite .boite-sous {
+      font-size: 0.75rem;
+      opacity: 0.7;
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+    .schema-boite .boite-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      justify-content: center;
+    }
+    .schema-boite .boite-tag {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 5px;
+      border: 1px solid currentColor;
+      opacity: 0.85;
+    }
+
+    /* Couleurs par couche */
+    .boite-frontend { background: rgba(201,168,76,0.06); border-color: rgba(201,168,76,0.5); color: var(--or); }
+    .boite-backend  { background: rgba(96,165,250,0.06); border-color: rgba(96,165,250,0.5); color: var(--bleu); }
+    .boite-bdd      { background: rgba(74,222,128,0.06); border-color: rgba(74,222,128,0.5); color: var(--vert); }
+
+    /* Flèche entre composants */
+    .schema-fleche {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.68rem;
+      color: var(--gris-dim);
+      text-align: center;
+      line-height: 1.3;
+    }
+    .schema-fleche .fleche-ligne {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+    .schema-fleche .fl-haut,
+    .schema-fleche .fl-bas {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      gap: 2px;
+    }
+    .schema-fleche .fl-haut { color: var(--or); }
+    .schema-fleche .fl-bas  { color: var(--gris-dim); flex-direction: row-reverse; }
+    .schema-fleche .fl-trait {
+      flex: 1;
+      height: 1.5px;
+      background: currentColor;
+      opacity: 0.4;
+    }
+    .schema-fleche .fl-libelle {
+      font-size: 0.62rem;
+      padding: 1px 0;
+      white-space: nowrap;
+    }
+
+    /* Détails des interactions */
+    .interactions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      max-width: 960px;
+      margin: 36px auto 0;
+    }
+    @media (max-width: 720px) { .interactions { grid-template-columns: 1fr; } }
+    .inter-bloc {
+      background: var(--fond-3);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .inter-titre {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .inter-ligne {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 0.78rem;
+      color: var(--gris);
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      line-height: 1.4;
+    }
+    .inter-ligne:last-child { border-bottom: none; }
+    .inter-methode {
+      font-family: monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .m-get    { background: rgba(74,222,128,0.15);  color: var(--vert); }
+    .m-post   { background: rgba(251,146,60,0.15);  color: var(--orange); }
+    .m-put    { background: rgba(96,165,250,0.15);  color: var(--bleu); }
+    .m-delete { background: rgba(248,113,113,0.15); color: var(--rouge); }
+    .m-sql    { background: rgba(167,139,250,0.15); color: var(--violet); }
+
+    /* ── Pied de page ── */
+    footer {
+      text-align: center;
+      margin-top: 64px;
+      padding: 24px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      color: var(--gris-dim);
+      font-size: 0.8rem;
+    }
+    footer span { color: var(--or); }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════
+       EN-TÊTE
+  ══════════════════════════════════════════ -->
+  <header>
+    <h1>Voyage<span>Vista</span></h1>
+    <p>Document d'architecture système — à destination des étudiants</p>
+    <div class="badge-header">Projet Web Dynamique — ECE Paris 2026</div>
+  </header>
+
+  <!-- ══════════════════════════════════════════
+       SCHÉMA D'ARCHITECTURE PRINCIPAL
+  ══════════════════════════════════════════ -->
+  <div class="schema-wrapper">
+    <div class="page">
+
+      <div class="schema-titre">
+        <h2>Schéma d'architecture — VoyageVista</h2>
+        <p>Organisation générale et interactions principales entre les trois couches</p>
+      </div>
+
+      <!-- ── Trois boîtes reliées par des flèches ── -->
+      <div class="schema">
+
+        <!-- FRONTEND -->
+        <div class="schema-boite boite-frontend">
+          <span class="boite-icone">🖥️</span>
+          <div class="boite-titre">Frontend</div>
+          <div class="boite-sous">Navigateur de l'utilisateur<br>Interface graphique et interactions</div>
+          <div class="boite-tags">
+            <span class="boite-tag">React 19</span>
+            <span class="boite-tag">Vite</span>
+            <span class="boite-tag">Axios</span>
+            <span class="boite-tag">React Router</span>
+            <span class="boite-tag">Framer Motion</span>
+          </div>
+        </div>
+
+        <!-- FLÈCHE Frontend → Backend -->
+        <div class="schema-fleche">
+          <div class="fleche-ligne">
+            <div class="fl-haut">
+              <div class="fl-trait"></div>
+              <span>▶</span>
+            </div>
+            <div class="fl-libelle" style="color:var(--or)">Requête HTTP<br>JSON + JWT</div>
+            <div class="fl-bas">
+              <div class="fl-trait"></div>
+              <span>◀</span>
+            </div>
+            <div class="fl-libelle">Réponse JSON</div>
+          </div>
+        </div>
+
+        <!-- BACKEND -->
+        <div class="schema-boite boite-backend">
+          <span class="boite-icone">⚙️</span>
+          <div class="boite-titre">Backend</div>
+          <div class="boite-sous">Serveur web — logique métier<br>Vérifie droits et données</div>
+          <div class="boite-tags">
+            <span class="boite-tag">PHP 8</span>
+            <span class="boite-tag">REST API</span>
+            <span class="boite-tag">JWT Auth</span>
+            <span class="boite-tag">Apache</span>
+          </div>
+        </div>
+
+        <!-- FLÈCHE Backend → BDD -->
+        <div class="schema-fleche">
+          <div class="fleche-ligne">
+            <div class="fl-haut" style="color:var(--bleu)">
+              <div class="fl-trait"></div>
+              <span>▶</span>
+            </div>
+            <div class="fl-libelle" style="color:var(--bleu)">Requête SQL<br>SELECT / INSERT…</div>
+            <div class="fl-bas" style="color:var(--gris-dim)">
+              <div class="fl-trait"></div>
+              <span>◀</span>
+            </div>
+            <div class="fl-libelle">Résultats</div>
+          </div>
+        </div>
+
+        <!-- BASE DE DONNÉES -->
+        <div class="schema-boite boite-bdd">
+          <span class="boite-icone">🗄️</span>
+          <div class="boite-titre">Base de données</div>
+          <div class="boite-sous">Stockage persistant<br>Toutes les données du site</div>
+          <div class="boite-tags">
+            <span class="boite-tag">MySQL</span>
+            <span class="boite-tag">SQL</span>
+            <span class="boite-tag">XAMPP</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── Tableau des interactions détaillées ── -->
+      <div class="interactions">
+
+        <div class="inter-bloc">
+          <div class="inter-titre" style="color:var(--or)">Frontend → Backend</div>
+          <div class="inter-ligne">
+            <span class="inter-methode m-get">GET</span>
+            <span>/destinations — liste des destinations</span>
+          </div>
+          <div class="inter-ligne">
+            <span class="inter-methode m-post">POST</span>
+            <span>/auth/login — connexion utilisateur</span>
+          </div>
+          <div class="inter-ligne">
+            <span class="inter-methode m-post">POST</span>
+            <span>/itineraries — créer un itinéraire</span>
+          </div>
+          <div class="inter-ligne">
+            <span class="inter-methode m-put">PUT</span>
+            <span>/itineraries — ajouter transport/hébergement</span>
+          </div>
+          <div class="inter-ligne">
+            <span class="inter-methode m-get">GET</span>
+            <span>/bookings — récupérer les réservations</span>
+          </div>
+          <div class="inter-ligne">
+            <span class="inter-methode m-post">POST</span>
+            <span>/users/favorites — ajouter un favori</span>
+          </div>
+        </div>
+
+        <div class="inter-bloc">
+          <div class="inter-titre" style="color:var(--bleu)">Backend → Base de données</div>
+          <div class="inter-ligne">
+            <span class="inter-methode m-sql">SQL</span>
+            <span>SELECT destinations WHERE category = ?</span>
+          </div>
+          <div class="inter-ligne">
+            <span class="inter-methode m-sql">SQL</span>
+            <span>SELECT users WHERE email = ? (login)</span>
+          </div>
+          <div class="inter-ligne">
+            <span class="inter-methode m-sql">SQL</span>
+            <span>INSERT INTO itineraries VALUES (…)</span>
+          </div>
+          <div class="inter-ligne">
+            <span class="inter-methode m-sql">SQL</span>
+            <span>UPDATE itinerary_items SET (…)</span>
+          </div>
+          <div class="inter-ligne">
+            <span class="inter-methode m-sql">SQL</span>
+            <span>SELECT bookings WHERE user_id = ?</span>
+          </div>
+          <div class="inter-ligne">
+            <span class="inter-methode m-sql">SQL</span>
+            <span>INSERT INTO favorites (entity_type, id…)</span>
+          </div>
+        </div>
+
+        <div class="inter-bloc">
+          <div class="inter-titre" style="color:var(--vert)">Tables de la base</div>
+          <div class="inter-ligne">
+            <span class="inter-methode m-sql">TABLE</span>
+            <span><strong>users</strong> — comptes et rôles</span>
+          </div>
+          <div class="inter-ligne">
+            <span class="inter-methode m-sql">TABLE</span>
+            <span><strong>destinations</strong> — lieux disponibles</span>
+          </div>
+          <div class="inter-ligne">
+            <span class="inter-methode m-sql">TABLE</span>
+            <span><strong>transports</strong> — vols, trains, bus</span>
+          </div>
+          <div class="inter-ligne">
+            <span class="inter-methode m-sql">TABLE</span>
+            <span><strong>accommodations</strong> — hôtels, villas</span>
+          </div>
+          <div class="inter-ligne">
+            <span class="inter-methode m-sql">TABLE</span>
+            <span><strong>activities</strong> — excursions, visites</span>
+          </div>
+          <div class="inter-ligne">
+            <span class="inter-methode m-sql">TABLE</span>
+            <span><strong>itineraries / bookings</strong> — voyages</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="page">
+
+    <!-- ══════════════════════════════════════════
+         1. VUE GLOBALE — LES 3 COUCHES
+    ══════════════════════════════════════════ -->
+    <div class="section">
+      <div class="titre-section">
+        <div class="numero">1</div>
+        <div>
+          <h2>Vue globale — les 3 couches</h2>
+          <p>VoyageVista est une application web classique à 3 niveaux (architecture MVC distribuée)</p>
+        </div>
+      </div>
+
+      <div class="couches">
+
+        <div class="couche" style="background:#1A1A28">
+          <div class="couche-icone" style="background:rgba(201,168,76,0.12)">🖥️</div>
+          <div>
+            <div class="couche-titre">Frontend — ce que l'utilisateur voit</div>
+            <div class="couche-sous">Interface graphique, formulaires, animations. Tourne dans le navigateur.</div>
+          </div>
+          <div class="couche-tech">
+            <span class="tag tag-or">React 19</span>
+            <span class="tag tag-or">Vite</span>
+            <span class="tag tag-or">Framer Motion</span>
+          </div>
+        </div>
+
+        <div class="fleche">↕ <small>Requêtes HTTP / JSON (via Axios)</small></div>
+
+        <div class="couche" style="background:#1A1A28">
+          <div class="couche-icone" style="background:rgba(96,165,250,0.12)">⚙️</div>
+          <div>
+            <div class="couche-titre">Backend — la logique métier</div>
+            <div class="couche-sous">Vérifie les droits, valide les données, répond en JSON. Ne fait jamais confiance au frontend.</div>
+          </div>
+          <div class="couche-tech">
+            <span class="tag tag-bleu">PHP 8</span>
+            <span class="tag tag-bleu">REST API</span>
+            <span class="tag tag-bleu">JWT</span>
+          </div>
+        </div>
+
+        <div class="fleche">↕ <small>Requêtes SQL</small></div>
+
+        <div class="couche" style="background:#1A1A28">
+          <div class="couche-icone" style="background:rgba(74,222,128,0.12)">🗄️</div>
+          <div>
+            <div class="couche-titre">Base de données — la mémoire du site</div>
+            <div class="couche-sous">Stocke de façon permanente : utilisateurs, destinations, réservations, itinéraires…</div>
+          </div>
+          <div class="couche-tech">
+            <span class="tag tag-vert">MySQL</span>
+            <span class="tag tag-vert">SQL</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="sep"></div>
+
+    <!-- ══════════════════════════════════════════
+         2. STRUCTURE DES FICHIERS FRONTEND
+    ══════════════════════════════════════════ -->
+    <div class="section">
+      <div class="titre-section">
+        <div class="numero">2</div>
+        <div>
+          <h2>Structure des fichiers — Frontend</h2>
+          <p>Chaque dossier a un rôle précis et bien séparé</p>
+        </div>
+      </div>
+
+      <div class="carte">
+        <div class="arbre">
+          <div><span class="dossier">frontend/src/</span></div>
+          <div>&nbsp;&nbsp;│</div>
+          <div>&nbsp;&nbsp;├── <span class="vert">main.jsx</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="commentaire">← point d'entrée : monte React dans la page HTML</span></div>
+          <div>&nbsp;&nbsp;├── <span class="vert">App.jsx</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="commentaire">← routeur : associe chaque URL à une page</span></div>
+          <div>&nbsp;&nbsp;├── <span class="vert">index.css</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="commentaire">← styles globaux, variables de couleur (--or, --fond…)</span></div>
+          <div>&nbsp;&nbsp;│</div>
+          <div>&nbsp;&nbsp;├── <span class="dossier">context/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="commentaire">← données partagées entre tous les composants</span></div>
+          <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="bleu">AuthContext.jsx</span> &nbsp;&nbsp;<span class="commentaire">→ utilisateur connecté, token JWT, rôle</span></div>
+          <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="bleu">CartContext.jsx</span> &nbsp;&nbsp;<span class="commentaire">→ itinéraire en cours (rôle de panier)</span></div>
+          <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="bleu">ToastContext.jsx</span> &nbsp;<span class="commentaire">→ notifications temporaires (succès/erreur)</span></div>
+          <div>&nbsp;&nbsp;│</div>
+          <div>&nbsp;&nbsp;├── <span class="dossier">lib/</span></div>
+          <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="or">api.js</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="commentaire">← toutes les fonctions d'appel HTTP au backend</span></div>
+          <div>&nbsp;&nbsp;│</div>
+          <div>&nbsp;&nbsp;├── <span class="dossier">components/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="commentaire">← blocs réutilisables sur toutes les pages</span></div>
+          <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="violet">Navbar.jsx</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="commentaire">→ barre de navigation fixe</span></div>
+          <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="violet">Footer.jsx</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="commentaire">→ pied de page</span></div>
+          <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="violet">StarRating.jsx</span> &nbsp;&nbsp;<span class="commentaire">→ affichage de la note en étoiles</span></div>
+          <div>&nbsp;&nbsp;│</div>
+          <div>&nbsp;&nbsp;└── <span class="dossier">pages/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="commentaire">← une page = une URL = un fichier</span></div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── Home.jsx</div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── Destinations.jsx</div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── Activities.jsx</div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── Accommodations.jsx</div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── Transports.jsx</div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── ItineraryBuilder.jsx</div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── Bookings.jsx</div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── Favorites.jsx</div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── Profile.jsx</div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── Login.jsx / Register.jsx</div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── AdminDashboard.jsx</div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── ProviderDashboard.jsx</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sep"></div>
+
+    <!-- ══════════════════════════════════════════
+         3. TOUTES LES PAGES ET LEURS URLs
+    ══════════════════════════════════════════ -->
+    <div class="section">
+      <div class="titre-section">
+        <div class="numero">3</div>
+        <div>
+          <h2>Pages de l'application</h2>
+          <p>Chaque URL affiche un composant React différent</p>
+        </div>
+      </div>
+
+      <div class="pages-grille">
+        <div class="page-item">
+          <div>
+            <div class="page-url">/</div>
+            <div class="page-nom">Page d'accueil</div>
+          </div>
+        </div>
+        <div class="page-item">
+          <div>
+            <div class="page-url">/destinations</div>
+            <div class="page-nom">Liste des destinations</div>
+          </div>
+        </div>
+        <div class="page-item">
+          <div>
+            <div class="page-url">/destinations/:id</div>
+            <div class="page-nom">Détail d'une destination</div>
+          </div>
+        </div>
+        <div class="page-item">
+          <div>
+            <div class="page-url">/transports</div>
+            <div class="page-nom">Recherche de transports</div>
+          </div>
+        </div>
+        <div class="page-item">
+          <div>
+            <div class="page-url">/accommodations</div>
+            <div class="page-nom">Liste des hébergements</div>
+          </div>
+        </div>
+        <div class="page-item">
+          <div>
+            <div class="page-url">/activities</div>
+            <div class="page-nom">Liste des activités</div>
+          </div>
+        </div>
+        <div class="page-item">
+          <div>
+            <div class="page-url">/itinerary</div>
+            <div class="page-nom">Constructeur d'itinéraire</div>
+          </div>
+        </div>
+        <div class="page-item">
+          <div>
+            <div class="page-url">/bookings</div>
+            <div class="page-nom">Mes réservations</div>
+          </div>
+        </div>
+        <div class="page-item">
+          <div>
+            <div class="page-url">/favorites</div>
+            <div class="page-nom">Mes favoris</div>
+          </div>
+        </div>
+        <div class="page-item">
+          <div>
+            <div class="page-url">/profile</div>
+            <div class="page-nom">Mon profil</div>
+          </div>
+        </div>
+        <div class="page-item">
+          <div>
+            <div class="page-url">/login</div>
+            <div class="page-nom">Connexion</div>
+          </div>
+        </div>
+        <div class="page-item">
+          <div>
+            <div class="page-url">/register</div>
+            <div class="page-nom">Inscription</div>
+          </div>
+        </div>
+        <div class="page-item">
+          <div>
+            <div class="page-url">/admin</div>
+            <div class="page-nom">Tableau de bord admin</div>
+          </div>
+        </div>
+        <div class="page-item">
+          <div>
+            <div class="page-url">/provider</div>
+            <div class="page-nom">Espace prestataire</div>
+          </div>
+        </div>
+        <div class="page-item">
+          <div>
+            <div class="page-url">/notifications</div>
+            <div class="page-nom">Mes notifications</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sep"></div>
+
+    <!-- ══════════════════════════════════════════
+         4. COMMENT UNE PAGE S'AFFICHE
+    ══════════════════════════════════════════ -->
+    <div class="section">
+      <div class="titre-section">
+        <div class="numero">4</div>
+        <div>
+          <h2>Comment une page s'affiche — flux de données</h2>
+          <p>Exemple avec la page Destinations</p>
+        </div>
+      </div>
+
+      <div class="carte carte-or">
+        <div class="etapes">
+
+          <div class="etape">
+            <div class="etape-numero">1</div>
+            <div class="etape-corps">
+              <div class="etape-titre">L'utilisateur navigue vers /destinations</div>
+              <div class="etape-desc">React Router lit l'URL et affiche le composant <code>Destinations.jsx</code></div>
+            </div>
+          </div>
+
+          <div class="etape">
+            <div class="etape-numero">2</div>
+            <div class="etape-corps">
+              <div class="etape-titre">useEffect() se déclenche au chargement</div>
+              <div class="etape-desc">React appelle automatiquement <code>fetchDestinations()</code> une fois le composant monté</div>
+            </div>
+          </div>
+
+          <div class="etape">
+            <div class="etape-numero">3</div>
+            <div class="etape-corps">
+              <div class="etape-titre">api.js envoie la requête HTTP</div>
+              <div class="etape-desc">Axios fait un GET vers le backend PHP</div>
+              <div class="etape-code">GET /destinations/index.php?category=beach&sort=rating</div>
+            </div>
+          </div>
+
+          <div class="etape">
+            <div class="etape-numero">4</div>
+            <div class="etape-corps">
+              <div class="etape-titre">Le backend PHP répond en JSON</div>
+              <div class="etape-desc">PHP interroge MySQL, filtre les résultats, retourne un tableau d'objets</div>
+              <div class="etape-code">{"data": [ {"id":1, "name":"Bali", "price_from":899} … ]}</div>
+            </div>
+          </div>
+
+          <div class="etape">
+            <div class="etape-numero">5</div>
+            <div class="etape-corps">
+              <div class="etape-titre">React met à jour l'état</div>
+              <div class="etape-desc"><code>setDestinations(data)</code> déclenche un re-rendu automatique de la page</div>
+            </div>
+          </div>
+
+          <div class="etape">
+            <div class="etape-numero">6</div>
+            <div class="etape-corps">
+              <div class="etape-titre">La liste s'affiche à l'écran</div>
+              <div class="etape-desc">React dessine une carte par destination dans le tableau — sans recharger la page</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="sep"></div>
+
+    <!-- ══════════════════════════════════════════
+         5. L'AUTHENTIFICATION (JWT)
+    ══════════════════════════════════════════ -->
+    <div class="section">
+      <div class="titre-section">
+        <div class="numero">5</div>
+        <div>
+          <h2>L'authentification — comment fonctionne le JWT</h2>
+          <p>JWT = JSON Web Token — une chaîne signée qui prouve l'identité de l'utilisateur</p>
+        </div>
+      </div>
+
+      <div class="grille-2">
+
+        <div class="carte">
+          <p style="color:var(--or);font-weight:700;margin-bottom:16px">Connexion (une seule fois)</p>
+          <div class="etapes">
+            <div class="etape">
+              <div class="etape-numero">1</div>
+              <div class="etape-corps">
+                <div class="etape-titre">Saisie email + mot de passe</div>
+                <div class="etape-desc">L'utilisateur remplit le formulaire Login.jsx</div>
+              </div>
+            </div>
+            <div class="etape">
+              <div class="etape-numero">2</div>
+              <div class="etape-corps">
+                <div class="etape-titre">Envoi au backend</div>
+                <div class="etape-code">POST /auth/login.php</div>
+              </div>
+            </div>
+            <div class="etape">
+              <div class="etape-numero">3</div>
+              <div class="etape-corps">
+                <div class="etape-titre">PHP vérifie le mot de passe</div>
+                <div class="etape-desc">Comparaison avec le hash stocké en base (bcrypt)</div>
+              </div>
+            </div>
+            <div class="etape">
+              <div class="etape-numero">4</div>
+              <div class="etape-corps">
+                <div class="etape-titre">PHP retourne un token</div>
+                <div class="etape-code">{"token": "eyJhbGci…"}</div>
+              </div>
+            </div>
+            <div class="etape">
+              <div class="etape-numero">5</div>
+              <div class="etape-corps">
+                <div class="etape-titre">React stocke le token</div>
+                <div class="etape-desc">Sauvegardé dans <code>localStorage</code> pour persister après rechargement</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="carte">
+          <p style="color:var(--or);font-weight:700;margin-bottom:16px">Requêtes suivantes (automatique)</p>
+          <div class="etapes">
+            <div class="etape">
+              <div class="etape-numero">1</div>
+              <div class="etape-corps">
+                <div class="etape-titre">L'intercepteur Axios lit le token</div>
+                <div class="etape-desc">Défini dans <code>api.js</code>, s'exécute avant chaque requête</div>
+              </div>
+            </div>
+            <div class="etape">
+              <div class="etape-numero">2</div>
+              <div class="etape-corps">
+                <div class="etape-titre">Token ajouté dans l'en-tête HTTP</div>
+                <div class="etape-code">Authorization: Bearer eyJhbGci…</div>
+              </div>
+            </div>
+            <div class="etape">
+              <div class="etape-numero">3</div>
+              <div class="etape-corps">
+                <div class="etape-titre">PHP vérifie et décode le token</div>
+                <div class="etape-desc">Identifie l'utilisateur sans interroger la base de données</div>
+              </div>
+            </div>
+            <div class="etape">
+              <div class="etape-numero">4</div>
+              <div class="etape-corps">
+                <div class="etape-titre">Réponse selon le rôle</div>
+                <div class="etape-desc">Un admin voit plus de données qu'un voyageur simple</div>
+              </div>
+            </div>
+            <div class="etape">
+              <div class="etape-numero" style="border-color:var(--rouge);color:var(--rouge)">!</div>
+              <div class="etape-corps">
+                <div class="etape-titre">Si le token est invalide → 401</div>
+                <div class="etape-desc">L'intercepteur supprime les données locales et redirige vers /login</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="sep"></div>
+
+    <!-- ══════════════════════════════════════════
+         6. LES 3 RÔLES UTILISATEUR
+    ══════════════════════════════════════════ -->
+    <div class="section">
+      <div class="titre-section">
+        <div class="numero">6</div>
+        <div>
+          <h2>Les 3 rôles utilisateur</h2>
+          <p>Chaque rôle débloque des fonctionnalités supplémentaires</p>
+        </div>
+      </div>
+
+      <div class="carte">
+        <table>
+          <thead>
+            <tr>
+              <th>Rôle</th>
+              <th>Qui ?</th>
+              <th>Peut faire</th>
+              <th>Accès supplémentaire</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="tag tag-or">Voyageur</span></td>
+              <td style="color:var(--gris)">Client classique</td>
+              <td>Parcourir, réserver, gérer ses itinéraires et favoris</td>
+              <td style="color:var(--gris-dim)">—</td>
+            </tr>
+            <tr>
+              <td><span class="tag tag-bleu">Prestataire</span></td>
+              <td style="color:var(--gris)">Hôtelier, guide…</td>
+              <td>Tout ce que le voyageur peut faire</td>
+              <td>+ Gérer ses propres offres (hébergements, activités)</td>
+            </tr>
+            <tr>
+              <td><span class="tag tag-vert">Admin</span></td>
+              <td style="color:var(--gris)">Équipe VoyageVista</td>
+              <td>Tout ce que le prestataire peut faire</td>
+              <td>+ Gérer tous les utilisateurs, destinations, statistiques</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="sep"></div>
+
+    <!-- ══════════════════════════════════════════
+         7. FLUX D'UNE RÉSERVATION COMPLÈTE
+    ══════════════════════════════════════════ -->
+    <div class="section">
+      <div class="titre-section">
+        <div class="numero">7</div>
+        <div>
+          <h2>Flux d'une réservation complète</h2>
+          <p>De la découverte d'une destination au récapitulatif final</p>
+        </div>
+      </div>
+
+      <div class="carte carte-or">
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:0.85rem">
+
+          <div style="text-align:center;padding:14px 18px;background:var(--fond-4);border-radius:10px;border:1px solid rgba(201,168,76,0.25);min-width:130px">
+            <div style="font-size:1.3rem;margin-bottom:6px">🗺️</div>
+            <div style="font-weight:600">Destinations</div>
+            <div style="color:var(--gris);font-size:0.75rem;margin-top:3px">Choisir où aller</div>
+          </div>
+
+          <div style="color:var(--or);font-size:1.2rem">→</div>
+
+          <div style="text-align:center;padding:14px 18px;background:var(--fond-4);border-radius:10px;border:1px solid rgba(201,168,76,0.25);min-width:130px">
+            <div style="font-size:1.3rem;margin-bottom:6px">📋</div>
+            <div style="font-weight:600">Itinéraire</div>
+            <div style="color:var(--gris);font-size:0.75rem;margin-top:3px">Créer le voyage</div>
+          </div>
+
+          <div style="color:var(--or);font-size:1.2rem">→</div>
+
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="padding:8px 14px;background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.25);border-radius:8px;font-size:0.8rem;color:var(--bleu)">✈️ &nbsp;Ajouter un transport</div>
+            <div style="padding:8px 14px;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);border-radius:8px;font-size:0.8rem;color:var(--violet)">🏨 &nbsp;Ajouter un hébergement</div>
+            <div style="padding:8px 14px;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.25);border-radius:8px;font-size:0.8rem;color:var(--vert)">🎯 &nbsp;Ajouter des activités</div>
+          </div>
+
+          <div style="color:var(--or);font-size:1.2rem">→</div>
+
+          <div style="text-align:center;padding:14px 18px;background:rgba(201,168,76,0.08);border-radius:10px;border:1px solid rgba(201,168,76,0.35);min-width:130px">
+            <div style="font-size:1.3rem;margin-bottom:6px">✅</div>
+            <div style="font-weight:600;color:var(--or)">Valider</div>
+            <div style="color:var(--gris);font-size:0.75rem;margin-top:3px">Booking créé en base</div>
+          </div>
+
+          <div style="color:var(--or);font-size:1.2rem">→</div>
+
+          <div style="text-align:center;padding:14px 18px;background:var(--fond-4);border-radius:10px;border:1px solid rgba(201,168,76,0.25);min-width:130px">
+            <div style="font-size:1.3rem;margin-bottom:6px">🧾</div>
+            <div style="font-weight:600">Bookings</div>
+            <div style="color:var(--gris);font-size:0.75rem;margin-top:3px">Historique & suivi</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="sep"></div>
+
+    <!-- ══════════════════════════════════════════
+         8. LES CONTEXTES REACT
+    ══════════════════════════════════════════ -->
+    <div class="section">
+      <div class="titre-section">
+        <div class="numero">8</div>
+        <div>
+          <h2>Les contextes React — partager des données sans les passer manuellement</h2>
+          <p>Sans contexte, il faudrait passer les props de composant en composant — fastidieux</p>
+        </div>
+      </div>
+
+      <div class="grille-2">
+
+        <div class="carte">
+          <p style="color:var(--bleu);font-weight:700;margin-bottom:12px">AuthContext</p>
+          <p style="font-size:0.85rem;color:var(--gris);margin-bottom:16px">
+            Mémorise l'utilisateur connecté. Disponible dans <strong>toute</strong> l'application.
+          </p>
+          <div style="display:flex;flex-direction:column;gap:8px;font-size:0.82rem">
+            <div style="display:flex;gap:8px"><span class="tag tag-or">user</span><span style="color:var(--gris)">objet avec nom, email, rôle</span></div>
+            <div style="display:flex;gap:8px"><span class="tag">login()</span><span style="color:var(--gris)">connecte et stocke le token</span></div>
+            <div style="display:flex;gap:8px"><span class="tag">logout()</span><span style="color:var(--gris)">efface le token, redirige</span></div>
+            <div style="display:flex;gap:8px"><span class="tag">isAdmin</span><span style="color:var(--gris)">true si rôle = admin</span></div>
+          </div>
+        </div>
+
+        <div class="carte">
+          <p style="color:var(--violet);font-weight:700;margin-bottom:12px">CartContext</p>
+          <p style="font-size:0.85rem;color:var(--gris);margin-bottom:16px">
+            L'itinéraire en cours de construction (équivalent d'un panier e-commerce).
+          </p>
+          <div style="display:flex;flex-direction:column;gap:8px;font-size:0.82rem">
+            <div style="display:flex;gap:8px"><span class="tag tag-violet">currentItinerary</span><span style="color:var(--gris)">le voyage en cours</span></div>
+            <div style="display:flex;gap:8px"><span class="tag">addTransport()</span><span style="color:var(--gris)">ajoute un vol/train</span></div>
+            <div style="display:flex;gap:8px"><span class="tag">addActivity()</span><span style="color:var(--gris)">ajoute une activité</span></div>
+            <div style="display:flex;gap:8px"><span class="tag">itemCount</span><span style="color:var(--gris)">badge sur l'icône panier</span></div>
+          </div>
+        </div>
+
+        <div class="carte">
+          <p style="color:var(--vert);font-weight:700;margin-bottom:12px">ToastContext</p>
+          <p style="font-size:0.85rem;color:var(--gris);margin-bottom:16px">
+            Affiche des messages temporaires (4 secondes) sans recharger la page.
+          </p>
+          <div style="display:flex;flex-direction:column;gap:8px;font-size:0.82rem">
+            <div style="display:flex;gap:8px"><span class="tag tag-vert">toast('msg', 'success')</span></div>
+            <div style="display:flex;gap:8px"><span class="tag tag-rouge" style="background:rgba(248,113,113,0.12);color:var(--rouge);border-color:rgba(248,113,113,0.3)">toast('msg', 'error')</span></div>
+            <div style="display:flex;gap:8px"><span class="tag tag-bleu">toast('msg', 'info')</span></div>
+          </div>
+        </div>
+
+        <div class="carte" style="background:rgba(201,168,76,0.04);border-color:rgba(201,168,76,0.2)">
+          <p style="color:var(--or);font-weight:700;margin-bottom:12px">Comment utiliser un contexte ?</p>
+          <div style="font-family:monospace;font-size:0.8rem;line-height:1.8;color:var(--gris)">
+            <div style="color:var(--gris-dim)">// Dans n'importe quel composant :</div>
+            <div><span style="color:var(--bleu)">import</span> { useAuth } <span style="color:var(--bleu)">from</span> <span style="color:var(--vert)">'../context/AuthContext'</span></div>
+            <br>
+            <div><span style="color:var(--bleu)">function</span> <span style="color:var(--or)">MonComposant</span>() {</div>
+            <div>&nbsp;&nbsp;<span style="color:var(--bleu)">const</span> { user, logout } = <span style="color:var(--or)">useAuth</span>()</div>
+            <div>&nbsp;&nbsp;<span style="color:var(--bleu)">return</span> &lt;<span style="color:var(--violet)">p</span>&gt;Bonjour {<span style="color:var(--texte)">{user.first_name}</span>}&lt;/<span style="color:var(--violet)">p</span>&gt;</div>
+            <div>}</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    Projet <span>VoyageVista</span> — Architecture système — ECE Paris 2026
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Modèle Relationnel de Données (MLD) - 14 Tables</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #ffffff;
+            color: #000000;
+            margin: 40px;
+            line-height: 1.6;
+        }
+        h1 {
+            font-size: 26px;
+            border-bottom: 2px solid #000000;
+            padding-bottom: 12px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        h2 {
+            font-size: 18px;
+            margin-top: 35px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #000000;
+            padding-bottom: 5px;
+            text-transform: uppercase;
+        }
+        p, li {
+            font-size: 14px;
+        }
+        ul {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            margin-bottom: 25px;
+        }
+        th, td {
+            border: 1px solid #000000;
+            padding: 12px;
+            text-align: left;
+            font-size: 13.5px;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+        .pk {
+            text-decoration: underline;
+            font-weight: bold;
+        }
+        .fk {
+            font-style: italic;
+        }
+        .table-name {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        code {
+            background-color: #f7f7f7;
+            padding: 2px 5px;
+            font-family: Consolas, "Courier New", monospace;
+            border: 1px solid #e0e0e0;
+            border-radius: 3px;
+            font-size: 13px;
+        }
+        .info-box {
+            border: 1px dashed #000000;
+            padding: 15px;
+            margin-bottom: 25px;
+            background-color: #fafafa;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Modèle Relationnel de Données (MLD) - 14 Tables</h1>
+    
+    <div class="info-box">
+        <p><strong>Légende et Règles de Formalisme :</strong></p>
+        <ul>
+            <li>Les <span class="pk">Clés Primaires (PK)</span> sont <strong>soulignées et en gras</strong>.</li>
+            <li>Les <span class="fk">#Clés Étrangères (FK)</span> sont précédées d'un dièse (<code>#</code>) et en italique.</li>
+            <li>Version corrigée intégrant l'exhaustivité des 14 tables de votre MER (incluant les entités faibles et les tables d'association).</li>
+        </ul>
+    </div>
+
+    <h2>1. Liste Complète des Tables et Structures (14 Tables)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">Nom de la Table</th>
+                <th style="width: 75%;">Structure Relationnelle (Champs et Contraintes)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="table-name">UTILISATEURS</td>
+                <td><span class="pk">id</span> (PK), email, mot_de_passe, prenom, nom, role, avatar, telephone, cree_le, modifie_le</td>
+            </tr>
+            <tr>
+                <td class="table-name">DESTINATIONS</td>
+                <td><span class="pk">id</span> (PK), nom, pays, region, description, image, categorie, prix_min, note_moy, nb_avis, en_vedette, <span class="fk">#id_prestataire</span> (FK), cree_le</td>
+            </tr>
+            <tr>
+                <td class="table-name">TRANSPORTS</td>
+                <td><span class="pk">id</span> (PK), type, compagnie, ville_depart, ville_arrivee, code_depart, code_arrivee, heure_depart, heure_arrivee, prix, sieges_dispo, sieges_total, classe, direct, escales, logo, cree_le</td>
+            </tr>
+            <tr>
+                <td class="table-name">HEBERGEMENTS</td>
+                <td><span class="pk">id</span> (PK), <span class="fk">#id_destination</span> (FK), nom, type, description, adresse, prix_nuit, capacite_max, etoiles, note_moy, nb_avis, equipements, images, <span class="fk">#id_prestataire</span> (FK), cree_le</td>
+            </tr>
+            <tr>
+                <td class="table-name">ACTIVITES</td>
+                <td><span class="pk">id</span> (PK), <span class="fk">#id_destination</span> (FK), nom, categorie, description, prix, duree_heures, max_participants, note_moy, nb_avis, inclus, image, <span class="fk">#id_prestataire</span> (FK), cree_le</td>
+            </tr>
+            <tr>
+                <td class="table-name">ITINERAIRES</td>
+                <td><span class="pk">id</span> (PK), <span class="fk">#id_utilisateur</span> (FK), titre, <span class="fk">#id_destination</span> (FK), date_debut, date_fin, voyageurs, prix_total, statut, cree_le, modifie_le</td>
+            </tr>
+            <tr>
+                <td class="table-name">RESERVATIONS</td>
+                <td><span class="pk">id</span> (PK), <span class="fk">#id_utilisateur</span> (FK), <span class="fk">#id_itineraire</span> (FK), reference, prix_total, statut, statut_paiement, mode_paiement, notes, cree_le, modifie_le</td>
+            </tr>
+            <tr>
+                <td class="table-name">NOTIFICATIONS</td>
+                <td><span class="pk">id</span> (PK), <span class="fk">#id_utilisateur</span> (FK), titre, message, type, lu, id_lie, type_lie, cree_le</td>
+            </tr>
+            <tr>
+                <td class="table-name">AVIS</td>
+                <td><span class="pk">id</span> (PK), <span class="fk">#id_utilisateur</span> (FK), type_entite, id_entite, note, commentaire, cree_le</td>
+            </tr>
+            <tr>
+                <td class="table-name">FAVORIS</td>
+                <td><span class="pk">id</span> (PK), <span class="fk">#id_utilisateur</span> (FK), type_entite, id_entite, cree_le</td>
+            </tr>
+            <tr>
+                <td class="table-name">DISPONIBILITES</td>
+                <td><span class="pk">id</span> (PK), <span class="fk">#id_hebergement</span> (FK), date, chambres_dispo, statut</td>
+            </tr>
+            <tr>
+                <td class="table-name">LIGNE_TRANSPORT</td>
+                <td><span class="pk">id</span> (PK), <span class="fk">#id_itineraire</span> (FK), <span class="fk">#id_transport</span> (FK), direction, passagers, prix</td>
+            </tr>
+            <tr>
+                <td class="table-name">LIGNE_HEBERGEMENT</td>
+                <td><span class="pk">id</span> (PK), <span class="fk">#id_itineraire</span> (FK), <span class="fk">#id_hebergement</span> (FK), date_arrivee, date_depart, chambres, prix</td>
+            </tr>
+            <tr>
+                <td class="table-name">LIGNE_ACTIVITE</td>
+                <td><span class="pk">id</span> (PK), <span class="fk">#id_itineraire</span> (FK), <span class="fk">#id_activite</span> (FK), date_planif, heure_planif, participants, prix</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>2. Focus sur les Nouvelles Tables d'Association et Entités Faibles</h2>
+    <ul>
+        <li><strong>DISPONIBILITES :</strong> Gère le calendrier et l'état des stocks au jour le jour pour chaque hébergement.</li>
+        <li><strong>LIGNES D'ITINÉRAIRE (LIGNE_TRANSPORT, LIGNE_HEBERGEMENT, LIGNE_ACTIVITE) :</strong> Tables pivots qui associent un itinéraire utilisateur à des services précis avec des détails d'exécution (dates, passagers, prix calculés).</li>
+        <li><strong>AVIS / FAVORIS :</strong> Tables polymorphes ou d'association liant un utilisateur à un élément (Hébergement, Activité, Destination) via le couple <code>(type_entite, id_entite)</code>.</li>
+    </ul>
+
+</body>
+</html>

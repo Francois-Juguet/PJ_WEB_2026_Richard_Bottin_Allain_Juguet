@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VoyageVista — Wireframes</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1e1e1e;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    padding: 40px 0;
+  }
+
+  /* ── Canvas Figma-like ─────────────────────────────────── */
+  .canvas {
+    background: #2c2c2c;
+    background-image: radial-gradient(circle, #3a3a3a 1px, transparent 1px);
+    background-size: 20px 20px;
+    padding: 60px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+    align-items: flex-start;
+  }
+
+  /* ── Header Figma ──────────────────────────────────────── */
+  .figma-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 40px;
+    background: #1e1e1e;
+    border-bottom: 1px solid #3a3a3a;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    gap: 12px;
+    z-index: 100;
+  }
+  .figma-header .logo {
+    font-size: 12px;
+    font-weight: 700;
+    color: #a78bfa;
+    letter-spacing: 0.05em;
+  }
+  .figma-header .sep { color: #444; }
+  .figma-header .file { font-size: 12px; color: #aaa; }
+  .figma-tabs {
+    margin-left: auto;
+    display: flex;
+    gap: 4px;
+  }
+  .figma-tab {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    color: #888;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .figma-tab:hover { background: #333; color: #fff; }
+
+  /* ── Section label ─────────────────────────────────────── */
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #a78bfa;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .frames-row {
+    display: flex;
+    gap: 60px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .frame-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .frame-title {
+    font-size: 11px;
+    font-weight: 500;
+    color: #888;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── Frame (page wireframe) ────────────────────────────── */
+  .frame {
+    background: #f5f5f5;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+    position: relative;
+  }
+
+  /* ── Base wireframe elements ───────────────────────────── */
+  .wf-navbar {
+    background: #fff;
+    border-bottom: 1.5px solid #e0e0e0;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 10px;
+  }
+  .wf-logo {
+    width: 60px; height: 14px;
+    background: #c9a84c;
+    border-radius: 2px;
+    opacity: 0.7;
+  }
+  .wf-nav-links {
+    display: flex;
+    gap: 6px;
+    margin-left: 12px;
+  }
+  .wf-nav-link {
+    width: 44px; height: 8px;
+    background: #d0d0d0;
+    border-radius: 2px;
+  }
+  .wf-nav-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
+  .wf-btn-outline {
+    height: 18px; width: 52px;
+    border: 1.5px solid #d0d0d0;
+    border-radius: 3px;
+  }
+  .wf-btn-gold {
+    height: 18px; width: 60px;
+    background: #c9a84c;
+    border-radius: 3px;
+    opacity: 0.75;
+  }
+  .wf-avatar {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: #c9a84c;
+    opacity: 0.6;
+  }
+  .wf-icon-btn {
+    width: 22px; height: 22px;
+    border-radius: 4px;
+    background: #e8e8e8;
+  }
+
+  /* Image placeholder */
+  .wf-img {
+    background: #d8d8d8;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .wf-img::before, .wf-img::after {
+    content: '';
+    position: absolute;
+    background: #bbb;
+  }
+  .wf-img::before {
+    width: 100%; height: 1px;
+    transform: rotate(var(--angle, 12deg));
+  }
+  .wf-img::after {
+    width: 100%; height: 1px;
+    transform: rotate(calc(var(--angle, 12deg) * -1));
+  }
+  .wf-img-label {
+    font-size: 9px;
+    color: #999;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    z-index: 1;
+    background: rgba(255,255,255,0.5);
+    padding: 2px 6px;
+    border-radius: 2px;
+  }
+
+  /* Text lines */
+  .wf-text { background: #c8c8c8; border-radius: 2px; }
+  .wf-text-sm { background: #d8d8d8; border-radius: 2px; }
+  .wf-title { background: #b0b0b0; border-radius: 2px; }
+
+  /* Input */
+  .wf-input {
+    border: 1.5px solid #d0d0d0;
+    border-radius: 4px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    gap: 5px;
+  }
+  .wf-input-icon { width: 8px; height: 8px; background: #bbb; border-radius: 50%; }
+  .wf-input-text { height: 7px; flex: 1; background: #e8e8e8; border-radius: 2px; }
+  .wf-input-eye { width: 10px; height: 7px; background: #d0d0d0; border-radius: 2px; }
+
+  /* Button */
+  .wf-button {
+    background: #c9a84c;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0.8;
+  }
+  .wf-button-ghost {
+    border: 1.5px solid #d0d0d0;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .wf-button-text { height: 7px; background: #fff; border-radius: 2px; opacity: 0.9; }
+  .wf-button-ghost-text { height: 7px; background: #aaa; border-radius: 2px; }
+
+  /* Card */
+  .wf-card {
+    background: #fff;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #e8e8e8;
+  }
+
+  /* Badge */
+  .wf-badge {
+    border-radius: 100px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .wf-badge-gold { background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.4); }
+  .wf-badge-green { background: rgba(74,222,128,0.15); border: 1px solid rgba(74,222,128,0.4); }
+  .wf-badge-red { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.4); }
+  .wf-badge-blue { background: rgba(96,165,250,0.15); border: 1px solid rgba(96,165,250,0.4); }
+
+  /* Stars */
+  .wf-stars { display: flex; gap: 2px; }
+  .wf-star { width: 7px; height: 7px; background: #f59e0b; clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+  .wf-star-half { opacity: 0.5; }
+
+  /* Annotation */
+  .annotation {
+    position: absolute;
+    font-size: 9px;
+    color: #a78bfa;
+    font-weight: 600;
+    background: rgba(167,139,250,0.12);
+    border: 1px solid rgba(167,139,250,0.3);
+    padding: 2px 6px;
+    border-radius: 3px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+  .annotation-line {
+    position: absolute;
+    height: 1px;
+    background: rgba(167,139,250,0.4);
+    transform-origin: left center;
+    z-index: 9;
+  }
+
+  /* Divider */
+  .wf-divider { background: #e8e8e8; width: 100%; height: 1px; }
+
+  /* Hero dark overlay */
+  .wf-hero {
+    background: linear-gradient(135deg, #3a3a4a 0%, #2a2a38 100%);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 16px;
+  }
+
+  /* Sidebar */
+  .wf-sidebar {
+    background: #fff;
+    border-right: 1px solid #e8e8e8;
+  }
+
+  /* Tab bar */
+  .wf-tabs {
+    display: flex;
+    gap: 2px;
+    background: #f0f0f0;
+    padding: 3px;
+    border-radius: 6px;
+  }
+  .wf-tab {
+    flex: 1;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 20px;
+  }
+  .wf-tab-active { background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
+  .wf-tab-text { height: 7px; width: 36px; border-radius: 2px; }
+  .wf-tab-active .wf-tab-text { background: #c9a84c; opacity: 0.8; }
+  .wf-tab .wf-tab-text { background: #aaa; }
+
+  /* Stat card */
+  .wf-stat {
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* Table */
+  .wf-table { width: 100%; border-collapse: collapse; }
+  .wf-table td { padding: 7px 10px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+  .wf-table thead td { background: #f8f8f8; border-bottom: 1.5px solid #e0e0e0; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #2a2a2a; }
+  ::-webkit-scrollbar-thumb { background: #555; border-radius: 3px; }
+
+  /* Label chip */
+  .chip {
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 16px; padding: 0 7px;
+    font-size: 8px; font-weight: 600; color: #888;
+    background: #efefef; border-radius: 100px;
+  }
+
+  /* Modal overlay */
+  .wf-modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 20;
+  }
+  .wf-modal {
+    background: #fff;
+    border-radius: 10px;
+    padding: 16px;
+    width: 85%;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+</style>
+</head>
+<body>
+
+<!-- Figma-like top bar -->
+<div class="figma-header">
+  <span class="logo">FIGMA</span>
+  <span class="sep">›</span>
+  <span class="file">VoyageVista — Wireframes</span>
+  <div class="figma-tabs">
+    <a class="figma-tab" href="#home">Accueil</a>
+    <a class="figma-tab" href="#auth">Auth</a>
+    <a class="figma-tab" href="#destinations">Destinations</a>
+    <a class="figma-tab" href="#detail">Détail</a>
+    <a class="figma-tab" href="#itinerary">Itinéraire</a>
+    <a class="figma-tab" href="#bookings">Réservations</a>
+    <a class="figma-tab" href="#admin">Admin</a>
+  </div>
+</div>
+
+<div style="margin-top:40px">
+<div class="canvas">
+
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- 1. PAGE ACCUEIL                                                  -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+<div id="home">
+  <div class="section-label">1 — Page d'accueil &nbsp;/</div>
+  <div class="frame-wrapper">
+    <div class="frame-title">Home — 1280 × 2100</div>
+    <div class="frame" style="width:460px; position:relative;">
+
+      <!-- Navbar -->
+      <div class="wf-navbar">
+        <div class="wf-logo"></div>
+        <div class="wf-nav-links">
+          <div class="wf-nav-link"></div>
+          <div class="wf-nav-link"></div>
+          <div class="wf-nav-link"></div>
+          <div class="wf-nav-link"></div>
+        </div>
+        <div class="wf-nav-actions">
+          <div class="wf-btn-outline"></div>
+          <div class="wf-btn-gold"></div>
+        </div>
+      </div>
+
+      <!-- Hero -->
+      <div class="wf-hero" style="height:220px;">
+        <!-- Badge -->
+        <div style="position:absolute; top:14px; left:16px; display:flex; align-items:center; gap:5px; padding:3px 10px; border-radius:100px; background:rgba(201,168,76,0.15); border:1px solid rgba(201,168,76,0.3);">
+          <div style="width:5px; height:5px; border-radius:50%; background:#c9a84c;"></div>
+          <div class="wf-text-sm" style="width:90px; height:6px;"></div>
+        </div>
+
+        <!-- Title lines -->
+        <div style="position:absolute; top:38px; left:16px; display:flex; flex-direction:column; gap:5px;">
+          <div class="wf-title" style="width:180px; height:16px;"></div>
+          <div class="wf-title" style="width:140px; height:16px; background:#c9a84c; opacity:0.5;"></div>
+          <div style="margin-top:4px; display:flex; flex-direction:column; gap:3px;">
+            <div class="wf-text-sm" style="width:200px; height:6px;"></div>
+            <div class="wf-text-sm" style="width:160px; height:6px;"></div>
+          </div>
+        </div>
+
+        <!-- Search widget -->
+        <div style="background:rgba(255,255,255,0.1); border:1px solid rgba(201,168,76,0.3); border-radius:10px; padding:10px; margin-bottom:12px;">
+          <!-- Tabs -->
+          <div style="display:flex; gap:4px; margin-bottom:8px;">
+            <div style="padding:3px 10px; border-radius:5px; background:rgba(201,168,76,0.2); border:1px solid rgba(201,168,76,0.4);">
+              <div class="wf-text" style="width:22px; height:6px; background:#c9a84c; opacity:0.8;"></div>
+            </div>
+            <div style="padding:3px 10px; border-radius:5px;">
+              <div class="wf-text-sm" style="width:22px; height:6px;"></div>
+            </div>
+            <div style="padding:3px 10px; border-radius:5px;">
+              <div class="wf-text-sm" style="width:28px; height:6px;"></div>
+            </div>
+          </div>
+          <!-- Search input + button -->
+          <div style="display:flex; gap:6px;">
+            <div class="wf-input" style="flex:1; height:28px;">
+              <div class="wf-input-icon"></div>
+              <div class="wf-input-text"></div>
+            </div>
+            <div class="wf-button" style="width:64px; height:28px;">
+              <div class="wf-button-text" style="width:36px;"></div>
+            </div>
+          </div>
+          <!-- Tags -->
+          <div style="display:flex; gap:4px; margin-top:7px; align-items:center;">
+            <div class="wf-text-sm" style="width:38px; height:6px;"></div>
+            <div class="chip">Maldives</div>
+            <div class="chip">Bali</div>
+            <div class="chip">Santorini</div>
+            <div class="chip">Dubaï</div>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div style="display:flex; gap:20px;">
+          <div style="display:flex; flex-direction:column; gap:3px;">
+            <div style="color:#c9a84c; font-size:12px; font-weight:700;">150+</div>
+            <div class="wf-text-sm" style="width:50px; height:5px;"></div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:3px;">
+            <div style="color:#c9a84c; font-size:12px; font-weight:700;">50K+</div>
+            <div class="wf-text-sm" style="width:44px; height:5px;"></div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:3px;">
+            <div style="color:#c9a84c; font-size:12px; font-weight:700;">4.9★</div>
+            <div class="wf-text-sm" style="width:40px; height:5px;"></div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:3px;">
+            <div style="color:#c9a84c; font-size:12px; font-weight:700;">24/7</div>
+            <div class="wf-text-sm" style="width:46px; height:5px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Catégories -->
+      <div style="padding:14px 16px; background:#fff; border-bottom:1px solid #f0f0f0;">
+        <div class="wf-text" style="width:70px; height:7px; margin-bottom:10px;"></div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+          <div class="chip" style="background:#c9a84c; color:#fff; opacity:0.8;">🏖️ Plages</div>
+          <div class="chip">⛰️ Montagnes</div>
+          <div class="chip">🏙️ Villes</div>
+          <div class="chip">🌴 Îles</div>
+          <div class="chip">🧗 Aventure</div>
+          <div class="chip">🏛️ Culture</div>
+        </div>
+      </div>
+
+      <!-- Destinations vedettes -->
+      <div style="padding:16px; background:#f8f8f8;">
+        <div class="wf-text" style="width:120px; height:9px; margin-bottom:4px;"></div>
+        <div class="wf-text-sm" style="width:180px; height:6px; margin-bottom:12px;"></div>
+        <div style="display:flex; gap:8px;">
+          <!-- Card 1 -->
+          <div class="wf-card" style="flex:1;">
+            <div class="wf-img" style="height:72px; --angle:15deg;">
+              <span class="wf-img-label">Photo</span>
+              <div style="position:absolute; top:5px; right:5px; width:16px; height:16px; border-radius:50%; background:rgba(255,255,255,0.9); display:flex; align-items:center; justify-content:center; font-size:9px;">♥</div>
+            </div>
+            <div style="padding:7px 8px; display:flex; flex-direction:column; gap:4px;">
+              <div class="wf-text" style="width:55px; height:7px;"></div>
+              <div style="display:flex; align-items:center; gap:3px;">
+                <div class="wf-stars"><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div></div>
+                <div class="wf-text-sm" style="width:20px; height:5px;"></div>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div class="wf-text-sm" style="width:44px; height:6px;"></div>
+                <div style="width:14px; height:14px; background:#c9a84c; border-radius:50%; opacity:0.7; display:flex; align-items:center; justify-content:center; font-size:9px; color:#fff;">→</div>
+              </div>
+            </div>
+          </div>
+          <!-- Card 2 -->
+          <div class="wf-card" style="flex:1;">
+            <div class="wf-img" style="height:72px; --angle:-12deg;">
+              <span class="wf-img-label">Photo</span>
+              <div style="position:absolute; top:5px; right:5px; width:16px; height:16px; border-radius:50%; background:rgba(255,255,255,0.9); display:flex; align-items:center; justify-content:center; font-size:9px;">♥</div>
+            </div>
+            <div style="padding:7px 8px; display:flex; flex-direction:column; gap:4px;">
+              <div class="wf-text" style="width:50px; height:7px;"></div>
+              <div style="display:flex; align-items:center; gap:3px;">
+                <div class="wf-stars"><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star wf-star-half"></div></div>
+                <div class="wf-text-sm" style="width:20px; height:5px;"></div>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div class="wf-text-sm" style="width:44px; height:6px;"></div>
+                <div style="width:14px; height:14px; background:#c9a84c; border-radius:50%; opacity:0.7; display:flex; align-items:center; justify-content:center; font-size:9px; color:#fff;">→</div>
+              </div>
+            </div>
+          </div>
+          <!-- Card 3 -->
+          <div class="wf-card" style="flex:1;">
+            <div class="wf-img" style="height:72px; --angle:18deg;">
+              <span class="wf-img-label">Photo</span>
+              <div style="position:absolute; top:5px; right:5px; width:16px; height:16px; border-radius:50%; background:rgba(255,255,255,0.9); display:flex; align-items:center; justify-content:center; font-size:9px;">♥</div>
+            </div>
+            <div style="padding:7px 8px; display:flex; flex-direction:column; gap:4px;">
+              <div class="wf-text" style="width:40px; height:7px;"></div>
+              <div style="display:flex; align-items:center; gap:3px;">
+                <div class="wf-stars"><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div></div>
+                <div class="wf-text-sm" style="width:20px; height:5px;"></div>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div class="wf-text-sm" style="width:44px; height:6px;"></div>
+                <div style="width:14px; height:14px; background:#c9a84c; border-radius:50%; opacity:0.7; display:flex; align-items:center; justify-content:center; font-size:9px; color:#fff;">→</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Features -->
+      <div style="padding:16px; background:#fff; border-top:1px solid #f0f0f0;">
+        <div class="wf-text" style="width:110px; height:8px; margin-bottom:12px;"></div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+          <div style="background:#f8f8f8; border-radius:8px; padding:10px; display:flex; flex-direction:column; gap:5px;">
+            <div style="width:22px; height:22px; background:#e8e8e8; border-radius:6px;"></div>
+            <div class="wf-text" style="width:80px; height:7px;"></div>
+            <div class="wf-text-sm" style="width:100px; height:5px;"></div>
+            <div class="wf-text-sm" style="width:80px; height:5px;"></div>
+          </div>
+          <div style="background:#f8f8f8; border-radius:8px; padding:10px; display:flex; flex-direction:column; gap:5px;">
+            <div style="width:22px; height:22px; background:#e8e8e8; border-radius:6px;"></div>
+            <div class="wf-text" style="width:80px; height:7px;"></div>
+            <div class="wf-text-sm" style="width:100px; height:5px;"></div>
+            <div class="wf-text-sm" style="width:80px; height:5px;"></div>
+          </div>
+          <div style="background:#f8f8f8; border-radius:8px; padding:10px; display:flex; flex-direction:column; gap:5px;">
+            <div style="width:22px; height:22px; background:#e8e8e8; border-radius:6px;"></div>
+            <div class="wf-text" style="width:80px; height:7px;"></div>
+            <div class="wf-text-sm" style="width:100px; height:5px;"></div>
+            <div class="wf-text-sm" style="width:80px; height:5px;"></div>
+          </div>
+          <div style="background:#f8f8f8; border-radius:8px; padding:10px; display:flex; flex-direction:column; gap:5px;">
+            <div style="width:22px; height:22px; background:#e8e8e8; border-radius:6px;"></div>
+            <div class="wf-text" style="width:80px; height:7px;"></div>
+            <div class="wf-text-sm" style="width:100px; height:5px;"></div>
+            <div class="wf-text-sm" style="width:80px; height:5px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA (non connecté) -->
+      <div style="padding:20px 16px; background: linear-gradient(135deg, rgba(201,168,76,0.04), rgba(99,102,241,0.04)); border-top:1px solid #f0f0f0; display:flex; flex-direction:column; align-items:center; gap:8px; text-align:center;">
+        <div style="width:36px; height:36px; border-radius:10px; background:#f0ebe0; border:1px solid #e0d5c0; display:flex; align-items:center; justify-content:center; font-size:16px;">✈</div>
+        <div class="wf-title" style="width:110px; height:10px;"></div>
+        <div style="display:flex; flex-direction:column; gap:3px; align-items:center;">
+          <div class="wf-text-sm" style="width:160px; height:6px;"></div>
+          <div class="wf-text-sm" style="width:120px; height:6px;"></div>
+        </div>
+        <div style="display:flex; gap:8px; margin-top:4px;">
+          <div class="wf-button" style="width:120px; height:26px;"><div class="wf-button-text" style="width:80px;"></div></div>
+          <div class="wf-button-ghost" style="width:110px; height:26px;"><div class="wf-button-ghost-text" style="width:72px;"></div></div>
+        </div>
+        <div style="position:absolute; right:8px; bottom:12px;" class="annotation">Non connecté seulement</div>
+      </div>
+
+      <!-- Footer -->
+      <div style="padding:12px 16px; background:#2a2a38; display:flex; justify-content:space-between; align-items:center;">
+        <div class="wf-logo" style="opacity:0.5;"></div>
+        <div style="display:flex; gap:8px;">
+          <div class="wf-text-sm" style="width:30px; height:5px; background:#555;"></div>
+          <div class="wf-text-sm" style="width:30px; height:5px; background:#555;"></div>
+          <div class="wf-text-sm" style="width:40px; height:5px; background:#555;"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- 2. AUTH                                                          -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+<div id="auth">
+  <div class="section-label">2 — Authentification &nbsp;/login &nbsp;/register</div>
+  <div class="frames-row">
+
+    <!-- Login -->
+    <div class="frame-wrapper">
+      <div class="frame-title">Connexion — 420 × 560</div>
+      <div class="frame" style="width:260px;">
+        <!-- BG -->
+        <div class="wf-img" style="height:100%; width:100%; position:absolute; inset:0; --angle:8deg; z-index:0; background:#3a3a4a;">
+          <span class="wf-img-label" style="position:absolute; bottom:8px; left:8px; background:rgba(0,0,0,0.3); color:#aaa;">Fond photo</span>
+        </div>
+        <div style="position:relative; z-index:1; padding:20px; min-height:380px;">
+          <!-- Logo -->
+          <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:18px;">
+            <div style="width:28px; height:28px; background:#c9a84c; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:13px;">✈</div>
+            <div style="font-size:13px; font-weight:700; color:#fff; font-style:italic;">Voyage<span style="color:#c9a84c;">Vista</span></div>
+          </div>
+          <!-- Card -->
+          <div style="background:rgba(18,18,26,0.95); border:1px solid rgba(201,168,76,0.2); border-radius:14px; padding:16px; display:flex; flex-direction:column; gap:10px;">
+            <!-- Demo accounts box -->
+            <div style="background:rgba(201,168,76,0.06); border:1px solid rgba(201,168,76,0.15); border-radius:7px; padding:8px;">
+              <div style="font-size:8px; font-weight:700; color:#c9a84c; margin-bottom:5px;">COMPTES DÉMO</div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:3px;">
+                <div class="wf-text-sm" style="width:100px; height:5px; background:#555;"></div>
+                <div style="font-size:7px; color:#c9a84c; border:1px solid rgba(201,168,76,0.3); padding:1px 5px; border-radius:3px;">Voyageur</div>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div class="wf-text-sm" style="width:90px; height:5px; background:#555;"></div>
+                <div style="font-size:7px; color:#a78bfa; border:1px solid rgba(167,139,250,0.3); padding:1px 5px; border-radius:3px;">Admin</div>
+              </div>
+            </div>
+            <!-- Title -->
+            <div style="text-align:center;">
+              <div class="wf-text" style="width:70px; height:9px; background:#888; margin:0 auto 4px;"></div>
+              <div class="wf-text-sm" style="width:110px; height:6px; background:#555; margin:0 auto;"></div>
+            </div>
+            <!-- Email field -->
+            <div style="display:flex; flex-direction:column; gap:3px;">
+              <div class="wf-text-sm" style="width:28px; height:5px; background:#666;"></div>
+              <div class="wf-input" style="height:28px; background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.1);">
+                <div class="wf-input-icon" style="background:#666;"></div>
+                <div class="wf-input-text" style="background:#444;"></div>
+              </div>
+            </div>
+            <!-- Password field -->
+            <div style="display:flex; flex-direction:column; gap:3px;">
+              <div class="wf-text-sm" style="width:50px; height:5px; background:#666;"></div>
+              <div class="wf-input" style="height:28px; background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.1);">
+                <div class="wf-input-icon" style="background:#666;"></div>
+                <div class="wf-input-text" style="background:#444;"></div>
+                <div class="wf-input-eye"></div>
+              </div>
+            </div>
+            <!-- Submit -->
+            <div class="wf-button" style="height:30px; width:100%; margin-top:4px;">
+              <div class="wf-button-text" style="width:80px;"></div>
+            </div>
+            <!-- Register link -->
+            <div style="display:flex; justify-content:center; gap:4px; align-items:center; margin-top:2px;">
+              <div class="wf-text-sm" style="width:55px; height:5px; background:#555;"></div>
+              <div class="wf-text-sm" style="width:60px; height:5px; background:#c9a84c; opacity:0.6;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Register -->
+    <div class="frame-wrapper">
+      <div class="frame-title">Inscription — 520 × 620</div>
+      <div class="frame" style="width:260px;">
+        <div class="wf-img" style="height:100%; width:100%; position:absolute; inset:0; --angle:-8deg; z-index:0; background:#3a3a4a;"></div>
+        <div style="position:relative; z-index:1; padding:20px; min-height:420px;">
+          <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:18px;">
+            <div style="width:28px; height:28px; background:#c9a84c; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:13px;">✈</div>
+            <div style="font-size:13px; font-weight:700; color:#fff; font-style:italic;">Voyage<span style="color:#c9a84c;">Vista</span></div>
+          </div>
+          <div style="background:rgba(18,18,26,0.95); border:1px solid rgba(201,168,76,0.2); border-radius:14px; padding:16px; display:flex; flex-direction:column; gap:9px;">
+            <div style="text-align:center;">
+              <div class="wf-text" style="width:90px; height:9px; background:#888; margin:0 auto 4px;"></div>
+              <div class="wf-text-sm" style="width:120px; height:6px; background:#555; margin:0 auto;"></div>
+            </div>
+            <!-- 2-col names -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+              <div style="display:flex; flex-direction:column; gap:3px;">
+                <div class="wf-text-sm" style="width:35px; height:5px; background:#666;"></div>
+                <div class="wf-input" style="height:26px; background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.1);">
+                  <div class="wf-input-text" style="background:#444;"></div>
+                </div>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:3px;">
+                <div class="wf-text-sm" style="width:35px; height:5px; background:#666;"></div>
+                <div class="wf-input" style="height:26px; background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.1);">
+                  <div class="wf-input-text" style="background:#444;"></div>
+                </div>
+              </div>
+            </div>
+            <!-- Email -->
+            <div style="display:flex; flex-direction:column; gap:3px;">
+              <div class="wf-text-sm" style="width:28px; height:5px; background:#666;"></div>
+              <div class="wf-input" style="height:26px; background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.1);">
+                <div class="wf-input-icon" style="background:#666;"></div>
+                <div class="wf-input-text" style="background:#444;"></div>
+              </div>
+            </div>
+            <!-- Password -->
+            <div style="display:flex; flex-direction:column; gap:3px;">
+              <div class="wf-text-sm" style="width:50px; height:5px; background:#666;"></div>
+              <div class="wf-input" style="height:26px; background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.1);">
+                <div class="wf-input-icon" style="background:#666;"></div>
+                <div class="wf-input-text" style="background:#444;"></div>
+                <div class="wf-input-eye"></div>
+              </div>
+            </div>
+            <!-- Phone -->
+            <div style="display:flex; flex-direction:column; gap:3px;">
+              <div class="wf-text-sm" style="width:40px; height:5px; background:#666;"></div>
+              <div class="wf-input" style="height:26px; background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.1);">
+                <div class="wf-input-text" style="background:#444;"></div>
+              </div>
+            </div>
+            <!-- CGU -->
+            <div style="display:flex; gap:6px; align-items:center; margin-top:2px;">
+              <div style="width:12px; height:12px; border-radius:3px; background:rgba(201,168,76,0.3); border:1px solid rgba(201,168,76,0.5);"></div>
+              <div class="wf-text-sm" style="width:130px; height:5px; background:#555;"></div>
+            </div>
+            <div class="wf-button" style="height:30px; width:100%;">
+              <div class="wf-button-text" style="width:90px;"></div>
+            </div>
+            <div style="display:flex; justify-content:center; gap:4px; align-items:center;">
+              <div class="wf-text-sm" style="width:60px; height:5px; background:#555;"></div>
+              <div class="wf-text-sm" style="width:55px; height:5px; background:#c9a84c; opacity:0.6;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- 3. DESTINATIONS                                                  -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+<div id="destinations">
+  <div class="section-label">3 — Liste des destinations &nbsp;/destinations</div>
+  <div class="frame-wrapper">
+    <div class="frame-title">Destinations — 1280 × 900</div>
+    <div class="frame" style="width:480px;">
+
+      <!-- Navbar -->
+      <div class="wf-navbar">
+        <div class="wf-logo"></div>
+        <div class="wf-nav-links">
+          <div class="wf-nav-link" style="background:#c9a84c; opacity:0.6;"></div>
+          <div class="wf-nav-link"></div>
+          <div class="wf-nav-link"></div>
+          <div class="wf-nav-link"></div>
+        </div>
+        <div class="wf-nav-actions">
+          <div class="wf-icon-btn"></div>
+          <div class="wf-icon-btn"></div>
+          <div class="wf-avatar"></div>
+        </div>
+      </div>
+
+      <!-- Header -->
+      <div style="padding:18px 16px 12px; background:#fff; border-bottom:1px solid #f0f0f0;">
+        <div class="wf-text-sm" style="width:55px; height:6px; background:#c9a84c; opacity:0.7; margin-bottom:6px;"></div>
+        <div class="wf-title" style="width:160px; height:12px; margin-bottom:4px;"></div>
+        <div class="wf-text-sm" style="width:100px; height:6px;"></div>
+      </div>
+
+      <!-- Filter bar -->
+      <div style="padding:10px 16px; background:#fff; border-bottom:1px solid #f0f0f0; display:flex; flex-direction:column; gap:8px;">
+        <!-- Category pills -->
+        <div style="display:flex; gap:5px; flex-wrap:wrap;">
+          <div class="chip" style="background:#2a2a38; color:#c9a84c; border:1px solid rgba(201,168,76,0.4);">Toutes</div>
+          <div class="chip">🏖️ Plages</div>
+          <div class="chip">⛰️ Mont.</div>
+          <div class="chip">🏙️ Villes</div>
+          <div class="chip">🌴 Îles</div>
+          <div class="chip">🧗 Aventure</div>
+          <div class="chip">🏛️ Culture</div>
+        </div>
+        <!-- Search + filters -->
+        <div style="display:flex; gap:8px; align-items:center;">
+          <div class="wf-input" style="flex:1; height:28px;">
+            <div class="wf-input-icon"></div>
+            <div class="wf-input-text"></div>
+          </div>
+          <div style="display:flex; align-items:center; gap:4px;">
+            <div class="wf-text-sm" style="width:40px; height:6px;"></div>
+            <div class="wf-input" style="width:60px; height:28px;">
+              <div class="wf-input-text"></div>
+            </div>
+          </div>
+          <div class="wf-input" style="width:80px; height:28px;">
+            <div class="wf-input-text"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid -->
+      <div style="padding:14px 16px; background:#f8f8f8;">
+        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px;">
+          <!-- Cards -->
+          <div class="wf-card">
+            <div class="wf-img" style="height:62px; --angle:14deg;">
+              <div style="position:absolute; top:4px; left:4px; background:rgba(201,168,76,0.9); border-radius:3px; padding:1px 5px; font-size:7px; font-weight:700; color:#fff;">VEDETTE</div>
+              <div style="position:absolute; top:4px; right:4px; width:14px; height:14px; border-radius:50%; background:rgba(255,255,255,0.9); display:flex; align-items:center; justify-content:center; font-size:8px; color:#e44;">♥</div>
+            </div>
+            <div style="padding:6px 7px; display:flex; flex-direction:column; gap:3px;">
+              <div class="wf-text" style="width:44px; height:6px;"></div>
+              <div class="chip" style="width:fit-content;">🏖️ Plage</div>
+              <div class="wf-stars"><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div></div>
+              <div class="wf-text-sm" style="width:40px; height:5px; background:#c9a84c; opacity:0.7;"></div>
+            </div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-img" style="height:62px; --angle:-10deg;">
+              <div style="position:absolute; top:4px; right:4px; width:14px; height:14px; border-radius:50%; background:rgba(255,255,255,0.9); display:flex; align-items:center; justify-content:center; font-size:8px;">♥</div>
+            </div>
+            <div style="padding:6px 7px; display:flex; flex-direction:column; gap:3px;">
+              <div class="wf-text" style="width:50px; height:6px;"></div>
+              <div class="chip" style="width:fit-content;">🌴 Île</div>
+              <div class="wf-stars"><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star wf-star-half"></div></div>
+              <div class="wf-text-sm" style="width:40px; height:5px; background:#c9a84c; opacity:0.7;"></div>
+            </div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-img" style="height:62px; --angle:16deg;">
+              <div style="position:absolute; top:4px; right:4px; width:14px; height:14px; border-radius:50%; background:rgba(255,255,255,0.9); display:flex; align-items:center; justify-content:center; font-size:8px;">♥</div>
+            </div>
+            <div style="padding:6px 7px; display:flex; flex-direction:column; gap:3px;">
+              <div class="wf-text" style="width:34px; height:6px;"></div>
+              <div class="chip" style="width:fit-content;">🏛️ Culture</div>
+              <div class="wf-stars"><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div></div>
+              <div class="wf-text-sm" style="width:40px; height:5px; background:#c9a84c; opacity:0.7;"></div>
+            </div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-img" style="height:62px; --angle:-13deg;">
+              <div style="position:absolute; top:4px; right:4px; width:14px; height:14px; border-radius:50%; background:rgba(255,255,255,0.9); display:flex; align-items:center; justify-content:center; font-size:8px;">♥</div>
+            </div>
+            <div style="padding:6px 7px; display:flex; flex-direction:column; gap:3px;">
+              <div class="wf-text" style="width:48px; height:6px;"></div>
+              <div class="chip" style="width:fit-content;">🏙️ Ville</div>
+              <div class="wf-stars"><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star wf-star-half"></div></div>
+              <div class="wf-text-sm" style="width:40px; height:5px; background:#c9a84c; opacity:0.7;"></div>
+            </div>
+          </div>
+          <!-- Row 2 -->
+          <div class="wf-card">
+            <div class="wf-img" style="height:62px; --angle:11deg;"><div style="position:absolute;top:4px;right:4px;width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;font-size:8px;">♥</div></div>
+            <div style="padding:6px 7px; display:flex; flex-direction:column; gap:3px;"><div class="wf-text" style="width:40px;height:6px;"></div><div class="wf-stars"><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div></div><div class="wf-text-sm" style="width:40px;height:5px;background:#c9a84c;opacity:0.7;"></div></div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-img" style="height:62px; --angle:-16deg;"><div style="position:absolute;top:4px;right:4px;width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;font-size:8px;">♥</div></div>
+            <div style="padding:6px 7px; display:flex; flex-direction:column; gap:3px;"><div class="wf-text" style="width:52px;height:6px;"></div><div class="wf-stars"><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star wf-star-half"></div></div><div class="wf-text-sm" style="width:40px;height:5px;background:#c9a84c;opacity:0.7;"></div></div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-img" style="height:62px; --angle:9deg;"><div style="position:absolute;top:4px;right:4px;width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;font-size:8px;">♥</div></div>
+            <div style="padding:6px 7px; display:flex; flex-direction:column; gap:3px;"><div class="wf-text" style="width:38px;height:6px;"></div><div class="wf-stars"><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div></div><div class="wf-text-sm" style="width:40px;height:5px;background:#c9a84c;opacity:0.7;"></div></div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-img" style="height:62px; --angle:-11deg;"><div style="position:absolute;top:4px;right:4px;width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;font-size:8px;">♥</div></div>
+            <div style="padding:6px 7px; display:flex; flex-direction:column; gap:3px;"><div class="wf-text" style="width:44px;height:6px;"></div><div class="wf-stars"><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star wf-star-half"></div><div class="wf-star wf-star-half"></div></div><div class="wf-text-sm" style="width:40px;height:5px;background:#c9a84c;opacity:0.7;"></div></div>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div style="display:flex; justify-content:center; gap:4px; margin-top:14px; align-items:center;">
+          <div style="width:20px; height:20px; border-radius:4px; background:#e0e0e0; display:flex; align-items:center; justify-content:center; font-size:10px;">‹</div>
+          <div style="width:20px; height:20px; border-radius:4px; background:#c9a84c; opacity:0.8; display:flex; align-items:center; justify-content:center; font-size:9px; color:#fff; font-weight:700;">1</div>
+          <div style="width:20px; height:20px; border-radius:4px; background:#e0e0e0; display:flex; align-items:center; justify-content:center; font-size:10px; color:#888;">2</div>
+          <div style="width:20px; height:20px; border-radius:4px; background:#e0e0e0; display:flex; align-items:center; justify-content:center; font-size:10px; color:#888;">3</div>
+          <div style="width:20px; height:20px; border-radius:4px; background:#e0e0e0; display:flex; align-items:center; justify-content:center; font-size:10px;">›</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- 4. DÉTAIL DESTINATION                                            -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+<div id="detail">
+  <div class="section-label">4 — Détail destination &nbsp;/destinations/:id</div>
+  <div class="frame-wrapper">
+    <div class="frame-title">Détail — 1280 × 1000</div>
+    <div class="frame" style="width:460px;">
+
+      <!-- Navbar -->
+      <div class="wf-navbar">
+        <div class="wf-logo"></div>
+        <div class="wf-nav-links"><div class="wf-nav-link" style="background:#c9a84c;opacity:0.6;"></div><div class="wf-nav-link"></div><div class="wf-nav-link"></div><div class="wf-nav-link"></div></div>
+        <div class="wf-nav-actions"><div class="wf-icon-btn"></div><div class="wf-icon-btn"></div><div class="wf-avatar"></div></div>
+      </div>
+
+      <!-- Hero image -->
+      <div class="wf-img" style="height:100px; --angle:10deg; background:#ccc;">
+        <span class="wf-img-label">Photo destination pleine largeur</span>
+        <!-- Overlay info -->
+        <div style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(to top, rgba(0,0,0,0.7), transparent); padding:12px 16px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+            <div>
+              <div class="wf-text" style="width:80px; height:10px; background:rgba(255,255,255,0.8);"></div>
+              <div style="display:flex; align-items:center; gap:6px; margin-top:4px;">
+                <div class="wf-stars"><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div></div>
+                <div class="wf-text-sm" style="width:30px; height:5px; background:rgba(255,255,255,0.6);"></div>
+              </div>
+            </div>
+            <div style="display:flex; gap:5px;">
+              <div style="padding:4px 8px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); border-radius:5px; display:flex; align-items:center; gap:4px;">
+                <div style="font-size:9px; color:rgba(255,255,255,0.9);">♥</div>
+                <div class="wf-text-sm" style="width:28px; height:5px; background:rgba(255,255,255,0.6);"></div>
+              </div>
+              <div class="wf-button" style="padding:4px 10px; height:auto;">
+                <div class="wf-button-text" style="width:60px; height:6px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div style="padding:14px 16px; background:#fff; border-bottom:1px solid #f0f0f0;">
+        <div style="display:flex; flex-direction:column; gap:3px;">
+          <div class="wf-text-sm" style="width:100%; height:5px;"></div>
+          <div class="wf-text-sm" style="width:90%; height:5px;"></div>
+          <div class="wf-text-sm" style="width:95%; height:5px;"></div>
+          <div class="wf-text-sm" style="width:70%; height:5px;"></div>
+        </div>
+      </div>
+
+      <!-- Services tabs -->
+      <div style="padding:12px 16px; background:#fff; border-bottom:1px solid #f0f0f0;">
+        <div class="wf-text" style="width:100px; height:7px; margin-bottom:10px;"></div>
+        <div class="wf-tabs">
+          <div class="wf-tab wf-tab-active"><div class="wf-tab-text"></div></div>
+          <div class="wf-tab"><div class="wf-tab-text"></div></div>
+          <div class="wf-tab"><div class="wf-tab-text"></div></div>
+        </div>
+        <div style="display:flex; gap:8px; margin-top:10px;">
+          <div class="wf-card" style="flex:1; padding:10px; display:flex; flex-direction:column; gap:5px;">
+            <div style="display:flex; align-items:center; gap:5px;"><div style="font-size:11px;">✈</div><div class="wf-text" style="width:70px; height:6px;"></div></div>
+            <div class="wf-text-sm" style="width:60px; height:5px;"></div>
+            <div class="wf-text-sm" style="width:80px; height:5px;"></div>
+            <div style="margin-top:4px;"><div class="wf-button" style="height:20px; width:100%; border-radius:4px;"><div class="wf-button-text" style="width:70px;"></div></div></div>
+          </div>
+          <div class="wf-card" style="flex:1; padding:10px; display:flex; flex-direction:column; gap:5px;">
+            <div style="display:flex; align-items:center; gap:5px;"><div style="font-size:11px;">✈</div><div class="wf-text" style="width:65px; height:6px;"></div></div>
+            <div class="wf-text-sm" style="width:55px; height:5px;"></div>
+            <div class="wf-text-sm" style="width:75px; height:5px;"></div>
+            <div style="margin-top:4px;"><div class="wf-button" style="height:20px; width:100%; border-radius:4px;"><div class="wf-button-text" style="width:70px;"></div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reviews -->
+      <div style="padding:12px 16px; background:#f8f8f8;">
+        <div class="wf-text" style="width:80px; height:7px; margin-bottom:10px;"></div>
+        <div style="display:flex; flex-direction:column; gap:7px;">
+          <div style="background:#fff; border-radius:8px; padding:10px; border:1px solid #eee;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+              <div style="display:flex; align-items:center; gap:6px;">
+                <div style="width:22px; height:22px; border-radius:50%; background:#d0d0d0;"></div>
+                <div class="wf-text" style="width:55px; height:6px;"></div>
+              </div>
+              <div style="display:flex; align-items:center; gap:4px;">
+                <div class="wf-stars"><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div></div>
+                <div class="wf-text-sm" style="width:30px; height:5px;"></div>
+              </div>
+            </div>
+            <div class="wf-text-sm" style="width:90%; height:5px; margin-bottom:2px;"></div>
+            <div class="wf-text-sm" style="width:70%; height:5px;"></div>
+          </div>
+          <div style="background:#fff; border-radius:8px; padding:10px; border:1px solid #eee;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+              <div style="display:flex; align-items:center; gap:6px;">
+                <div style="width:22px; height:22px; border-radius:50%; background:#d0d0d0;"></div>
+                <div class="wf-text" style="width:60px; height:6px;"></div>
+              </div>
+              <div style="display:flex; align-items:center; gap:4px;">
+                <div class="wf-stars"><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star wf-star-half"></div></div>
+                <div class="wf-text-sm" style="width:30px; height:5px;"></div>
+              </div>
+            </div>
+            <div class="wf-text-sm" style="width:85%; height:5px; margin-bottom:2px;"></div>
+            <div class="wf-text-sm" style="width:55%; height:5px;"></div>
+          </div>
+        </div>
+        <!-- Add review -->
+        <div style="background:#fff; border-radius:8px; padding:10px; border:1px dashed #d0d0d0; margin-top:7px;">
+          <div class="wf-text" style="width:80px; height:6px; margin-bottom:7px;"></div>
+          <div style="display:flex; gap:3px; margin-bottom:7px;">
+            <div class="wf-star" style="width:14px; height:14px;"></div><div class="wf-star" style="width:14px; height:14px; opacity:0.3;"></div><div class="wf-star" style="width:14px; height:14px; opacity:0.3;"></div><div class="wf-star" style="width:14px; height:14px; opacity:0.3;"></div><div class="wf-star" style="width:14px; height:14px; opacity:0.3;"></div>
+          </div>
+          <div style="border:1px solid #e0e0e0; border-radius:6px; height:36px; background:#fafafa;"></div>
+          <div style="margin-top:6px; display:flex; justify-content:flex-end;"><div class="wf-button" style="height:22px; width:60px;"><div class="wf-button-text" style="width:36px;"></div></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- 5. CONSTRUCTEUR D'ITINÉRAIRE                                     -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+<div id="itinerary">
+  <div class="section-label">5 — Constructeur d'itinéraire &nbsp;/itinerary</div>
+  <div class="frames-row">
+
+    <!-- Normal state -->
+    <div class="frame-wrapper">
+      <div class="frame-title">Itinéraire — vue principale</div>
+      <div class="frame" style="width:500px;">
+        <!-- Navbar -->
+        <div class="wf-navbar"><div class="wf-logo"></div><div class="wf-nav-links"><div class="wf-nav-link"></div><div class="wf-nav-link"></div><div class="wf-nav-link"></div><div class="wf-nav-link"></div></div><div class="wf-nav-actions"><div class="wf-icon-btn"></div><div class="wf-icon-btn"></div><div class="wf-avatar"></div></div></div>
+
+        <div style="display:flex; height:480px;">
+          <!-- Sidebar -->
+          <div class="wf-sidebar" style="width:160px; padding:10px; display:flex; flex-direction:column; gap:8px;">
+            <div class="wf-button" style="height:26px; width:100%; margin-bottom:4px;">
+              <div style="font-size:9px; color:#fff; opacity:0.8;">+ Nouveau voyage</div>
+            </div>
+            <div class="wf-text" style="width:70px; height:6px; margin-bottom:4px;"></div>
+            <!-- List items -->
+            <div style="background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.3); border-radius:6px; padding:7px;">
+              <div class="wf-text" style="width:80px; height:6px; background:#c9a84c; opacity:0.6; margin-bottom:3px;"></div>
+              <div class="wf-text-sm" style="width:60px; height:5px;"></div>
+            </div>
+            <div style="background:#fff; border:1px solid #eee; border-radius:6px; padding:7px;">
+              <div class="wf-text" style="width:75px; height:6px; margin-bottom:3px;"></div>
+              <div class="wf-text-sm" style="width:55px; height:5px;"></div>
+            </div>
+            <div style="background:#fff; border:1px solid #eee; border-radius:6px; padding:7px;">
+              <div class="wf-text" style="width:80px; height:6px; margin-bottom:3px;"></div>
+              <div class="wf-text-sm" style="width:60px; height:5px;"></div>
+            </div>
+          </div>
+
+          <!-- Main panel -->
+          <div style="flex:1; padding:14px; background:#f8f8f8; display:flex; flex-direction:column; gap:10px; overflow-y:auto;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div class="wf-title" style="width:110px; height:10px;"></div>
+              <div style="display:flex; gap:5px;">
+                <div class="wf-button-ghost" style="width:60px; height:24px;"><div class="wf-button-ghost-text" style="width:40px;"></div></div>
+                <div style="width:24px; height:24px; background:#fee2e2; border:1px solid #fca5a5; border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:10px; color:#ef4444;">🗑</div>
+              </div>
+            </div>
+
+            <!-- Item card 1 - Transport -->
+            <div class="wf-card" style="padding:10px;">
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                <div style="width:28px; height:28px; border-radius:7px; background:rgba(96,165,250,0.15); border:1px solid rgba(96,165,250,0.3); display:flex; align-items:center; justify-content:center; font-size:12px;">✈</div>
+                <div style="flex:1;">
+                  <div class="wf-text" style="width:100px; height:7px; margin-bottom:3px;"></div>
+                  <div class="wf-text-sm" style="width:70px; height:5px;"></div>
+                </div>
+                <div style="text-align:right;">
+                  <div class="wf-text" style="width:44px; height:7px; background:#c9a84c; opacity:0.7;"></div>
+                  <div style="width:20px; height:20px; background:#fee2e2; border-radius:4px; margin-top:3px; display:flex; align-items:center; justify-content:center; font-size:9px;">🗑</div>
+                </div>
+              </div>
+              <div style="border-top:1px solid #f0f0f0; padding-top:6px; display:flex; gap:8px;">
+                <div class="wf-text-sm" style="width:60px; height:5px;"></div>
+                <div class="wf-text-sm" style="width:50px; height:5px;"></div>
+                <div class="wf-text-sm" style="width:55px; height:5px;"></div>
+              </div>
+            </div>
+
+            <!-- Item card 2 - Hotel -->
+            <div class="wf-card" style="padding:10px;">
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                <div style="width:28px; height:28px; border-radius:7px; background:rgba(201,168,76,0.15); border:1px solid rgba(201,168,76,0.3); display:flex; align-items:center; justify-content:center; font-size:12px;">🏨</div>
+                <div style="flex:1;">
+                  <div class="wf-text" style="width:110px; height:7px; margin-bottom:3px;"></div>
+                  <div class="wf-text-sm" style="width:80px; height:5px;"></div>
+                </div>
+                <div style="text-align:right;">
+                  <div class="wf-text" style="width:50px; height:7px; background:#c9a84c; opacity:0.7;"></div>
+                  <div style="width:20px; height:20px; background:#fee2e2; border-radius:4px; margin-top:3px; display:flex; align-items:center; justify-content:center; font-size:9px;">🗑</div>
+                </div>
+              </div>
+              <div style="border-top:1px solid #f0f0f0; padding-top:6px; display:flex; gap:8px;">
+                <div class="wf-text-sm" style="width:65px; height:5px;"></div>
+                <div class="wf-text-sm" style="width:55px; height:5px;"></div>
+              </div>
+            </div>
+
+            <!-- Item card 3 - Activity -->
+            <div class="wf-card" style="padding:10px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <div style="width:28px; height:28px; border-radius:7px; background:rgba(74,222,128,0.15); border:1px solid rgba(74,222,128,0.3); display:flex; align-items:center; justify-content:center; font-size:12px;">🧗</div>
+                <div style="flex:1;">
+                  <div class="wf-text" style="width:90px; height:7px; margin-bottom:3px;"></div>
+                  <div class="wf-text-sm" style="width:65px; height:5px;"></div>
+                </div>
+                <div style="text-align:right;">
+                  <div class="wf-text" style="width:38px; height:7px; background:#c9a84c; opacity:0.7;"></div>
+                  <div style="width:20px; height:20px; background:#fee2e2; border-radius:4px; margin-top:3px; display:flex; align-items:center; justify-content:center; font-size:9px;">🗑</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Total + CTA -->
+            <div style="background:#fff; border:1.5px solid rgba(201,168,76,0.3); border-radius:10px; padding:12px; margin-top:auto;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <div class="wf-text-sm" style="width:70px; height:6px;"></div>
+                <div style="font-size:14px; font-weight:700; color:#c9a84c;">4 050 €</div>
+              </div>
+              <div class="wf-button" style="height:32px; width:100%;">
+                <div class="wf-button-text" style="width:100px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal paiement -->
+    <div class="frame-wrapper">
+      <div class="frame-title">Modale — Confirmation paiement</div>
+      <div class="frame" style="width:260px; position:relative; height:320px;">
+        <div class="wf-modal-overlay">
+          <div class="wf-modal">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+              <div class="wf-title" style="width:110px; height:8px;"></div>
+              <div style="width:16px; height:16px; background:#e8e8e8; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; color:#888; cursor:pointer;">✕</div>
+            </div>
+            <div class="wf-divider" style="margin-bottom:10px;"></div>
+            <!-- Items -->
+            <div style="display:flex; flex-direction:column; gap:5px; margin-bottom:10px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div class="wf-text-sm" style="width:100px; height:5px;"></div>
+                <div class="wf-text" style="width:40px; height:6px; background:#c9a84c; opacity:0.6;"></div>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div class="wf-text-sm" style="width:90px; height:5px;"></div>
+                <div class="wf-text" style="width:44px; height:6px; background:#c9a84c; opacity:0.6;"></div>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div class="wf-text-sm" style="width:80px; height:5px;"></div>
+                <div class="wf-text" style="width:36px; height:6px; background:#c9a84c; opacity:0.6;"></div>
+              </div>
+            </div>
+            <div class="wf-divider" style="margin-bottom:10px;"></div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+              <div class="wf-text" style="width:55px; height:7px;"></div>
+              <div style="font-size:13px; font-weight:700; color:#c9a84c;">4 900 €</div>
+            </div>
+            <!-- Payment method -->
+            <div class="wf-text" style="width:55px; height:6px; margin-bottom:7px;"></div>
+            <div style="display:flex; flex-direction:column; gap:5px; margin-bottom:12px;">
+              <div style="display:flex; align-items:center; gap:7px; padding:6px 9px; border:1.5px solid rgba(201,168,76,0.5); border-radius:6px; background:rgba(201,168,76,0.05);">
+                <div style="width:10px; height:10px; border-radius:50%; background:#c9a84c; border:2px solid #fff; box-shadow:0 0 0 1.5px #c9a84c;"></div>
+                <div class="wf-text-sm" style="width:65px; height:5px;"></div>
+              </div>
+              <div style="display:flex; align-items:center; gap:7px; padding:6px 9px; border:1px solid #e0e0e0; border-radius:6px;">
+                <div style="width:10px; height:10px; border-radius:50%; border:1.5px solid #ccc;"></div>
+                <div class="wf-text-sm" style="width:50px; height:5px;"></div>
+              </div>
+              <div style="display:flex; align-items:center; gap:7px; padding:6px 9px; border:1px solid #e0e0e0; border-radius:6px;">
+                <div style="width:10px; height:10px; border-radius:50%; border:1.5px solid #ccc;"></div>
+                <div class="wf-text-sm" style="width:40px; height:5px;"></div>
+              </div>
+            </div>
+            <div class="wf-button" style="height:30px; width:100%;">
+              <div style="font-size:9px; color:#fff; opacity:0.8;">✓ Confirmer la réservation</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- 6. MES RÉSERVATIONS                                              -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+<div id="bookings">
+  <div class="section-label">6 — Mes réservations &nbsp;/bookings</div>
+  <div class="frame-wrapper">
+    <div class="frame-title">Réservations — 800 × 700</div>
+    <div class="frame" style="width:420px;">
+
+      <!-- Navbar -->
+      <div class="wf-navbar"><div class="wf-logo"></div><div class="wf-nav-links"><div class="wf-nav-link"></div><div class="wf-nav-link"></div><div class="wf-nav-link"></div><div class="wf-nav-link"></div></div><div class="wf-nav-actions"><div class="wf-icon-btn"></div><div class="wf-avatar"></div></div></div>
+
+      <!-- Header -->
+      <div style="padding:18px 16px 14px; background:#fff; border-bottom:1px solid #f0f0f0;">
+        <div class="wf-text-sm" style="width:35px; height:5px; background:#c9a84c; opacity:0.7; margin-bottom:5px;"></div>
+        <div class="wf-title" style="width:140px; height:12px;"></div>
+      </div>
+
+      <!-- List -->
+      <div style="padding:14px 16px; background:#f8f8f8; display:flex; flex-direction:column; gap:8px;">
+
+        <!-- Confirmed -->
+        <div class="wf-card" style="padding:12px;">
+          <div style="display:flex; align-items:flex-start; gap:10px;">
+            <div style="width:36px; height:36px; border-radius:9px; background:rgba(96,165,250,0.1); border:1px solid rgba(96,165,250,0.2); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;">✈</div>
+            <div style="flex:1;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px;">
+                <div class="wf-text" style="width:110px; height:7px;"></div>
+                <div class="wf-badge wf-badge-green" style="padding:2px 8px; height:16px;">
+                  <div style="font-size:7px; font-weight:700; color:#4ade80;">● CONFIRMÉE</div>
+                </div>
+              </div>
+              <div class="wf-text-sm" style="width:80px; height:5px; margin-bottom:4px;"></div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; align-items:center; gap:4px;">
+                  <div style="font-size:8px;">📅</div>
+                  <div class="wf-text-sm" style="width:60px; height:5px;"></div>
+                </div>
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <div class="wf-text" style="width:44px; height:7px; background:#c9a84c; opacity:0.6;"></div>
+                  <div style="width:22px; height:22px; background:#f0f0f0; border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:9px;">👁</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pending -->
+        <div class="wf-card" style="padding:12px;">
+          <div style="display:flex; align-items:flex-start; gap:10px;">
+            <div style="width:36px; height:36px; border-radius:9px; background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.2); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;">🏨</div>
+            <div style="flex:1;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px;">
+                <div class="wf-text" style="width:120px; height:7px;"></div>
+                <div class="wf-badge wf-badge-gold" style="padding:2px 8px; height:16px;">
+                  <div style="font-size:7px; font-weight:700; color:#c9a84c;">⏳ EN ATTENTE</div>
+                </div>
+              </div>
+              <div class="wf-text-sm" style="width:70px; height:5px; margin-bottom:4px;"></div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; align-items:center; gap:4px;"><div style="font-size:8px;">📅</div><div class="wf-text-sm" style="width:60px; height:5px;"></div></div>
+                <div style="display:flex; align-items:center; gap:6px;"><div class="wf-text" style="width:48px; height:7px; background:#c9a84c; opacity:0.6;"></div><div style="width:22px; height:22px; background:#f0f0f0; border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:9px;">👁</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cancelled -->
+        <div class="wf-card" style="padding:12px; opacity:0.75;">
+          <div style="display:flex; align-items:flex-start; gap:10px;">
+            <div style="width:36px; height:36px; border-radius:9px; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.2); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;">🧗</div>
+            <div style="flex:1;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px;">
+                <div class="wf-text" style="width:100px; height:7px;"></div>
+                <div class="wf-badge wf-badge-red" style="padding:2px 8px; height:16px;">
+                  <div style="font-size:7px; font-weight:700; color:#f87171;">✗ ANNULÉE</div>
+                </div>
+              </div>
+              <div class="wf-text-sm" style="width:75px; height:5px; margin-bottom:4px;"></div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; align-items:center; gap:4px;"><div style="font-size:8px;">📅</div><div class="wf-text-sm" style="width:60px; height:5px;"></div></div>
+                <div style="display:flex; align-items:center; gap:6px;"><div class="wf-text" style="width:38px; height:7px; background:#aaa; opacity:0.6;"></div><div style="width:22px; height:22px; background:#f0f0f0; border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:9px;">👁</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Completed -->
+        <div class="wf-card" style="padding:12px;">
+          <div style="display:flex; align-items:flex-start; gap:10px;">
+            <div style="width:36px; height:36px; border-radius:9px; background:rgba(96,165,250,0.1); border:1px solid rgba(96,165,250,0.2); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;">🏖️</div>
+            <div style="flex:1;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px;">
+                <div class="wf-text" style="width:95px; height:7px;"></div>
+                <div class="wf-badge wf-badge-blue" style="padding:2px 8px; height:16px;">
+                  <div style="font-size:7px; font-weight:700; color:#60a5fa;">✓ TERMINÉE</div>
+                </div>
+              </div>
+              <div class="wf-text-sm" style="width:80px; height:5px; margin-bottom:4px;"></div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; align-items:center; gap:4px;"><div style="font-size:8px;">📅</div><div class="wf-text-sm" style="width:60px; height:5px;"></div></div>
+                <div style="display:flex; align-items:center; gap:6px;"><div class="wf-text" style="width:44px; height:7px; background:#c9a84c; opacity:0.6;"></div><div style="width:22px; height:22px; background:#f0f0f0; border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:9px;">👁</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- 7. ADMIN DASHBOARD                                               -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+<div id="admin">
+  <div class="section-label">7 — Tableau de bord Admin &nbsp;/admin</div>
+  <div class="frame-wrapper">
+    <div class="frame-title">Admin — 1280 × 900</div>
+    <div class="frame" style="width:540px;">
+
+      <!-- Navbar -->
+      <div class="wf-navbar"><div class="wf-logo"></div><div class="wf-nav-links"><div class="wf-nav-link"></div><div class="wf-nav-link"></div><div class="wf-nav-link"></div><div class="wf-nav-link"></div></div><div class="wf-nav-actions"><div class="wf-icon-btn"></div><div class="wf-icon-btn"></div><div class="wf-avatar" style="background:#a78bfa;"></div></div></div>
+
+      <div style="padding:18px 20px 14px; background:#fff; border-bottom:1px solid #f0f0f0;">
+        <div class="wf-text-sm" style="width:70px; height:5px; background:#a78bfa; opacity:0.7; margin-bottom:5px;"></div>
+        <div class="wf-title" style="width:200px; height:12px;"></div>
+      </div>
+
+      <!-- Stat cards -->
+      <div style="padding:16px 20px; background:#f8f8f8; display:flex; gap:10px;">
+        <div class="wf-stat" style="flex:1;">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <div style="width:28px; height:28px; border-radius:8px; background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.2); display:flex; align-items:center; justify-content:center; font-size:12px;">🌍</div>
+            <div class="wf-text-sm" style="width:55px; height:5px;"></div>
+          </div>
+          <div style="font-size:18px; font-weight:700; color:#c9a84c;">150</div>
+          <div class="wf-text-sm" style="width:44px; height:5px;"></div>
+        </div>
+        <div class="wf-stat" style="flex:1;">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <div style="width:28px; height:28px; border-radius:8px; background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.2); display:flex; align-items:center; justify-content:center; font-size:12px;">🛍</div>
+            <div class="wf-text-sm" style="width:55px; height:5px;"></div>
+          </div>
+          <div style="font-size:18px; font-weight:700; color:#4ade80;">48</div>
+          <div class="wf-text-sm" style="width:44px; height:5px;"></div>
+        </div>
+        <div class="wf-stat" style="flex:1;">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <div style="width:28px; height:28px; border-radius:8px; background:rgba(96,165,250,0.1); border:1px solid rgba(96,165,250,0.2); display:flex; align-items:center; justify-content:center; font-size:12px;">📈</div>
+            <div class="wf-text-sm" style="width:55px; height:5px;"></div>
+          </div>
+          <div style="font-size:14px; font-weight:700; color:#60a5fa;">98 400 €</div>
+          <div class="wf-text-sm" style="width:44px; height:5px;"></div>
+        </div>
+        <div class="wf-stat" style="flex:1;">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <div style="width:28px; height:28px; border-radius:8px; background:rgba(244,114,182,0.1); border:1px solid rgba(244,114,182,0.2); display:flex; align-items:center; justify-content:center; font-size:12px;">👥</div>
+            <div class="wf-text-sm" style="width:55px; height:5px;"></div>
+          </div>
+          <div style="font-size:18px; font-weight:700; color:#f472b6;">32</div>
+          <div class="wf-text-sm" style="width:44px; height:5px;"></div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div style="padding:0 20px; background:#fff; border-bottom:1px solid #f0f0f0; display:flex; gap:4px;">
+        <div style="padding:10px 14px; border-bottom:2px solid #c9a84c; font-size:9px; font-weight:700; color:#c9a84c;">Vue d'ensemble</div>
+        <div style="padding:10px 14px; border-bottom:2px solid transparent; font-size:9px; color:#888;">Destinations</div>
+        <div style="padding:10px 14px; border-bottom:2px solid transparent; font-size:9px; color:#888;">Réservations</div>
+      </div>
+
+      <!-- Table destinations -->
+      <div style="padding:14px 20px; background:#fff;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <div class="wf-text" style="width:100px; height:7px;"></div>
+          <div class="wf-button" style="height:26px; width:120px; border-radius:5px;">
+            <div style="font-size:8px; color:#fff; opacity:0.9;">+ Ajouter destination</div>
+          </div>
+        </div>
+        <table class="wf-table" style="width:100%;">
+          <thead>
+            <tr>
+              <td><div class="wf-text-sm" style="width:14px; height:5px;"></div></td>
+              <td><div class="wf-text-sm" style="width:28px; height:5px;"></div></td>
+              <td><div class="wf-text-sm" style="width:40px; height:5px;"></div></td>
+              <td><div class="wf-text-sm" style="width:32px; height:5px;"></div></td>
+              <td><div class="wf-text-sm" style="width:40px; height:5px;"></div></td>
+              <td><div class="wf-text-sm" style="width:35px; height:5px;"></div></td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="wf-text-sm" style="width:18px; height:5px;"></div></td>
+              <td><div style="display:flex; align-items:center; gap:5px;"><div style="width:22px;height:22px;border-radius:4px;background:#d0d0d0;flex-shrink:0;"></div><div class="wf-text" style="width:55px; height:6px;"></div></div></td>
+              <td><div class="chip">🏖️ Plage</div></td>
+              <td><div class="wf-stars" style="gap:1px;"><div class="wf-star" style="width:6px;height:6px;"></div><div class="wf-star" style="width:6px;height:6px;"></div><div class="wf-star" style="width:6px;height:6px;"></div><div class="wf-star" style="width:6px;height:6px;"></div><div class="wf-star" style="width:6px;height:6px;"></div></div></td>
+              <td><div class="wf-text" style="width:40px; height:6px; background:#c9a84c; opacity:0.6;"></div></td>
+              <td><div style="display:flex;gap:4px;"><div style="width:22px;height:22px;background:#e0f0ff;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;">✏</div><div style="width:22px;height:22px;background:#fee2e2;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;">🗑</div></div></td>
+            </tr>
+            <tr>
+              <td><div class="wf-text-sm" style="width:18px; height:5px;"></div></td>
+              <td><div style="display:flex; align-items:center; gap:5px;"><div style="width:22px;height:22px;border-radius:4px;background:#d0d0d0;flex-shrink:0;"></div><div class="wf-text" style="width:48px; height:6px;"></div></div></td>
+              <td><div class="chip">🌴 Île</div></td>
+              <td><div class="wf-stars" style="gap:1px;"><div class="wf-star" style="width:6px;height:6px;"></div><div class="wf-star" style="width:6px;height:6px;"></div><div class="wf-star" style="width:6px;height:6px;"></div><div class="wf-star" style="width:6px;height:6px;"></div><div class="wf-star wf-star-half" style="width:6px;height:6px;"></div></div></td>
+              <td><div class="wf-text" style="width:40px; height:6px; background:#c9a84c; opacity:0.6;"></div></td>
+              <td><div style="display:flex;gap:4px;"><div style="width:22px;height:22px;background:#e0f0ff;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;">✏</div><div style="width:22px;height:22px;background:#fee2e2;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;">🗑</div></div></td>
+            </tr>
+            <tr>
+              <td><div class="wf-text-sm" style="width:18px; height:5px;"></div></td>
+              <td><div style="display:flex; align-items:center; gap:5px;"><div style="width:22px;height:22px;border-radius:4px;background:#d0d0d0;flex-shrink:0;"></div><div class="wf-text" style="width:35px; height:6px;"></div></div></td>
+              <td><div class="chip">🏙️ Ville</div></td>
+              <td><div class="wf-stars" style="gap:1px;"><div class="wf-star" style="width:6px;height:6px;"></div><div class="wf-star" style="width:6px;height:6px;"></div><div class="wf-star" style="width:6px;height:6px;"></div><div class="wf-star" style="width:6px;height:6px;"></div><div class="wf-star" style="width:6px;height:6px;"></div></div></td>
+              <td><div class="wf-text" style="width:40px; height:6px; background:#c9a84c; opacity:0.6;"></div></td>
+              <td><div style="display:flex;gap:4px;"><div style="width:22px;height:22px;background:#e0f0ff;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;">✏</div><div style="width:22px;height:22px;background:#fee2e2;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;">🗑</div></div></td>
+            </tr>
+            <tr>
+              <td><div class="wf-text-sm" style="width:18px; height:5px;"></div></td>
+              <td><div style="display:flex; align-items:center; gap:5px;"><div style="width:22px;height:22px;border-radius:4px;background:#d0d0d0;flex-shrink:0;"></div><div class="wf-text" style="width:52px; height:6px;"></div></div></td>
+              <td><div class="chip">🏛️ Culture</div></td>
+              <td><div class="wf-stars" style="gap:1px;"><div class="wf-star" style="width:6px;height:6px;"></div><div class="wf-star" style="width:6px;height:6px;"></div><div class="wf-star" style="width:6px;height:6px;"></div><div class="wf-star" style="width:6px;height:6px;"></div><div class="wf-star wf-star-half" style="width:6px;height:6px;"></div></div></td>
+              <td><div class="wf-text" style="width:40px; height:6px; background:#c9a84c; opacity:0.6;"></div></td>
+              <td><div style="display:flex;gap:4px;"><div style="width:22px;height:22px;background:#e0f0ff;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;">✏</div><div style="width:22px;height:22px;background:#fee2e2;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;">🗑</div></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+</div><!-- /canvas -->
+</div>
+
+</body>
+</html>
